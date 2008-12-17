@@ -37,7 +37,7 @@ module Juicer
 
       # Recursively deletes the data directory
       def delete!
-        FileUtils.remove_dir(@dir) if File.exist? @dir
+        res = FileUtils.remove_dir(@dir) if File.exist?(@dir)
       end
 
       # Set up files for unit tests
