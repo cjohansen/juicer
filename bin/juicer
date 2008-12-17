@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
-
-require File.expand_path(
-    File.join(File.dirname(__FILE__), %w[.. lib juicer]))
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib juicer]))
 
 # Put your code here
 
