@@ -17,7 +17,7 @@ module Juicer
         @dependency_resolver = CssImportResolver.new
       end
 
-      private
+     private
       def merge(file)
         content = super.gsub(/^\s*\@import\s("|')(.*)("|')\;?/, '')
       end
