@@ -1,5 +1,5 @@
 module Juicer
-  module FileMerger
+  module Merger
   end
 end
 
