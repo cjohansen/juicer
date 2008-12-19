@@ -71,8 +71,11 @@ the YUI Compressor the path should be the path to where the jar file is found.
           minifyer = @minifyer.split("_").collect { |p| p.capitalize! }.join
           compressor = Juicer::Minifyer.const_get(minifyer).new(@opts)
           compressor.compress(mergefile, @output)
-        rescue
+        rescue NameError
           puts "No such minifyer '#{minifyer}', aborting"
+          exit
+        rescue Exception => e
+          puts e.message
           exit
         end
 
