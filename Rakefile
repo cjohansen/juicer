@@ -14,13 +14,14 @@ require 'juicer'
 
 task :default => 'spec:run'
 
-PROJ.name = 'Juicer'
+PROJ.name = 'juicer'
 PROJ.authors = 'Christian Johansen'
 PROJ.email = 'christian@cjohansen.no'
 PROJ.url = 'http://www.cjohansen.no/en/projects/juicer'
 PROJ.version = Juicer::VERSION
 PROJ.rubyforge.name = 'juicer'
+PROJ.readme_file = 'Readme.rdoc'
 
 PROJ.spec.opts << '--color'
 
-# EOF
+depend_on 'cmdparse'
