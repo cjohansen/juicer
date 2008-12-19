@@ -24,8 +24,8 @@ module Juicer
             # If we have already skimmed through some @imports and
             # this line contains anything other than spaces or a comment,
             # we're done.
-            break unless imported_file.nil? && !(line =~ /^(\s*)|(\/\*)$/)
-            break if imported_file.nil? && line =~ /^[\.\#a-zA-Z\:]/
+            break if imported_file && line =~ %r{/*}
+            break if line =~ /^[\.\#a-zA-Z\:]/
           end
         end
 

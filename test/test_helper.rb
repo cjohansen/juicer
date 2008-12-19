@@ -49,7 +49,9 @@ module Juicer
 
         # mappe/
         mappe = mkdir(File.join(@dir, 'mappe'))
-        mkfile(mappe, 'a.css', "@import 'b.css';\n\n/* Dette er a.css */")
+        #mkfile(mappe, 'a.css', "@import 'b.css';\n\n/* Dette er a.css */")
+        mkfile(mappe, 'a.css', "/**\n * Test with comment\n */\n@import 'b.css';\n\n/* Dette er a.css */\n")
+
         mkfile(mappe, 'c.css', "/* Dette er b.css */")
 
         # mappe/enda_en_mappe/
