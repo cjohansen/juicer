@@ -123,8 +123,8 @@ module Juicer
         paths = @options[:bin_path].nil? ? [] : [@options[:bin_path]]
         jar = nil
 
-        if ENV.key?('YUIC_HOME') && File.exist?(File.join(ENV['YUIC_HOME'], 'build'))
-          paths << File.join(ENV['YUIC_HOME'], 'build')
+        if ENV.key?('YUIC_HOME') && File.exist?(ENV['YUIC_HOME'])
+          paths << ENV['YUIC_HOME']
         end
 
         (paths << Dir.pwd).each do |path|
