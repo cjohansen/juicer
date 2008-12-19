@@ -16,18 +16,13 @@ module Juicer
       @cmd.program_name = "juicer"
       @cmd.program_version = Juicer.version.split(".")
 
-      @cmd.options = CmdParse::OptionParserWrapper.new do |opt|
-        opt.separator "Global options:"
-        opt.on("--verbose", "Be verbose when outputting info") {|t| $verbose = true }
-      end
+      # @cmd.options = CmdParse::OptionParserWrapper.new do |opt|
+      #  opt.separator "Global options:"
+      #  opt.on("--verbose", "Be verbose when outputting info") {|t| $verbose = true }
+      # end
 
       add_commands
       @cmd.parse(arguments)
-    end
-
-    #
-    #
-    def run
     end
 
     # Run CLI
@@ -35,7 +30,6 @@ module Juicer
     def self.run(arguments = ARGV)
       juicer = self.new
       juicer.parse(arguments)
-      juicer.run
     end
 
    private
