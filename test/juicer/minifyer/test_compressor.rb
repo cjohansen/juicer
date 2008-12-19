@@ -29,7 +29,7 @@ class TestCompressor < Test::Unit::TestCase
   def test_method_missing
     assert_not_equal 'bar', @compressor.get_opt(:foo)
     assert_not_equal 'bar', @compressor.foo
-    assert (@compressor.foo = 'bar')
+    assert @compressor.foo = 'bar'
     assert_equal 'bar', @compressor.get_opt(:foo)
     assert_equal 'bar', @compressor.foo
   end
