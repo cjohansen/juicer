@@ -1,4 +1,3 @@
-
 module Juicer
 
   # :stopdoc:
@@ -41,8 +40,6 @@ module Juicer
     Dir.glob(search_me).sort.each { |rb| require rb }
   end
 
-end  # module Juicer
+end
 
 Juicer.require_all_libs_relative_to(__FILE__)
-
-# EOF
