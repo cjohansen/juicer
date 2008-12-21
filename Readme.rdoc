@@ -8,21 +8,57 @@ Juicer is a command line tool aimed at easing JavaScript and CSS development.
 Currently it only provides a wrapper to YUI Compressor along with a module that
 can dynamically link together files, but there are plans for more functionality.
 
-== FEATURES/PROBLEMS:
+== FEATURES:
 
 Juicer can read @import statements in CSS files and use them to combine all your
 stylesheets into a single file. This file may be minified using the YUI
 Compressor. Eventually it will support other minifying tools too.
 
 Juicer can treat your JavaScript files much the same way too, parsing a comment
-switch @depends
+switch @depends, as this example shows:
+
+  /**
+   * My script file
+   *
+   * @depend jquery-1.2.0.js
+   */
+  var myNS = {
+      myObject = {}
+  };
+
+Running <tt>juicer merge</tt> on this file will result in a minified file
+<tt>filename.min.js</tt> containing the file jquery-1.2.0.js (located in the
+same directory) and the code above.
+
+== 0.1.0 STATUS:
+
+Juicer is currently in a very early stage, please expect it to be unstable,
+poorly documented and otherwise unfinished. Some of this code is a bit old, and
+a brush up is planned that will likely result in several API changes.
+
+== PLANNED FEATURES:
+
+There are several things on the pipeline:
+
+  * Support more minifiers, JsMin (Ruby port), Packer and possibly others
+  * Wrap code quality assurance tools, such as JsLint and CSS Tidy
+      juicer check design/*
+  * A tool to build a whole proect based on a configuration file or something
+    like that
+
+As you see, Juicer will mostly rely heavily on other peoples great work. Juicers
+strength will be that it provides a single simple to use interface to run these
+tools on your project, as well as sewing it all together.
+
+If you have any ideas, feature requests, want to contribute or whatever, fork
+the proect on github, or get in touch through christian (at) cjohansen.no.
 
 == SYNOPSIS:
 
-  juicer myfile.css
+  juicer merge myfile.css
   -> Produces myfile.min.css which may contain several CSS files, minified
 
-  juicer myfile.js
+  juicer merge myfile.js
   -> Produces myfile.min.js, minified and combined
 
 == REQUIREMENTS:
@@ -32,13 +68,10 @@ available on your path.
 
 == INSTALL:
 
-  $ gem sources -a http://gems.github.com
-  $ gem install cjohansen-juicer
+  $ wget http://www.cjohansen.no/juicer-0.1.0.gem
+  $ gem install juicer-0.1.0.gem
 
 == LICENSE:
-
-Please note that the YUI Compressor which is distributed along with
-Juicer is licensed under the BSD license.
 
 (The MIT License)
 
