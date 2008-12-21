@@ -61,7 +61,7 @@ the YUI Compressor the path should be the path to where the jar file is found.
         end
 
         # Merge files
-        mergefile = File.join(Dir::tmpdir, Time.new.to_i.to_s + @output)
+        mergefile = File.join(Dir::tmpdir, Time.new.to_i.to_s + File.basename(@output))
         merger = @types[type.to_sym].new
         merger << args
         merger.save(mergefile)
