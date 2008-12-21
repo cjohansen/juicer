@@ -1,6 +1,5 @@
 = Juicer
-    by Christian Johansen
-    http://www.cjohansen.no/en/projects/juicer
+Christian Johansen (http://www.cjohansen.no)
 
 == DESCRIPTION:
 
@@ -40,11 +39,11 @@ a brush up is planned that will likely result in several API changes.
 
 There are several things on the pipeline:
 
-  * Support more minifiers, JsMin (Ruby port), Packer and possibly others
-  * Wrap code quality assurance tools, such as JsLint and CSS Tidy
-      juicer check design/*
-  * A tool to build a whole proect based on a configuration file or something
-    like that
+* Support more minifiers, JsMin (Ruby port), Packer and possibly others
+* Wrap code quality assurance tools, such as JsLint and CSS Tidy
+    juicer check design/*
+* A tool to build a whole proect based on a configuration file or something
+  like that
 
 As you see, Juicer will mostly rely heavily on other peoples great work. Juicers
 strength will be that it provides a single simple to use interface to run these
@@ -70,6 +69,18 @@ available on your path.
 
   $ wget http://www.cjohansen.no/juicer-0.1.0.gem
   $ gem install juicer-0.1.0.gem
+
+You need Java installed, and you need the YUI Compressor jar file. Get it from
+http://developer.yahoo.com/yui/compressor/
+
+Download the YUI Compressor package and unzip on your file system. Either create
+an environment variable <tt>$YUIC_HOME</tt> that points to where the file is
+found, or provide the path like so:
+  juicer merge --path ~/sources/yuicompressor/build [...]
+
+Alternatively you can keep a copy of the jar file in the same directory that you
+run the <tt>juicer</tt> command from. I imagine that would only make sense in a
+testing scenario.
 
 == LICENSE:
 
