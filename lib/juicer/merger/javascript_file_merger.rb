@@ -9,9 +9,9 @@ module Juicer
     class JavaScriptFileMerger < FileMerger
 
       # Constructor
-      def initialize(options = {})
-        super(options)
+      def initialize(files = [], options = {})
         @dependency_resolver = JavaScriptDependencyResolver.new
+        super(files, options)
       end
     end
   end

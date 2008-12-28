@@ -27,6 +27,11 @@ class TestCssFileMerger < Test::Unit::TestCase
     end
   end
 
+  def test_constructor
+    file_merger = Juicer::Merger::CssFileMerger.new(File.join($DATA_DIR, 'a.css'))
+    assert_equal 2, file_merger.files.length
+  end
+
   def test_append
     @file_merger << File.join($DATA_DIR, 'a.css')
     assert_equal 2, @file_merger.files.length

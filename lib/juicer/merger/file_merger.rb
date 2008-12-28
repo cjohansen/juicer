@@ -5,9 +5,10 @@ module Juicer
       attr_reader :files
 
       # Constructor
-      def initialize(options = {})
+      def initialize(files = [], options = {})
         @files = []
-        @dependency_resolver = nil
+        @dependency_resolver ||= nil
+        self.<< files
       end
 
       # Append file contents to output. Resolves dependencies and adds

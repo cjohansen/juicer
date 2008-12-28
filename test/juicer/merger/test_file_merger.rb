@@ -13,6 +13,12 @@ class TestFileMerger < Test::Unit::TestCase
     File.delete(file) if File.exists?(file)
   end
 
+  def test_constructor
+    files = ['a.css', 'b.css'].collect { |file| File.join($DATA_DIR, file) }
+    file_merger = Juicer::Merger::FileMerger.new files
+    assert_equal 2, file_merger.files.length
+  end
+
   def test_append
     @file_merger << ['a.css', 'b.css'].collect { |file| File.join($DATA_DIR, file) }
     assert_equal 2, @file_merger.files.length

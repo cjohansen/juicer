@@ -12,9 +12,9 @@ module Juicer
 
       # Constructor
       #
-      def initialize(options = {})
-        super(options)
+      def initialize(files = [], options = {})
         @dependency_resolver = CssImportResolver.new
+        super(files, options)
       end
 
      private

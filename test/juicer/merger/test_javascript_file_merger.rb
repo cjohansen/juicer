@@ -34,6 +34,11 @@ EOF
     end
   end
 
+  def test_constructor
+    file_merger = Juicer::Merger::JavaScriptFileMerger.new(File.join($DATA_DIR, 'a.js'))
+    assert_equal 2, file_merger.files.length
+  end
+
   def test_append
     @file_merger << File.join($DATA_DIR, 'a.js')
     assert_equal 2, @file_merger.files.length
