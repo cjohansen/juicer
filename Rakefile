@@ -12,7 +12,7 @@ end
 ensure_in_path 'lib'
 require 'juicer'
 
-task :default => 'spec:run'
+task :default => 'test:run'
 
 PROJ.name = 'juicer'
 PROJ.authors = 'Christian Johansen'
