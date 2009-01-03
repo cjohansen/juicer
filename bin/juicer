@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-base = File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib juicer]))
+dir = File.dirname(File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__)
+base = File.expand_path(File.join(dir, %w[.. lib juicer]))
 require base
 require File.join(base, "cli")
 
