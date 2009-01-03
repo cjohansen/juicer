@@ -1,55 +1,61 @@
 # Merge several files into one single output file
 module Juicer
   module Merger
-    class FileMerger
+    class Base
       attr_reader :files
 
-      # Constructor
       def initialize(files = [], options = {})
         @files = []
         @dependency_resolver ||= nil
-        self.<< files
+        self.append files
       end
 
-      # Append file contents to output. Resolves dependencies and adds
+      #
+      # Append contents to output. Resolves dependencies and adds
       # required files recursively
-      # file = A file to add to the merged file
-      def <<(file)
+      # file = A file to add to merged content
+      #
+      def append(file)
         return file.each { |f| self << f } if file.class == Array
         return if @files.include?(file)
 
         if !@dependency_resolver.nil?
-          #path = file =~ /^\/|([a-zA-Z]\:)/ ? file : File.join(FileUtils.pwd, file)
           path = File.expand_path(file)
-          resolve_imports(path)
+          resolve_dependencies(path)
         elsif !@files.include?(file)
           @files << file
         end
       end
 
-      # Save the merged file. If a filename is given the new file is written,
-      # otherwise the contents are returned as a string
-      def save(filename = nil)
-        if filename.nil?
+      alias_method :<<, :append
+
+      #
+      # Save the merged contents. If a filename is given the new file is
+      # written. If a stream is provided, contents are written to it. Without
+      # parameters the contents are returned as a string
+      #
+      def save(file_or_stream = nil)
+        unless file_or_stream
           str = ''
           @files.each { |file| str += merge(file) }
           return str
         end
 
-        file = File.new(filename, 'w')
-        @files.each { |f| file.puts(merge(f)) }
-        file.close
+        output = file_or_stream.is_a? String ? File.open(filename, 'w') : file_or_stream
+        @files.each { |f| output.puts(merge(f)) }
+        output.close if file_or_stream.is_a? String
+
         return true
       end
 
      private
-      def resolve_imports(file)
+      def resolve_dependencies(file)
         @dependency_resolver.resolve(file) do |f|
           if @files.include?(f)
             false
           else
             @files << f
-            resolve_imports(f)
+            resolve_dependencies(f)
             true
           end
         end
