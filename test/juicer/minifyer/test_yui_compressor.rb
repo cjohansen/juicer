@@ -15,16 +15,28 @@ class TestYuiCompressor < Test::Unit::TestCase
     File.delete(@file) if File.exists?(@file)
   end
 
-  def test_save
+  def test_save_overwrite
     FileUtils.cp(path('a.css'), path('a-1.css'))
     @yui_compressor.save(path('a-1.css'))
     assert_equal "@import 'b.css';", IO.read(path('a-1.css'))
+  end
 
-    filename = path('a-minified.css')
-    @yui_compressor.save(path('a.css'), filename)
-    assert_equal "@import 'b.css';", IO.read(filename)
+  def test_save_with_symbol_type
+    @yui_compressor.save(path('a.css'), path('a-1.css'), :css)
+    assert_equal "@import 'b.css';", IO.read(path('a-1.css'))
+    File.delete(path('a-1.css'))
+  end
 
-    File.delete(filename)
+  def test_save_with_string_type
+    @yui_compressor.save(path('a.css'), path('a-1.css'), "css")
+    assert_equal "@import 'b.css';", IO.read(path('a-1.css'))
+    File.delete(path('a-1.css'))
+  end
+
+  def test_save_other_file
+    @yui_compressor.save(path('a.css'), path('a-1.css'))
+    assert_equal "@import 'b.css';", IO.read(path('a-1.css'))
+    assert_not_equal IO.read(path('a-1.css')), IO.read(path('a.css'))
     File.delete(path('a-1.css'))
   end
 
@@ -32,6 +44,7 @@ class TestYuiCompressor < Test::Unit::TestCase
     Juicer::Minifyer::YuiCompressor.publicize_methods do
       cmd = /java -jar #{@path.sub('2.3.5', '\d\.\d\.\d')}\/yuicompressor-\d\.\d\.\d\.jar --type css/
       assert_match cmd, @yui_compressor.command('css')
+
 
       @yui_compressor.no_munge = true
       cmd = /#{cmd} --no-munge/
