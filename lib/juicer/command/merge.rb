@@ -17,6 +17,7 @@ module Juicer
         @force = false
         @minifyer = "yui_compressor"
         @opts = {}
+        @arguments = nil
         self.short_desc = "Combines and minifies CSS and JavaScript files"
         self.description = <<-EOF
 Each file provided as input will be checked for dependencies to other files,
@@ -36,10 +37,11 @@ the YUI Compressor the path should be the path to where the jar file is found.
         EOF
 
         self.options = CmdParse::OptionParserWrapper.new do |opt|
-          opt.on( '-o', '--output [OUTPUT]', 'Output filename' ) { |filename| @output = filename }
-          opt.on( '-p', '--path [PATH]', 'Path to compressor binary' ) { |path| @opts[:bin_path] = path }
-          opt.on( '-m', '--minifyer [MINIFYER]', 'Which minifer to use. Currently only supports YUI Compressor' ) { |name| @minifyer = name }
-          opt.on( '-f', '--force', 'Force overwrite of target file' ) { @force = true }
+          opt.on('-o', '--output [OUTPUT]', 'Output filename') { |filename| @output = filename }
+          opt.on('-p', '--path [PATH]', 'Path to compressor binary') { |path| @opts[:bin_path] = path }
+          opt.on('-m', '--minifyer [MINIFYER]', 'Which minifer to use. Currently only supports YUI Compressor') { |name| @minifyer = name }
+          opt.on('-f', '--force', 'Force overwrite of target file') { @force = true }
+          opt.on('-a', '--arguments [ARGUMENTS]', 'Arguments to minifyer, escape with quotes') { |arguments| @arguments = arguments }
         end
       end
 
@@ -50,9 +52,11 @@ the YUI Compressor the path should be the path to where the jar file is found.
           raise OptionParser::ParseError.new('Please provide atleast one input file')
         end
 
+        min = minifyer()
+
         # If no file name is provided, use name of first input with .min
         # prepended to suffix
-        @output = @output || args[0].sub(/\.([^\.]+)$/, '.min.\1')
+        @output = @output || args[0].sub(/\.([^\.]+)$/, '.' + (min ? 'min' : 'merge') + '.\1')
 
         if File.exists?(@output) && !@force
           puts "Unable to continue, #{@output} exists. Run again with --force to overwrite"
@@ -60,11 +64,12 @@ the YUI Compressor the path should be the path to where the jar file is found.
         end
 
         merger = @types[@output.split(/\.([^\.]*)$/)[1].to_sym].new(args)
-        merger.set_next(minifyer)
+        merger.set_next(min) if min
         merger.save(@output)
 
         # Print report
-        puts "Produced #{@output}"
+        puts "Produced #{@output} from"
+        merger.files.each { |file| puts "  #{file.sub(Dir.pwd + '/', '')}" }
       end
 
      private
@@ -72,11 +77,14 @@ the YUI Compressor the path should be the path to where the jar file is found.
       # Resolve and load minifyer
       #
       def minifyer
+        return nil if @minifyer.nil? || @minifyer == "" || @minifyer == "none"
+
         begin
           minifyer = @minifyer.split("_").collect { |p| p.capitalize! }.join
           compressor = Juicer::Minifyer.const_get(minifyer).new(@opts)
+          compressor.set_opts(@arguments) if @arguments
         rescue NameError
-          puts "No such minifyer '#{minifyer}', aborting"
+          puts "No such minifyer '#{@minifyer}', aborting"
           exit
         rescue Exception => e
           puts e.message
