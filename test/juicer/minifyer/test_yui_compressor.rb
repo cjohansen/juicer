@@ -40,6 +40,12 @@ class TestYuiCompressor < Test::Unit::TestCase
     File.delete(path('a-1.css'))
   end
 
+  def test_save_should_create_non_existant_path
+    @yui_compressor.save(path('a.css'), path('bleh/blah/a-1.css'))
+    assert File.exists? path('bleh/blah/a-1.css')
+    FileUtils.rm_rf(path('bleh'))
+  end
+
   def test_command
     Juicer::Minifyer::YuiCompressor.publicize_methods do
       cmd = /java -jar #{@path.sub('2.3.5', '\d\.\d\.\d')}\/yuicompressor-\d\.\d\.\d\.jar --type css/
