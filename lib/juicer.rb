@@ -4,6 +4,7 @@ module Juicer
   VERSION = '0.2.0'
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR
   PATH = ::File.dirname(LIBPATH) + ::File::SEPARATOR
+  HOME = ENV['JUICER_HOME'] || "~/.juicer"
   # :startdoc:
 
   # Returns the version string for the library.

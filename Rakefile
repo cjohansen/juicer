@@ -25,3 +25,4 @@ PROJ.readme_file = 'Readme.rdoc'
 PROJ.spec.opts << '--color'
 
 depend_on 'cmdparse'
+depend_on 'hpricot'
