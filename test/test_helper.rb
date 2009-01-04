@@ -8,6 +8,11 @@ $TEST_DIR = File.expand_path(File.dirname(__FILE__))
 # Directory containing test data
 $DATA_DIR = File.join($TEST_DIR, 'data')
 
+# Prefixes paths with the data dir
+def path(path)
+  File.join($DATA_DIR, path)
+end
+
 # Allow for testing of private methods inside a block:
 #
 #  MyClass.publicize_methods do

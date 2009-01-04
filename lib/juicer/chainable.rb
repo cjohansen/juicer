@@ -71,7 +71,7 @@ module Juicer
     # Get next command in chain
     #
     def next_in_chain
-      @_next_in_chain = nil unless @_next_in_chain
+      @_next_in_chain ||= nil
       @_next_in_chain
     end
 
@@ -88,7 +88,7 @@ module Juicer
       # Sets up a method for chaining
       #
       def chain_method(method)
-        original_method = "#{method}_orig".to_sym
+        original_method = "execute_#{method}".to_sym
         alias_method original_method, method
 
         self.class_eval <<-RUBY

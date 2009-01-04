@@ -1,8 +1,8 @@
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. test_helper])) unless defined?(Juicer)
 
-class TestCssImportResolver < Test::Unit::TestCase
+class TestCssDependencyResolver < Test::Unit::TestCase
   def setup
-    @resolver = Juicer::Merger::CssImportResolver.new
+    @resolver = Juicer::Merger::CssDependencyResolver.new
     @file_setup = Juicer::Test::FileSetup.new($DATA_DIR)
     @file_setup.create!
   end
@@ -12,17 +12,17 @@ class TestCssImportResolver < Test::Unit::TestCase
   end
 
   def test_resolve
-    b_file = File.expand_path(File.join($DATA_DIR, 'b.css'))
-    a_file = File.expand_path(File.join($DATA_DIR, 'a.css'))
+    b_file = File.expand_path(path('b.css'))
+    a_file = File.expand_path(path('a.css'))
 
-    files = @resolver.resolve(File.join($DATA_DIR, 'a.css')) do |file|
+    files = @resolver.resolve(path('a.css')) do |file|
       assert b_file == file || a_file == file
       b_file != file
     end
 
     assert_equal [a_file], files
 
-    files = @resolver.resolve(File.join($DATA_DIR, 'a.css')) do |file|
+    files = @resolver.resolve(path('a.css')) do |file|
       assert b_file == file || a_file == file
       true
     end

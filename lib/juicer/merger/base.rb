@@ -1,7 +1,11 @@
+require File.expand_path(File.join(File.dirname(__FILE__), "..", "chainable"))
+
 # Merge several files into one single output file
 module Juicer
   module Merger
     class Base
+      include Chainable
+      attr_accessor :dependency_resolver
       attr_reader :files
 
       def initialize(files = [], options = {})
@@ -31,22 +35,17 @@ module Juicer
 
       #
       # Save the merged contents. If a filename is given the new file is
-      # written. If a stream is provided, contents are written to it. Without
-      # parameters the contents are returned as a string
+      # written. If a stream is provided, contents are written to it.
       #
-      def save(file_or_stream = nil)
-        unless file_or_stream
-          str = ''
-          @files.each { |file| str += merge(file) }
-          return str
-        end
+      def save(file_or_stream)
+        output = file_or_stream
+        output = File.open(output, 'w') if output.is_a? String
 
-        output = file_or_stream.is_a? String ? File.open(filename, 'w') : file_or_stream
         @files.each { |f| output.puts(merge(f)) }
         output.close if file_or_stream.is_a? String
-
-        return true
       end
+
+      chain_method :save
 
      private
       def resolve_dependencies(file)
@@ -59,20 +58,14 @@ module Juicer
             true
           end
         end
+
+        @files
       end
 
       # Fetch contents of a single file. May be overridden in subclasses to provide
       # custom content filtering
       def merge(file)
         IO.read(file) + "\n"
-      end
-
-      def dependency_resolver=(resolver)
-        @dependency_resolver = resolver
-      end
-
-      def dependency_resolver()
-        @dependency_resolver
       end
     end
   end

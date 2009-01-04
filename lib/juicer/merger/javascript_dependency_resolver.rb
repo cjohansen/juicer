@@ -1,34 +1,20 @@
-#!/usr/bin/env ruby
+require File.expand_path(File.join(File.dirname(__FILE__), "dependency_resolver"))
 
 module Juicer
   module Merger
     # Resolves @depends and @depend statements in comments in JavaScript files.
-    # Currently only the first comment in a JavaScript file is parsed
-    class JavaScriptDependencyResolver
-      attr_reader :files
+    # Only the first comment in a JavaScript file is parsed
+    #
+    class JavaScriptDependencyResolver < DependencyResolver
+      @@depends_pattern = /\@depends?\s+([^\s\'\"\;]+)/
 
-      # Constructor
-      def initialize(options = {})
-        @files = []
-      end
+     private
+      def parse(line, imported_file = nil)
+        return $1 if line =~ @@depends_pattern
 
-      def resolve(file)
-        imported_file = nil
-        @files = []
-
-        IO.foreach(file) do |line|
-          if line =~ /\@depends?\s+([^\s\'\"\;]+)/
-            imported_file = File.expand_path(File.join(File.dirname(file), $1))
-            @files << imported_file if yield imported_file
-          else
-            # If we have already skimmed through some @depend/@depends or a
-            # closing comment we're done.
-            break unless imported_file.nil? || !(line =~ /\*\//)
-          end
-        end
-
-        @files << File.expand_path(file) if yield File.expand_path(file)
-        return @files
+        # If we have already skimmed through some @depend/@depends or a
+        # closing comment we're done.
+        throw :done unless imported_file.nil? || !(line =~ /\*\//)
       end
     end
   end

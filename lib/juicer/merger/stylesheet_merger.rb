@@ -1,19 +1,25 @@
 #!/usr/bin/env ruby
-['file_merger', 'css_import_resolver'].each do |lib|
+['base', 'css_dependency_resolver'].each do |lib|
   require File.expand_path(File.join(File.dirname(__FILE__), lib))
 end
+
+require 'pathname'
 
 module Juicer
   module Merger
     # Merge several files into one single output file. Resolves and adds in files
     # from @import statements
     #
-    class CssFileMerger < FileMerger
+    class StylesheetMerger < Base
 
       # Constructor
       #
+      # Options:
+      # * <tt>:web_root</tt> - Path to web root if there is any @import statements
+      #   using absolute URLs
+      #
       def initialize(files = [], options = {})
-        @dependency_resolver = CssImportResolver.new
+        @dependency_resolver = CssDependencyResolver.new(options)
         super(files, options)
       end
 
@@ -28,11 +34,9 @@ end
 # Run file from command line
 #
 if $0 == __FILE__
-  if $*.length < 2
-    puts 'Usage: css_file_merger.rb file[...] output'
-  else
-    fm = Juicer::Merger::CssFileMerger.new()
-    fm << $*[0..-2]
-    fm.save($*[-1])
-  end
+  return puts("Usage: stylesheet_merger.rb file[...] output") if $*.length < 2
+
+  fm = Juicer::Merger::StylesheetMerger.new()
+  fm << $*[0..-2]
+  fm.save($*[-1])
 end

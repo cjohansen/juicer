@@ -24,7 +24,7 @@ module Juicer
     # +Juicer::Minify::YuiCompressor.locate_jar+
     #
     # Author::    Christian Johansen (christian@cjohansen.no)
-    # Copyright:: Copyright (c) 2008 Christian Johansen
+    # Copyright:: Copyright (c) 2008-2009 Christian Johansen
     # License::   MIT
     #
     # = Usage example =
@@ -43,34 +43,31 @@ module Juicer
       # YUI jar file. Please refer to the class documentation for how to set
       # this.
       #
-      # file = The file to compress (the file itself is never altered)
-      # output = An optional file to save the results in. If this is not
-      #          provided, the compressed contents will be returned as a string.
-      #          If you pass in the same file name twice, your original will
-      #          effectively be overwritten
+      # file = The file to compress
+      # output = A file or stream to save the results to. If not provided the
+      #          original file will be overwritten
       # type = Either :js or :css. If this parameter is not provided, the type
       #        is guessed from the suffix on the input file name
-      def compress(file, output = nil, type = nil)
+      def save(file, output = nil, type = nil)
         type = type.nil? ? file.split('.')[-1].to_sym : type
-        @command = command(type) if @command.nil? || @opt_set || type != @type
+        cmd = @command = @command.nil? || @opt_set || type != @type ? command(type) : @command
 
-        cmd = @command
-        use_tmp = output.nil?
+        output ||= file
+        use_tmp = !output.is_a?(String)
         output = File.join(Dir::tmpdir, File.basename(file) + '.min.tmp.' + type.to_s) if use_tmp
+        FileUtils.mkdir_p(File.dirname(output))
 
         cmd += ' -o "' + output + '" "' + file + '"'
         compressor = IO.popen(cmd, 'r')
         result = compressor.gets
 
         if use_tmp                            # If no output file is provided, YUI compressor will
-          contents = IO.read(output)          # compress to a temp file. This file should be cleared
-          File.delete(output)                 # out after we fetch its contents. The contents are
-          return contents                     # returned
+          output.puts IO.read(output)         # compress to a temp file. This file should be cleared
+          File.delete(output)                 # out after we fetch its contents.
         end
-
-        # Return true when output file was specified and the operation was successful
-        return true
       end
+
+      chain_method :save
 
      private
       # Constructs the command to use
@@ -102,7 +99,7 @@ module Juicer
       # :bin_path (defaults to Dir.cwd)
       # :java     (Java command, defaults to 'java')
       def default_options
-        { :charset => nil, :line_break => nil, :nomunge => nil,
+        { :charset => nil, :line_break => nil, :no_munge => nil,
           :preserve_semi => nil, :preserve_strings => nil,
           :bin_path => nil, :java => 'java' }
       end

@@ -25,6 +25,9 @@ class Host
   chain_method :abortable
 end
 
+class Dummy
+end
+
 class TestChainable < Test::Unit::TestCase
   def test_next_initial_state
     host = Host.new

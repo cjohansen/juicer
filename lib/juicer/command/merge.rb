@@ -11,8 +11,8 @@ module Juicer
       #
       def initialize
         super('merge', false, true)
-        @types = { :js => Juicer::Merger::JavaScriptFileMerger,
-                   :css => Juicer::Merger::CssFileMerger }
+        @types = { :js => Juicer::Merger::JavaScriptMerger,
+                   :css => Juicer::Merger::StylesheetMerger }
         @output = nil
         @force = false
         @minifyer = "yui_compressor"
@@ -53,24 +53,28 @@ the YUI Compressor the path should be the path to where the jar file is found.
         # If no file name is provided, use name of first input with .min
         # prepended to suffix
         @output = @output || args[0].sub(/\.([^\.]+)$/, '.min.\1')
-        type = $1
 
         if File.exists?(@output) && !@force
           puts "Unable to continue, #{@output} exists. Run again with --force to overwrite"
           exit
         end
 
-        # Merge files
-        mergefile = File.join(Dir::tmpdir, Time.new.to_i.to_s + File.basename(@output))
-        merger = @types[type.to_sym].new
-        merger << args
-        merger.save(mergefile)
+        merger = @types[@output.split(/\.([^\.]*)$/)[1].to_sym].new(args)
+        merger.set_next(minifyer)
+        merger.save(@output)
 
-        # Minify
+        # Print report
+        puts "Produced #{@output}"
+      end
+
+     private
+      #
+      # Resolve and load minifyer
+      #
+      def minifyer
         begin
           minifyer = @minifyer.split("_").collect { |p| p.capitalize! }.join
           compressor = Juicer::Minifyer.const_get(minifyer).new(@opts)
-          compressor.compress(mergefile, @output)
         rescue NameError
           puts "No such minifyer '#{minifyer}', aborting"
           exit
@@ -79,11 +83,7 @@ the YUI Compressor the path should be the path to where the jar file is found.
           exit
         end
 
-        # Clean up
-        File.delete(mergefile)
-
-        # Print report
-        puts "Produced #{@output}"
+        compressor
       end
     end
   end

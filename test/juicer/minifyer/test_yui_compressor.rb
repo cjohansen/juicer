@@ -8,37 +8,41 @@ class TestYuiCompressor < Test::Unit::TestCase
     @yui_compressor = Juicer::Minifyer::YuiCompressor.new({ :bin_path => @path })
     @file_setup = Juicer::Test::FileSetup.new($DATA_DIR)
     @file_setup.create!
-    @file = File.join($DATA_DIR, 'out.min.css')
+    @file = path('out.min.css')
   end
 
   def teardown
     File.delete(@file) if File.exists?(@file)
   end
 
-  def test_compress
-    contents = @yui_compressor.compress(File.join($DATA_DIR, 'a.css'))
-    assert_equal "@import 'b.css';", contents
+  def test_save
+    FileUtils.cp(path('a.css'), path('a-1.css'))
+    @yui_compressor.save(path('a-1.css'))
+    assert_equal "@import 'b.css';", IO.read(path('a-1.css'))
 
-    filename = File.join($DATA_DIR, 'a-minified.css')
-    assert @yui_compressor.compress(File.join($DATA_DIR, 'a.css'), filename)
+    filename = path('a-minified.css')
+    @yui_compressor.save(path('a.css'), filename)
     assert_equal "@import 'b.css';", IO.read(filename)
+
     File.delete(filename)
+    File.delete(path('a-1.css'))
   end
 
   def test_command
     Juicer::Minifyer::YuiCompressor.publicize_methods do
-      cmd = 'java -jar ' + @path + '/yuicompressor-2.3.5.jar --type css'
-      assert_equal cmd, @yui_compressor.command('css')
+      cmd = /java -jar #{@path.sub('2.3.5', '\d\.\d\.\d')}\/yuicompressor-\d\.\d\.\d\.jar --type css/
+      assert_match cmd, @yui_compressor.command('css')
 
-      @yui_compressor.nomunge = true
-      cmd += ' --nomunge'
-      assert_equal cmd, @yui_compressor.command('css')
+      @yui_compressor.no_munge = true
+      cmd = /#{cmd} --no-munge/
+      assert_match cmd, @yui_compressor.command('css')
     end
   end
 
   def test_locate_jar
     Juicer::Minifyer::YuiCompressor.publicize_methods do
-      # No env, no option, and no fil in cwd
+      # No env, no option, and no file in cwd
+      yuic_home = ENV['YUIC_HOME']
       ENV.delete('YUIC_HOME')
       @yui_compressor = Juicer::Minifyer::YuiCompressor.new
       assert_nil @yui_compressor.locate_jar
@@ -69,6 +73,7 @@ class TestYuiCompressor < Test::Unit::TestCase
       FileUtils.rm('yuicompressor-2.3.5.jar')
       FileUtils.rm('yuicompressor.jar')
       FileUtils.rm_rf('another')
+      ENV['YUIC_HOME'] = yuic_home
     end
   end
 end

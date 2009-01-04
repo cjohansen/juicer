@@ -1,4 +1,10 @@
+== 0.2.0 / 2009-xx-xx
+
+* Refactored the minifyers execute method from compress to save
+* Refactored Juicer::Merger::FileMerger -> Juicer::Merger::Base
+* Refactored the mergers and minifyers to be chainable commands.
+* Added Chainable module
+
 == 0.1.0 / 2008-12-17
 
-* 1 major enhancement
-  * Dug up old project and set it up with Mr Bones
+* Dug up old project and set it up with Mr Bones
