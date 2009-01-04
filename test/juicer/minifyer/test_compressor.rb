@@ -19,6 +19,30 @@ class TestCompressor < Test::Unit::TestCase
     assert_equal 'some_str', @compressor.get_opt(:test_opt)
   end
 
+  def test_get_option_string
+    comp = Juicer::Minifyer::Compressor.new({ :a => '', :bee => '', :cee => nil, :dee => true })
+    assert "-a --bee --dee".split.sort == comp.options.split.sort
+
+    comp.bee = "hey"
+    comp.cee = 3
+    comp.dee = :val
+    expected = "-a --bee hey --cee 3 --dee val"
+    assert expected.split.sort == comp.options.split.sort, "#{expected} expected, got\n#{comp.options}"
+  end
+
+  def test_get_option_string_with_excludes
+    comp = Juicer::Minifyer::Compressor.new({ :a => '', :bee => '', :cee => true, :dee => true })
+    assert "--bee --cee --dee".split.sort == comp.options(:a).split.sort, "Got #{comp.options(:a)}"
+    assert "--cee --dee".split.sort == comp.options(:bee, :a).split.sort, "Got #{comp.options(:bee, :a)}"
+    assert "-a --dee".split.sort == comp.options([:cee, :bee]).split.sort, "Got #{comp.options([:cee, :bee])}"
+  end
+
+  def test_set_opts
+    comp = Juicer::Minifyer::Compressor.new({ :a => '', :bee => '', :cee => true, :dee => true })
+    comp.set_opts "-a 3 --dee test --bee=test2"
+    assert "-a 3 --bee test2 --cee --dee test".split.sort == comp.options.split.sort, "Got #{comp.options}"
+  end
+
   def test_default_options
     Juicer::Minifyer::Compressor.publicize_methods do
       obj = {}

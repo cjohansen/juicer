@@ -76,15 +76,7 @@ module Juicer
         @type = type
         @jar = locate_jar unless @jar
         raise 'Unable to locate YUI Compressor Jar' if @jar.nil?
-        cmd = "#{@options[:java]} -jar #{@jar} --type #{@type}"
-
-        @options.each do |k, v|
-          v = '' if v == true
-          v = " #{v}" unless v == '' || v.nil?
-          cmd += " --#{k.to_s.gsub('_', '-')}#{v}" unless v.nil? || [:bin_path, :java].include?(k)
-        end
-
-        return cmd
+        "#{@options[:java]} -jar #{@jar} --type #{@type} #{options(:bin_path, :java)}"
       end
 
       # Returns a map of options accepted by YUI Compressor, currently:

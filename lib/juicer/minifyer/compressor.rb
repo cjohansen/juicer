@@ -44,17 +44,35 @@ module Juicer
         @options[opt] || nil
       end
 
+      # Return options as a cli arguments string. Optionally accepts a list of
+      # options to exclude from the generated string
+      #
+      def options(*excludes)
+        excludes = excludes.flatten.collect { |exc| exc.to_sym }
+        @options.inject("") do |str, opt|
+          if opt[1].nil? || excludes.include?(opt[0].to_sym)
+            str
+          else
+            val = opt[1] == true ? '' : opt[1]
+            option = opt[0].to_s
+            option = (option.length == 1 ? "-" : "--") + option.gsub('_', '-')
+            "#{str} #{option} #{val}".strip
+          end
+        end
+      end
+
       # Set an option. Important: you can only set options that are predefined by the
       # implementing class
       # opt = The option to set
       # value = The value of the option
       #
       def set_opt(opt, value)
+        opt = opt.to_sym
         if @options.key?(opt)
           @options[opt] = value
           @opt_set = true
         else
-          msg = 'Illegal option, specify one of: ' + @options.keys.join(', ')
+          msg = "Illegal option '#{opt}', specify one of: #{@options.keys.join(', ')}"
           raise ArgumentError.new(msg)
         end
       end
@@ -65,7 +83,7 @@ module Juicer
       def set_opts(options)
         options = options.split " "
         option = nil
-        regex = /^--([^=]*)(=(.*))?/
+        regex = /^--?([^=]*)(=(.*))?/
 
         while word = options.shift
           if word =~ regex
