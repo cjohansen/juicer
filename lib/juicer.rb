@@ -4,13 +4,23 @@ module Juicer
   VERSION = '0.2.0'
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR
   PATH = ::File.dirname(LIBPATH) + ::File::SEPARATOR
-  HOME = ENV['JUICER_HOME'] || "~/.juicer"
   # :startdoc:
 
   # Returns the version string for the library.
   #
   def self.version
     VERSION
+  end
+
+  # Returns the installation directory for Juicer
+  #
+  def self.home
+    return ENV['JUICER_HOME'] if ENV['JUICER_HOME']
+    return File.join(ENV['HOME'], ".juicer") if ENV['HOME']
+    return File.join(ENV['APPDATA'], "juicer") if ENV['APPDATA']
+    return File.join(ENV['HOMEDRIVE'], ENV['HOMEPATH'], "juicer") if ENV['HOMEDRIVE'] && ENV['HOMEPATH']
+    return File.join(ENV['USERPROFILE'], "juicer") if ENV['USERPROFILE']
+    return File.join(ENV['Personal'], "juicer") if ENV['Personal']
   end
 
   # Returns the library path for the module. If any arguments are given,
