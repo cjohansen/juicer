@@ -12,66 +12,67 @@ module Juicer
     # housekeeping.
     #
     class Base
-      @@path = nil
+      attr_reader :path, :install_dir
 
       #
-      # Returns the path relative to installation path this installer will
-      # install to
+      # Create new installer
       #
-      def self.path
-        return @@path if @@path
-        @@path = "lib/" + self.to_s.split("::").pop.sub(/Installer$/, "").underscore
+      def initialize(install_dir = Juicer.home)
+        @install_dir = install_dir
+        @path = nil
+        @name = nil
       end
 
       #
       # Returns the latest available version number. Must be implemented in
       # subclasses. Raises an exception when called directly.
       #
-      def self.latest
+      def latest
         raise NotImplementedError.new "Implement in subclasses"
+      end
+
+      # Returns the path relative to installation path this installer will
+      # install to
+      def path
+        return @path if @path
+        @path = "lib/" + self.class.to_s.split("::").pop.sub(/Installer$/, "").underscore
       end
 
       #
       # Returns name of component. Default implementation returns class name
       # with "Installer" removed
       #
-      def self.name
-        self.path.split("_").inject("") { |str, word| (str + " #{word.capitalize}").strip }
+      def name
+        return @name if @name
+        @name = File.basename(path).split("_").inject("") { |str, word| (str + " #{word.capitalize}").strip }
       end
 
       #
-      # Checks if the component is currently installed in the specific
-      # location. If no location is provided the environment variable
-      # $JUICER_HOME or Juicers default home directory is used.
+      # Checks if the component is currently installed.
       #
       # If no version is provided the most recent version is assumed.
       #
-      def self.installed?(install_dir = nil, version = nil)
-        install_dir ||= Juicer.home
-        File.exists?(File.join(install_dir, self.path, "#{version || self.latest}"))
+      def installed?(version = nil)
+        File.exists?(File.join(@install_dir, path, "#{version || latest}"))
       end
 
       #
       # Install the component. Creates basic directory structure.
       #
-      def self.install(install_dir = nil, version = nil)
-        install_dir ||= Juicer.home
-        version ||= self.latest
-
-        puts "Installing #{name} #{version} in #{File.join(install_dir, self.path)}"
+      def install(version = nil)
+        version ||= latest
+        log "Installing #{name} #{version} in #{File.join(@install_dir, path)}"
 
         # Create directories
-        FileUtils.mkdir_p(File.join(install_dir, self.path, "bin"))
-        FileUtils.mkdir_p(File.join(install_dir, self.path, version))
+        FileUtils.mkdir_p(File.join(@install_dir, path, "bin"))
+        FileUtils.mkdir_p(File.join(@install_dir, path, version))
 
         # Return resolved version for subclass to use
         version
       end
 
       #
-      # Uninstalls the given version of the component. If no location is
-      # provided the environment variable $JUICER_HOME or Juicers default home
-      # directory is used.
+      # Uninstalls the given version of the component.
       #
       # If no version is provided the most recent version is assumed.
       #
@@ -87,18 +88,17 @@ module Juicer
       #   end
       #
       #
-      def self.uninstall(install_dir = nil, version = nil)
-        install_dir ||= Juicer.home
+      def uninstall(version = nil)
         version ||= self.latest
-        install_dir = File.join(install_dir, self.path, version)
+        install_dir = File.join(@install_dir, path, version)
         raise "#{name} #{version} is not installed" if !File.exists?(install_dir)
 
-        File.delete(install_dir)
+        FileUtils.rm_rf(install_dir)
 
-        yield(File.join(install_dir, self.path), version)
+        yield(File.join(@install_dir, path), version) if block_given?
 
-        files = Dir.glob(File.join(install_dir, self.path, "**", "*")).find_all { |f| File.file?(f) }
-        FileUtils.rm_rf(File.join(install_dir, self.path)) if files.length == 0
+        files = Dir.glob(File.join(@install_dir, path, "**", "*")).find_all { |f| File.file?(f) }
+        FileUtils.rm_rf(File.join(@install_dir, path)) if files.length == 0
       end
 
       #
@@ -107,8 +107,35 @@ module Juicer
       # to download the same file again, the disk cache will be used unless the
       # force argument is true (default false)
       #
-      def self.download(file, force = false)
+      def download(url, force = false)
+        filename = File.join(@install_dir, "download", path.sub("lib/", ""), File.basename(url))
+        return filename if File.exists?(filename) && !force
+        FileUtils.mkdir_p(File.dirname(filename))
+        File.delete(filename) if File.exists?(filename) && force
 
+        log "Downloading #{url}"
+        File.open(filename, "wb") do |file|
+          webpage = open(url)
+          file.write(webpage.read)
+          webpage.close
+        end
+#
+#
+#        webpage = open(url)
+#        download = open(filename, "wb")
+#        download.write(webpage.read)
+#        download.close
+#        webpage.close
+
+        filename
+      end
+
+      #
+      # Display a message to the user if the global variable $verbose is true.
+      # TODO: Remove
+      #
+      def log(str)
+        #puts str if defined? $verbose && $verbose
       end
     end
   end
