@@ -2,7 +2,7 @@ require 'rubygems'
 require 'hpricot'
 require 'open-uri'
 require 'fileutils'
-require File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. lib juicer])) unless defined?(Juicer)
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. juicer])) unless defined?(Juicer)
 
 module Juicer
   module Install
@@ -12,7 +12,7 @@ module Juicer
     # housekeeping.
     #
     class Base
-      attr_reader :path, :install_dir
+      attr_reader :install_dir
 
       #
       # Create new installer
@@ -119,13 +119,6 @@ module Juicer
           file.write(webpage.read)
           webpage.close
         end
-#
-#
-#        webpage = open(url)
-#        download = open(filename, "wb")
-#        download.write(webpage.read)
-#        download.close
-#        webpage.close
 
         filename
       end

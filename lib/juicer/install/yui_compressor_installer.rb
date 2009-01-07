@@ -1,4 +1,5 @@
-require File.expand_path(File.join(File.dirname(__FILE__), "base"))
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. juicer])) unless defined?(Juicer)
+require "zip/zip"
 
 module Juicer
   module Install
@@ -8,8 +9,11 @@ module Juicer
     # storesthe jar file on disk along with the license.
     #
     class YuiCompressorInstaller < Base
-      WEBSITE = "http://www.julienlecomte.net/yuicompressor/"
-      @@latest = nil
+      def initialize(install_dir = Juicer.home)
+        super(install_dir)
+        @latest = nil
+        @website = "http://www.julienlecomte.net/yuicompressor/"
+      end
 
       #
       # Install the Yui Compressor. Downloads the distribution and keeps the jar
@@ -20,17 +24,17 @@ module Juicer
       # Path defaults to environment variable $JUICER_HOME or default Juicer
       # home
       #
-      def self.install(install_dir = nil, version = nil)
-        version = super(install_dir, version)
-        filename = "yuicompressor-#{version}.zip"
+      def install(version = nil)
+        version = super(version)
+        base = "yuicompressor-#{version}"
+        filename = download(File.join(@website, "#{base}.zip"))
+        target = File.join(@install_dir, path)
 
-        # Download file
-        puts "Downloading #{WEBSITE + filename}"
-        webpage = open(WEBSITE + filename)
-        download = open(File.join(install_dir, filename), "wb")
-        download.write(webpage.read)
-        download.close
-        webpage.close
+        Zip::ZipFile.open(filename) do |file|
+          file.extract("#{base}/doc/README", File.join(target, version, "README"))
+          file.extract("#{base}/doc/CHANGELOG", File.join(target, version, "CHANGELOG"))
+          file.extract("#{base}/build/#{base}.jar", File.join(target, "bin", "#{base}.jar"))
+        end
       end
 
       #
@@ -43,8 +47,8 @@ module Juicer
       # If there are no more files left in INSTALLATION_PATH/yui_compressor, the
       # whole directory is removed.
       #
-      def self.uninstall(install_dir = nil, version = nil)
-        super(install_dir, version) do |dir, version|
+      def uninstall(version = nil)
+        super(version) do |dir, version|
           File.delete(File.join(dir, "bin/yuicompressor-#{version}.jar"))
         end
       end
@@ -52,10 +56,10 @@ module Juicer
       #
       # Check which version is the most recent
       #
-      def self.latest
-        return @@latest if @@latest
-        webpage = Hpricot(open(WEBSITE))
-        @@latest = (webpage / "#downloadbutton a")[0].get_attribute("href").match(/(\d\.\d\.\d)/)[1]
+      def latest
+        return @latest if @latest
+        webpage = Hpricot(open(@website))
+        @latest = (webpage / "#downloadbutton a")[0].get_attribute("href").match(/(\d\.\d\.\d)/)[1]
       end
     end
   end
