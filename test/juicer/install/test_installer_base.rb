@@ -58,6 +58,11 @@ class TestInstallerBase < Test::Unit::TestCase
     assert_equal "lib/some_magic", installer.path
   end
 
+  def test_bin_path
+    installer = Juicer::SomeMagicInstaller.new(@juicer_home)
+    assert_equal "lib/some_magic/bin", installer.bin_path
+  end
+
   def test_name
     installer = Juicer::SomeMagicInstaller.new(@juicer_home)
     assert_equal "Some Magic", installer.name
@@ -100,5 +105,25 @@ class TestInstallerBase < Test::Unit::TestCase
 
     installer.download("http://feeds.feedburner.com/cjno", true)
     assert_not_equal mtime, File.stat(filename)
+  end
+
+  def test_single_dependency_class
+    installer = Juicer::SomeMagicInstaller.new(@juicer_home)
+    # TODO
+  end
+
+  def test_single_dependency_symbol
+    installer = Juicer::SomeMagicInstaller.new(@juicer_home)
+    # TODO
+  end
+
+  def test_single_dependency_string
+    installer = Juicer::SomeMagicInstaller.new(@juicer_home)
+    # TODO
+  end
+
+  def test_multiple_dependencies
+    installer = Juicer::SomeMagicInstaller.new(@juicer_home)
+    # TODO
   end
 end

@@ -20,7 +20,9 @@ module Juicer
       def initialize(install_dir = Juicer.home)
         @install_dir = install_dir
         @path = nil
+        @bin_path = nil
         @name = nil
+        @dependencies = {}
       end
 
       #
@@ -36,6 +38,13 @@ module Juicer
       def path
         return @path if @path
         @path = "lib/" + self.class.to_s.split("::").pop.sub(/Installer$/, "").underscore
+      end
+
+      # Returns the path to search for binaries from
+      #
+      def bin_path
+        return @bin_path if @bin_path
+        @bin_path = File.join(path, "bin")
       end
 
       #
@@ -62,6 +71,11 @@ module Juicer
       def install(version = nil)
         version ||= latest
         log "Installing #{name} #{version} in #{File.join(@install_dir, path)}"
+
+        if @dependencies.length > 0
+          log "Installing dependencies"
+          @dependencies.each { |name, dep| dep[0].new.install(dep[1]) }
+        end
 
         # Create directories
         FileUtils.mkdir_p(File.join(@install_dir, path, "bin"))
@@ -129,6 +143,20 @@ module Juicer
       #
       def log(str)
         #puts str if defined? $verbose && $verbose
+      end
+
+      #
+      # Add a dependency. Dependency should be a Juicer::Install::Base installer
+      # class (not instance) OR a symbol/string like :rhino/"rhino" (which will
+      # be expanded unto Juicer::Install::RhinoInstaller). Version is optional
+      # and defaults to latest and greatest.
+      #
+      def dependency(dependency, version = nil)
+        if dependency.is_a?(Symbol) || dependency.is_a?(String)
+          dependency = "#{dependency}_installer".classify(Juicer::Install)
+        end
+
+        @dependencies[dependency.to_s] = [dependency, version]
       end
     end
   end
