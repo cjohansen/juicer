@@ -26,3 +26,4 @@ PROJ.spec.opts << '--color'
 
 depend_on 'cmdparse'
 depend_on 'hpricot'
+depend_on 'rubyzip'
