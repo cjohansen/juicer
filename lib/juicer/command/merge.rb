@@ -80,8 +80,8 @@ the YUI Compressor the path should be the path to where the jar file is found.
         return nil if @minifyer.nil? || @minifyer == "" || @minifyer == "none"
 
         begin
-          minifyer = @minifyer.split("_").collect { |p| p.capitalize! }.join
-          compressor = Juicer::Minifyer.const_get(minifyer).new(@opts)
+          @opts[:bin_path] = File.join(Juicer.home, @minifyer, "bin") unless @opts[:bin_path]
+          compressor = @minifyer.classify(Juicer::Minifyer).new(@opts)
           compressor.set_opts(@arguments) if @arguments
         rescue NameError
           puts "No such minifyer '#{@minifyer}', aborting"
