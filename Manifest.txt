@@ -1,4 +1,3 @@
-.gitignore
 History.txt
 Manifest.txt
 Rakefile
@@ -9,6 +8,11 @@ lib/juicer.rb
 lib/juicer/chainable.rb
 lib/juicer/cli.rb
 lib/juicer/command/merge.rb
+lib/juicer/core.rb
+lib/juicer/install/base.rb
+lib/juicer/install/jslint_installer.rb
+lib/juicer/install/rhino_installer.rb
+lib/juicer/install/yui_compressor_installer.rb
 lib/juicer/merger/base.rb
 lib/juicer/merger/css_dependency_resolver.rb
 lib/juicer/merger/dependency_resolver.rb
@@ -17,17 +21,8 @@ lib/juicer/merger/javascript_merger.rb
 lib/juicer/merger/stylesheet_merger.rb
 lib/juicer/minifyer/compressor.rb
 lib/juicer/minifyer/yui_compressor.rb
-test/data/Changelog.txt
-test/data/a.css
-test/data/a.js
-test/data/b.css
-test/data/b.js
-test/data/mappe/a.css
-test/data/mappe/c.css
-test/data/mappe/enda_en_mappe/a.css
-test/data/version-test.txt
-test/data/version.txt
-test/data/version2.txt
+test/juicer/install/test_installer_base.rb
+test/juicer/install/test_yui_compressor_installer.rb
 test/juicer/merger/test_base.rb
 test/juicer/merger/test_css_dependency_resolver.rb
 test/juicer/merger/test_javascript_dependency_resolver.rb
@@ -36,5 +31,6 @@ test/juicer/merger/test_stylesheet_merger.rb
 test/juicer/minifyer/test_compressor.rb
 test/juicer/minifyer/test_yui_compressor.rb
 test/juicer/test_chainable.rb
+test/juicer/test_core.rb
 test/test_helper.rb
 test/test_juicer.rb
