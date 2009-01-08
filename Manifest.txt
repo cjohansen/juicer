@@ -3,7 +3,6 @@ Manifest.txt
 Rakefile
 Readme.rdoc
 bin/juicer
-juicer.gemspec
 lib/juicer.rb
 lib/juicer/chainable.rb
 lib/juicer/cli.rb
