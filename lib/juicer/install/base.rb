@@ -62,7 +62,9 @@ module Juicer
       # If no version is provided the most recent version is assumed.
       #
       def installed?(version = nil)
-        File.exists?(File.join(@install_dir, path, "#{version || latest}"))
+        installed = File.exists?(File.join(@install_dir, path, "#{version || latest}"))
+        deps = @dependencies.length == 0 || dependencies.all { |n, d| d[0].new.installed?(d[1]) }
+        installed && deps
       end
 
       #
@@ -74,7 +76,7 @@ module Juicer
 
         if @dependencies.length > 0
           log "Installing dependencies"
-          @dependencies.each { |name, dep| dep[0].new.install(dep[1]) }
+          dependencies { |dependency, ver| dependency.install(ver) }
         end
 
         # Create directories
@@ -143,6 +145,7 @@ module Juicer
       #
       def log(str)
         #puts str if defined? $verbose && $verbose
+        #puts str
       end
 
       #
@@ -152,12 +155,34 @@ module Juicer
       # and defaults to latest and greatest.
       #
       def dependency(dependency, version = nil)
-        if dependency.is_a?(Symbol) || dependency.is_a?(String)
-          dependency = "#{dependency}_installer".classify(Juicer::Install)
-        end
+        dependency = Juicer::Install.get(dependency) if [String, Symbol].include?(dependency.class)
 
-        @dependencies[dependency.to_s] = [dependency, version]
+        @dependencies[dependency.to_s + (version || "")] = [dependency, version]
       end
+
+      #
+      # Yields depencies one at a time: class and version and returns an array
+      # of arrays: [dependency, version] where dependency is an instance and
+      # version a string.
+      #
+      def dependencies(&block)
+        @dependencies.collect do |name, dependency|
+          version = dependency[1]
+          dependency = dependency[0].new(@install_dir)
+          block.call(dependency, version) if block
+          [dependency, version]
+        end
+      end
+    end
+
+    #
+    # Returns the installer. Accepts installer classes (which are returned
+    # directly), strings or symbols. Strings and symbols may be on the form
+    # :my_module which is expanded to Juicer::Install::MyModuleInstaller
+    #
+    def self.get(nameOrClass)
+      return nameOrClass if nameOrClass.is_a? Class
+      (nameOrClass.to_s + "_installer").classify(Juicer::Install)
     end
   end
 end
