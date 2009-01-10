@@ -1,12 +1,15 @@
-require 'rubygems'
-require 'cmdparse'
-require 'tempfile'
+require File.join(File.dirname(__FILE__), "util")
+require "rubygems"
+require "cmdparse"
+require "pathname"
 
 module Juicer
   module Command
     # The compress command combines and minifies CSS and JavaScript files
     #
     class Merge < CmdParse::Command
+      include Juicer::Command::Util
+
       # Initializes compress command
       #
       def initialize
@@ -52,6 +55,7 @@ the YUI Compressor the path should be the path to where the jar file is found.
           raise OptionParser::ParseError.new('Please provide atleast one input file')
         end
 
+        args = files(args)
         min = minifyer()
 
         # If no file name is provided, use name of first input with .min
@@ -68,8 +72,8 @@ the YUI Compressor the path should be the path to where the jar file is found.
         merger.save(@output)
 
         # Print report
-        puts "Produced #{@output} from"
-        merger.files.each { |file| puts "  #{file.sub(Dir.pwd + '/', '')}" }
+        puts "Produced #{relative @output} from"
+        merger.files.each { |file| puts "  #{relative file}" }
       end
 
      private
@@ -77,7 +81,7 @@ the YUI Compressor the path should be the path to where the jar file is found.
       # Resolve and load minifyer
       #
       def minifyer
-        return nil if @minifyer.nil? || @minifyer == "" || @minifyer == "none"
+        return nil if @minifyer.nil? || @minifyer == "" || @minifyer.downcase == "none"
 
         begin
           @opts[:bin_path] = File.join(Juicer.home, @minifyer, "bin") unless @opts[:bin_path]
