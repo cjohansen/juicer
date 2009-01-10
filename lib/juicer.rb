@@ -54,3 +54,6 @@ module Juicer
 end
 
 Juicer.require_all_libs_relative_to(__FILE__)
+
+class FileNotFoundError < Exception
+end
