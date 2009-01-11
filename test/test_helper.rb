@@ -70,6 +70,10 @@ module Juicer
         mkfile(@dir, 'a.js', "/**\n * @depend b.js\n */\n\n/* Dette er a.js */")
         mkfile(@dir, 'b.css', "/* Dette er b.css */")
         mkfile(@dir, 'b.js', "/**\n * @depends a.js\n */\n\n/* Dette er b.css */")
+        mkfile(@dir, 'a1.css', "@import 'b1.css';\n@import 'c1.css';\nbody {\n    width: 800px;\n}\n")
+        mkfile(@dir, 'b1.css', "@import 'd1.css';\n\nhtml {\n    background: red;\n}\n")
+        mkfile(@dir, 'c1.css', "h1 {\n    font-size: 12px;\n}\n")
+        mkfile(@dir, 'd1.css', "h2 {\n    font-size: 10px;\n}\n")
         mkfile(@dir, 'Changelog.txt', "2008.02.09 | stb-base 1.29\n\nFEATURE: Core  | Bla bla bla bla bla\nFEATURE: UI: | Bla bla bla bla bla\n\n\n2008.02.09 | stb-base 1.29\n\nFEATURE: Core  | Bla bla bla bla bla\nFEATURE: UI: | Bla bla bla bla bla\n")
 
         mkfile(@dir, 'version2.txt', "branch: 1.0\nversion: 5\nbuild: 879\nrevision: 79867\ndate: 2008-01-17 16:05:33\n")
