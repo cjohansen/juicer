@@ -1,9 +1,13 @@
+require "logger"
+
 module Juicer
 
   # :stopdoc:
   VERSION = '0.2.0'
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR
   PATH = ::File.dirname(LIBPATH) + ::File::SEPARATOR
+  LOGGER = Logger.new(STDOUT)
+  @@home = nil
   # :startdoc:
 
   # Returns the version string for the library.
@@ -15,12 +19,19 @@ module Juicer
   # Returns the installation directory for Juicer
   #
   def self.home
+    return @@home if @@home
     return ENV['JUICER_HOME'] if ENV['JUICER_HOME']
     return File.join(ENV['HOME'], ".juicer") if ENV['HOME']
     return File.join(ENV['APPDATA'], "juicer") if ENV['APPDATA']
     return File.join(ENV['HOMEDRIVE'], ENV['HOMEPATH'], "juicer") if ENV['HOMEDRIVE'] && ENV['HOMEPATH']
     return File.join(ENV['USERPROFILE'], "juicer") if ENV['USERPROFILE']
     return File.join(ENV['Personal'], "juicer") if ENV['Personal']
+  end
+
+  # Set home directory
+  #
+  def self.home=(home)
+    @@home = home
   end
 
   # Returns the library path for the module. If any arguments are given,
