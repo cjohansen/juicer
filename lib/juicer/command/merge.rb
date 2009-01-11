@@ -12,15 +12,18 @@ module Juicer
 
       # Initializes compress command
       #
-      def initialize
+      def initialize(log = nil)
         super('merge', false, true)
         @types = { :js => Juicer::Merger::JavaScriptMerger,
                    :css => Juicer::Merger::StylesheetMerger }
         @output = nil
         @force = false
+        @type = nil
         @minifyer = "yui_compressor"
         @opts = {}
         @arguments = nil
+        @log = log || Logger.new(STDOUT)
+
         self.short_desc = "Combines and minifies CSS and JavaScript files"
         self.description = <<-EOF
 Each file provided as input will be checked for dependencies to other files,
@@ -40,40 +43,40 @@ the YUI Compressor the path should be the path to where the jar file is found.
         EOF
 
         self.options = CmdParse::OptionParserWrapper.new do |opt|
-          opt.on('-o', '--output [OUTPUT]', 'Output filename') { |filename| @output = filename }
-          opt.on('-p', '--path [PATH]', 'Path to compressor binary') { |path| @opts[:bin_path] = path }
-          opt.on('-m', '--minifyer [MINIFYER]', 'Which minifer to use. Currently only supports YUI Compressor') { |name| @minifyer = name }
-          opt.on('-f', '--force', 'Force overwrite of target file') { @force = true }
-          opt.on('-a', '--arguments [ARGUMENTS]', 'Arguments to minifyer, escape with quotes') { |arguments| @arguments = arguments }
+          opt.on("-o", "--output file", "Output filename") { |filename| @output = filename }
+          opt.on("-p", "--path path", "Path to compressor binary") { |path| @opts[:bin_path] = path }
+          opt.on("-m", "--minifyer name", "Which minifer to use. Currently only supports yui_compressor") { |name| @minifyer = name }
+          opt.on("-f", "--force", "Force overwrite of target file") { @force = true }
+          opt.on("-a", "--arguments arguments", "Arguments to minifyer, escape with quotes") { |arguments| @arguments = arguments }
+          opt.on("-t", "--type type", "Juicer can only guess type when files have .css or .js extensions. Specify js or\n" +
+                           (" " * 37) + "css with this option in cases where files have other extensions.") { |type| @type = type }
         end
       end
 
       # Execute command
       #
       def execute(args)
-        if args.length == 0
-          raise OptionParser::ParseError.new('Please provide atleast one input file')
+        if (files = files(args)).length == 0
+          @log.fatal "Please provide atleast one input file"
+          raise SystemExit.new("Please provide atleast one input file")
         end
 
-        args = files(args)
         min = minifyer()
+        output = output(files.first)
 
-        # If no file name is provided, use name of first input with .min
-        # prepended to suffix
-        @output = @output || args[0].sub(/\.([^\.]+)$/, '.' + (min ? 'min' : 'merge') + '.\1')
-
-        if File.exists?(@output) && !@force
-          puts "Unable to continue, #{@output} exists. Run again with --force to overwrite"
-          exit
+        if File.exists?(output) && !@force
+          msg = "Unable to continue, #{output} exists. Run again with --force to overwrite"
+          @log.fatal msg
+          raise SystemExit.new(msg)
         end
 
-        merger = @types[@output.split(/\.([^\.]*)$/)[1].to_sym].new(args)
+        merger = merger(output).new(files)
         merger.set_next(min) if min
-        merger.save(@output)
+        merger.save(output)
 
         # Print report
-        puts "Produced #{relative @output} from"
-        merger.files.each { |file| puts "  #{relative file}" }
+        @log.info "Produced #{relative output} from"
+        merger.files.each { |file| @log.info "  #{relative file}" }
       end
 
      private
@@ -87,15 +90,43 @@ the YUI Compressor the path should be the path to where the jar file is found.
           @opts[:bin_path] = File.join(Juicer.home, @minifyer, "bin") unless @opts[:bin_path]
           compressor = @minifyer.classify(Juicer::Minifyer).new(@opts)
           compressor.set_opts(@arguments) if @arguments
+          @log.debug "Using #{@minifyer.camel_case} for minification"
         rescue NameError
-          puts "No such minifyer '#{@minifyer}', aborting"
-          exit
+          @log.fatal "No such minifyer '#{@minifyer}', aborting"
+          raise SystemExit.new("No such minifyer '#{@minifyer}', aborting")
+        rescue FileNotFoundError => e
+          @log.fatal e.message
+          @log.fatal "Try installing with; juicer install #{@minifyer.underscore}"
+          raise SystemExit.new(e.message)
         rescue Exception => e
-          puts e.message
-          exit
+          @log.fatal e.message
+          raise SystemExit.new(e.message)
         end
 
         compressor
+      end
+
+      #
+      # Resolve and load merger
+      #
+      def merger(output = "")
+        type = @type || output.split(/\.([^\.]*)$/)[1]
+        type = type.to_sym if type
+
+        if !@types.include?(type)
+          @log.error "Unknown type '#{type}', defaulting to 'js'"
+          type = :js
+        end
+
+        @types[type]
+      end
+
+      #
+      # Generate output file name. Optional argument is a filename to base the new
+      # name on. It will prepend the original suffix with ".min"
+      #
+      def output(file = "#{Time.now.to_i}.tmp")
+        @output || file.sub(/\.([^\.]+)$/, '.min.\1')
       end
     end
   end
