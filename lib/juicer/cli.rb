@@ -1,12 +1,14 @@
-require 'rubygems'
-require 'cmdparse'
+require "rubygems"
+require "cmdparse"
 
 # Command line interpreter for Juicer
 #
 module Juicer
   class Cli
+
     def initialize
-      $verbose = false
+      @log = Juicer::LOGGER
+      @log.level = Logger::INFO
     end
 
     # Set up command parser and parse arguments
@@ -16,13 +18,17 @@ module Juicer
       @cmd.program_name = "juicer"
       @cmd.program_version = Juicer.version.split(".")
 
-      # @cmd.options = CmdParse::OptionParserWrapper.new do |opt|
-      #  opt.separator "Global options:"
-      #  opt.on("--verbose", "Be verbose when outputting info") {|t| $verbose = true }
-      # end
+      @cmd.options = CmdParse::OptionParserWrapper.new do |opt|
+        opt.separator "Global options:"
+        opt.on("-v", "--verbose", "Be verbose when outputting info") { |t| @log.level = Logger::DEBUG }
+        opt.on("-q", "--quiet", "Only log warnings and errors") { |t| @log.level = Logger::WARN }
+      end
 
       add_commands
       @cmd.parse(arguments)
+      @log.close
+    rescue SystemExit
+      exit
     end
 
     # Run CLI
@@ -43,7 +49,7 @@ module Juicer
       if Juicer.const_defined?("Command")
         Juicer::Command.constants.each do |const|
           const = Juicer::Command.const_get(const)
-          @cmd.add_command(const.new) if const.kind_of?(Class)
+          @cmd.add_command(const.new(@log)) if const.kind_of?(Class)
         end
       end
     end
