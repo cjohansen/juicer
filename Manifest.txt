@@ -6,7 +6,10 @@ bin/juicer
 lib/juicer.rb
 lib/juicer/chainable.rb
 lib/juicer/cli.rb
+lib/juicer/command/install.rb
+lib/juicer/command/list.rb
 lib/juicer/command/merge.rb
+lib/juicer/command/util.rb
 lib/juicer/core.rb
 lib/juicer/install/base.rb
 lib/juicer/install/jslint_installer.rb
@@ -20,6 +23,8 @@ lib/juicer/merger/javascript_merger.rb
 lib/juicer/merger/stylesheet_merger.rb
 lib/juicer/minifyer/compressor.rb
 lib/juicer/minifyer/yui_compressor.rb
+test/juicer/command/test_list.rb
+test/juicer/command/test_util.rb
 test/juicer/install/test_installer_base.rb
 test/juicer/install/test_yui_compressor_installer.rb
 test/juicer/merger/test_base.rb

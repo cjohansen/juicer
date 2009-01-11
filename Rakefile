@@ -25,6 +25,8 @@ PROJ.exclude = %w(tmp$ bak$ ~$ CVS \.svn ^pkg ^doc \.git ^rcov ^test\/data gemsp
 
 PROJ.spec.opts << '--color'
 
+CLOBBER.include "test/data"
+
 depend_on 'cmdparse'
 depend_on 'hpricot'
 depend_on 'rubyzip'
