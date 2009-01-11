@@ -75,7 +75,7 @@ module Juicer
         @opt_set = false
         @type = type
         @jar = locate_jar unless @jar
-        raise 'Unable to locate YUI Compressor Jar' if @jar.nil?
+        raise FileNotFoundError.new("Unable to locate YUI Compressor Jar") if @jar.nil?
         "#{@options[:java]} -jar #{@jar} --type #{@type} #{options(:bin_path, :java)}"
       end
 
