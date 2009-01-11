@@ -90,6 +90,14 @@ class TestInstallerBase < Test::Unit::TestCase
     assert @installer.installed?("x.y.z")
   end
 
+  def installation_should_fail_when_already_installed
+    @installer.install("1.0.0")
+
+    assert_raise Exception do
+      @installer.install("1.0.0")
+    end
+  end
+
   def installation_should_create_bin_and_release_folders
     assert_equal "1.0.0", @installer.install("1.0.0")
     assert File.exists?(File.join(@juicer_home, "lib/some_magic/bin"))

@@ -63,7 +63,7 @@ module Juicer
       #
       def installed?(version = nil)
         installed = File.exists?(File.join(@install_dir, path, "#{version || latest}"))
-        deps = @dependencies.length == 0 || dependencies.all { |n, d| d[0].new.installed?(d[1]) }
+        deps = @dependencies.length == 0 || dependencies.all? { |d, v| d.installed?(v) }
         installed && deps
       end
 
@@ -71,6 +71,7 @@ module Juicer
       # Install the component. Creates basic directory structure.
       #
       def install(version = nil)
+        raise "#{name} #{version} is already installed in #{File.join(@install_dir, path)}" if installed?(version)
         version ||= latest
         log "Installing #{name} #{version} in #{File.join(@install_dir, path)}"
 
