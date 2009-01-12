@@ -56,17 +56,17 @@ class TestInstallerBase < Test::Unit::TestCase
     @installer = Juicer::Install::SomeMagicInstaller.new(@juicer_home)
   end
 
-  def default_installation_directory_should_be_juicer_home
+  def test_default_installation_directory_should_be_juicer_home
     installer = Juicer::Install::SomeMagicInstaller.new
     assert_equal Juicer.home, installer.install_dir
   end
 
-  def override_installation_directory
+  def test_override_installation_directory
     installer = Juicer::Install::SomeMagicInstaller.new("/home/baluba")
     assert_equal "/home/baluba", installer.install_dir
   end
 
-  def latest_method_should_raise_NotImplementedError
+  def test_latest_method_should_raise_NotImplementedError
     assert_raise NotImplementedError do
       @installer.latest
     end
@@ -90,27 +90,27 @@ class TestInstallerBase < Test::Unit::TestCase
     assert @installer.installed?("x.y.z")
   end
 
-  def installation_should_fail_when_already_installed
+  def test_installation_should_fail_when_already_installed
     @installer.install("1.0.0")
 
-    assert_raise Exception do
+    assert_raise RuntimeError do
       @installer.install("1.0.0")
     end
   end
 
-  def installation_should_create_bin_and_release_folders
+  def test_installation_should_create_bin_and_release_folders
     assert_equal "1.0.0", @installer.install("1.0.0")
     assert File.exists?(File.join(@juicer_home, "lib/some_magic/bin"))
     assert File.exists?(File.join(@juicer_home, "lib/some_magic/1.0.0"))
   end
 
-  def uninstall_should_remove_library_path_when_only_version_is_uninstalled
+  def test_uninstall_should_remove_library_path_when_only_version_is_uninstalled
     @installer.install("1.0.0")
     @installer.uninstall("1.0.0")
     assert !File.exists?(File.join(@juicer_home, "lib/some_magic"))
   end
 
-  def uninstall_should_keep_other_versions
+  def test_uninstall_should_keep_other_versions
     @installer.install("1.0.0")
     @installer.install("1.0.1")
     @installer.uninstall("1.0.0")
@@ -118,7 +118,7 @@ class TestInstallerBase < Test::Unit::TestCase
     assert File.exists?(File.join(@juicer_home, "lib/some_magic"))
   end
 
-  def download_should_cache_files_and_only_redownload_when_forced_to_do_so
+  def test_download_should_cache_files_and_only_redownload_when_forced_to_do_so
     @installer.download("http://feeds.feedburner.com/cjno")
     filename = File.join(@juicer_home, "download/some_magic/cjno")
     assert File.exists?(filename)
@@ -133,22 +133,34 @@ class TestInstallerBase < Test::Unit::TestCase
     assert_not_equal mtime, File.stat(filename).mtime
   end
 
-  def installer_should_not_report_true_when_missing_dependencies
+  def test_installer_should_not_report_true_when_missing_dependencies
     @installer.install
 
     installer = Juicer::Install::SomeMagicInstaller.new(@juicer_home)
-    assert !installer.installed?, "Installer should be installed"
+    assert !installer.installed?("1.0.1"), "Installer should be installed"
 
-    installer.dependency Juicer::SomeOtherInstaller
-    assert !installer.installed?, "Installer should not report as being installed when missing dependencies"
+    installer.dependency Juicer::Install::SomeOtherInstaller
+    assert !installer.installed?("1.0.1"), "Installer should not report as being installed when missing dependencies"
   end
 
   def installer_with_single_dependency_should_have_it_installed_on_install
     installer = Juicer::Install::SomeMagicInstaller.new(@juicer_home)
-    installer.dependency Juicer::SomeOtherInstaller
+    installer.dependency Juicer::Install::SomeOtherInstaller
     installer.install "1.0.0"
     assert File.exists?(File.join(@juicer_home, "lib/some_magic/1.0.0"))
     assert File.exists?(File.join(@juicer_home, "lib/some_other/1.0.0"))
+  end
+
+  def test_installed_dependency_should_not_cause_error
+    installer = Juicer::Install::SomeMagicInstaller.new(@juicer_home)
+    installer.dependency Juicer::Install::SomeOtherInstaller
+
+    dep = Juicer::Install::SomeOtherInstaller.new
+    dep.install unless dep.installed?
+
+    assert_nothing_raised do
+      installer.install "1.0.0"
+    end
   end
 
   def test_single_dependency_symbol

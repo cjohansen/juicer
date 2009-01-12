@@ -77,7 +77,7 @@ module Juicer
 
         if @dependencies.length > 0
           log "Installing dependencies"
-          dependencies { |dependency, ver| dependency.install(ver) }
+          dependencies { |dependency, ver| dependency.install(ver) unless dependency.installed?(ver) }
         end
 
         # Create directories
