@@ -32,7 +32,7 @@ class TestYuiCompressorInstall < Test::Unit::TestCase
     assert_equal 3, Dir.glob(path(".juicer/lib/yui_compressor/**/*")).find_all { |f| File.file?(f) }.length
 
     @installer.uninstall
-    assert !File.exists?(path(".juicer/lib/yui"))
+    assert !File.exists?(path(".juicer/lib/yui_compressor"))
   end
 
   def test_install_specific_version
