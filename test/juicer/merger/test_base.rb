@@ -118,6 +118,6 @@ end
 
 class MockImportResolver
   def resolve(file)
-    yield file
+    [file]
   end
 end
