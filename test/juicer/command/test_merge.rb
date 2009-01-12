@@ -117,12 +117,10 @@ class TestMergeCommand < Test::Unit::TestCase
    end
   end
 
-   def test_merge_successful
-     File.delete(path("a.min.css")) if File.exists?(path("a.min.css"))
-     @merge.instance_eval { @output = path("a.min.css") }
-     assert @merge.execute(path("a1.css"))
-     assert_equal IO.read(path("a.min.css")), "h2{font-size:10px}html{background:red}h1{font-size:12px}body{width:800px}"
-   rescue Exception => e
-     puts e.message
+  def test_merge_successful
+    File.delete(path("a.min.css")) if File.exists?(path("a.min.css"))
+    @merge.instance_eval { @output = path("a.min.css") }
+    assert @merge.execute(path("a1.css"))
+    assert_equal "h2{font-size:10px;}html{background:red;}h1{font-size:12px;}body{width:800px;}", IO.read(path("a.min.css"))
   end
 end
