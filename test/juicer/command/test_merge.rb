@@ -78,7 +78,7 @@ class TestMergeCommand < Test::Unit::TestCase
   def test_merger_from_invalid_type
     Juicer::Command::Merge.publicize_methods do
       assert_equal Juicer::Merger::JavaScriptMerger, @merge.merger("bleh.txt")
-      assert_match /Unknown type 'txt', defaulting to 'js'/, @io.string
+      assert_match(/Unknown type 'txt', defaulting to 'js'/, @io.string)
     end
   end
 
@@ -106,7 +106,7 @@ class TestMergeCommand < Test::Unit::TestCase
     assert_raise SystemExit do
       @merge.instance_eval { @output = path("a.css") }
       @merge.execute(path("a.css"))
-      assert_match /Run again with --force to overwrite/, @io.string
+      assert_match(/Run again with --force to overwrite/, @io.string)
     end
   end
 
