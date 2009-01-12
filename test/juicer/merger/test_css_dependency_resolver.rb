@@ -12,8 +12,8 @@ class TestCssDependencyResolver < Test::Unit::TestCase
   end
 
   def test_resolve
-    b_file = File.expand_path(path('b.css'))
-    a_file = File.expand_path(path('a.css'))
+    b_file = path('b.css')
+    a_file = path('a.css')
 
     files = @resolver.resolve(path('a.css')) do |file|
       assert b_file == file || a_file == file
@@ -28,5 +28,10 @@ class TestCssDependencyResolver < Test::Unit::TestCase
     end
 
     assert_equal [a_file, b_file], files.sort
+  end
+
+  def test_load_order
+    files = @resolver.resolve(path("a1.css")).collect { |file| file.split("/").pop }
+    assert_equal "d1.cssb1.cssc1.cssa1.css", files.join
   end
 end

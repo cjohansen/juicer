@@ -16,23 +16,9 @@ module Juicer
       # if the block is true for the given file. Without a block every found
       # file is returned.
       #
-      def resolve(file)
-        imported_file = nil
+      def resolve(file, &block)
         @files = []
-
-        catch(:done) do
-          IO.foreach(file) do |line|
-            imported_file = parse(line, imported_file)
-
-            if imported_file
-              imported_file = resolve_path(imported_file, file)
-              @files << imported_file if !block_given? || yield(imported_file)
-            end
-          end
-        end
-
-        file = File.expand_path(file)
-        @files << file if !block_given? || yield(file)
+        _resolve(file, &block)
       end
 
       #
@@ -58,6 +44,38 @@ module Juicer
      private
       def parse(line)
         raise NotImplementedError.new
+      end
+
+      #
+      # Carries out the actual work of resolve. resolve resets the internal
+      # file list and yields control to _resolve for rebuilding the file list.
+      #
+      def _resolve(file)
+        imported_file = nil
+
+        IO.foreach(file) do |line|
+          # Implementing subclasses may throw :done from the parse method when
+          # the file is exhausted for dependency declaration possibilities.
+          catch(:done) do
+            imported_file = parse(line, imported_file)
+
+            # If a dependency declaration was found
+            if imported_file
+              # Resolves a path relative to the file that imported it
+              imported_file = resolve_path(imported_file, file)
+
+              # Only keep processing file if it's not already included.
+              # Yield to block to allow caller to ignore file
+              if !@files.include?(imported_file) && (!block_given? || yield(imported_file))
+                # Check this file for imports before adding it to get order right
+                _resolve(imported_file) { |f| f != File.expand_path(file) }
+              end
+            end
+          end
+        end
+
+        file = File.expand_path(file)
+        @files << file if !@files.include?(file) && (!block_given? || yield(file))
       end
     end
   end
