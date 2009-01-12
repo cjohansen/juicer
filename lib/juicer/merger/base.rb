@@ -49,17 +49,8 @@ module Juicer
 
      private
       def resolve_dependencies(file)
-        @dependency_resolver.resolve(file) do |f|
-          if @files.include?(f)
-            false
-          else
-            @files << f
-            resolve_dependencies(f)
-            true
-          end
-        end
-
-        @files
+        @files.concat @dependency_resolver.resolve(file)
+        @files.uniq!
       end
 
       # Fetch contents of a single file. May be overridden in subclasses to provide
