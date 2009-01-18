@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 require 'tempfile'
-require File.expand_path(File.join(File.dirname(__FILE__), 'compressor')) unless defined?(Juicer::Minifyer::Compressor)
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'shell', 'binary')) unless defined?(Juicer::Shell::Binary)
 
 module Juicer
   module Minifyer
 
     # Provides an interface to the YUI compressor library using
-    # Juicer::Minify::Compressor. The YUI compressor library is implemented
+    # Juicer::Shell::Binary. The YUI compressor library is implemented
     # using Java, and as such Java is required when running this code. Also, the
     # YUI jar file has to be provided.
     #
@@ -28,14 +28,23 @@ module Juicer
     # License::   MIT
     #
     # = Usage example =
-    # yuic = Juicer::Minifyer::YuiCompressor.new({ :bin_path => '/home/user/java/yui/' })
-    # yuic.compress('lib.js', 'lib.compressed.js')
+    # yuic = Juicer::Minifyer::YuiCompressor.new
+    # yuic.java = "/usr/local/bin/java" # If 'java' is not on path
+    # yuic.path << "/home/user/java/yui_compressor/"
+    # yuic.save("", "")
     #
-    class YuiCompressor < Compressor
+    #
+    class YuiCompressor
+      include Juicer::Shell::Binary
+      include Juicer::Chainable
+
       def initialize(options = {})
-        super
+        bin = options.delete(:java) || "java"
+        bin_path = options.delete(:bin_path) || nil
         @jar = nil
-        @command = nil
+
+        super(bin, options)
+        path << bin_path if bin_path
       end
 
       # Compresses a file using the YUI Compressor. Note that the :bin_path
@@ -50,16 +59,14 @@ module Juicer
       #        is guessed from the suffix on the input file name
       def save(file, output = nil, type = nil)
         type = type.nil? ? file.split('.')[-1].to_sym : type
-        cmd = @command = @command.nil? || @opt_set || type != @type ? command(type) : @command
+        # cmd = @command = @command.nil? || @opt_set || type != @type ? command(type) : @command
 
         output ||= file
         use_tmp = !output.is_a?(String)
         output = File.join(Dir::tmpdir, File.basename(file) + '.min.tmp.' + type.to_s) if use_tmp
         FileUtils.mkdir_p(File.dirname(output))
 
-        cmd += ' -o "' + output + '" "' + file + '"'
-        compressor = IO.popen(cmd, 'r')
-        result = compressor.gets
+        result = execute(%Q{-jar #{locate_jar} -o "#{output}" "#{file}"})
 
         if use_tmp                            # If no output file is provided, YUI compressor will
           output.puts IO.read(output)         # compress to a temp file. This file should be cleared
@@ -70,14 +77,6 @@ module Juicer
       chain_method :save
 
      private
-      # Constructs the command to use
-      def command(type)
-        @opt_set = false
-        @type = type
-        @jar = locate_jar unless @jar
-        raise FileNotFoundError.new("Unable to locate YUI Compressor Jar") if @jar.nil?
-        "#{@options[:java]} -jar #{@jar} --type #{@type} #{options(:bin_path, :java)}"
-      end
 
       # Returns a map of options accepted by YUI Compressor, currently:
       #
@@ -92,8 +91,7 @@ module Juicer
       # :java     (Java command, defaults to 'java')
       def default_options
         { :charset => nil, :line_break => nil, :no_munge => nil,
-          :preserve_semi => nil, :preserve_strings => nil,
-          :bin_path => nil, :java => 'java' }
+          :preserve_semi => nil, :preserve_strings => nil }
       end
 
       # Locates the Jar file by searching directories.
@@ -109,20 +107,8 @@ module Juicer
       # This means that higher version numbers will be preferred with the default
       # naming for the YUI Compressor Jars
       def locate_jar
-        paths = @options[:bin_path].nil? ? [] : [@options[:bin_path]]
-        jar = nil
-
-        if ENV.key?('YUIC_HOME') && File.exist?(ENV['YUIC_HOME'])
-          paths << ENV['YUIC_HOME']
-        end
-
-        (paths << Dir.pwd).each do |path|
-          files = Dir.glob(File.join(path, 'yuicompressor*.jar'))
-          jar = files.sort.last unless files.empty?
-          break unless jar.nil?
-        end
-
-        jar.nil? ? nil : File.expand_path(jar)
+        files = locate("yuicompressor*.jar", "YUIC_HOME")
+        !files || files.empty? ? nil : files.sort.last
       end
     end
 

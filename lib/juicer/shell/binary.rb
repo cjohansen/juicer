@@ -13,7 +13,6 @@ module Juicer
     # allowed to set on the binary.
     #
     module Binary
-      attr_accessor :path
 
       # Initialize binary with options
       # options = Hash of options, optional
@@ -26,10 +25,14 @@ module Juicer
         @path = []
       end
 
+      def path
+        @path
+      end
+
       # Run command
       #
-      def execute
-        cmd = IO.popen(command, 'r')
+      def execute(params = nil)
+        cmd = IO.popen("#{self.command} #{params}", "r")
         results = cmd.gets
         cmd.close
         results
@@ -104,7 +107,7 @@ module Juicer
       # Constructs the command to use
       #
       def command
-        return @command unless @opt_set
+        return @command if !@opt_set && @command
         @opt_set = false
         @command = "#{@binary} #{options}"
       end
@@ -126,10 +129,10 @@ module Juicer
       # the specified paths - ie the first path where the pattern matches
       # something.
       #
-      def locate(bin_glob, paths = [], env = nil)
-        paths << ENV[env] if env && ENV.key?(env) && File.exist?(ENV[env])
+      def locate(bin_glob, env = nil)
+        path << ENV[env] if env && ENV.key?(env) && File.exist?(ENV[env])
 
-        (paths << Dir.pwd).each do |path|
+        (path << Dir.pwd).each do |path|
           files = Dir.glob(File.expand_path(File.join(path, bin_glob)))
           return files unless files.empty?
         end

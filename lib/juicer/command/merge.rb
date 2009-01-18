@@ -91,6 +91,8 @@ the YUI Compressor the path should be the path to where the jar file is found.
           compressor = @minifyer.classify(Juicer::Minifyer).new(@opts)
           compressor.set_opts(@arguments) if @arguments
           @log.debug "Using #{@minifyer.camel_case} for minification"
+
+          return compressor
         rescue NameError
           @log.fatal "No such minifyer '#{@minifyer}', aborting"
           raise SystemExit.new("No such minifyer '#{@minifyer}', aborting")
@@ -103,7 +105,7 @@ the YUI Compressor the path should be the path to where the jar file is found.
           raise SystemExit.new(e.message)
         end
 
-        compressor
+        nil
       end
 
       #

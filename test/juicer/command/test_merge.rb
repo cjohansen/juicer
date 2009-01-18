@@ -45,7 +45,7 @@ class TestMergeCommand < Test::Unit::TestCase
 
   def test_get_minifyer
     Juicer::Command::Merge.publicize_methods do
-      assert @merge.minifyer.is_a?(Juicer::Minifyer::Compressor)
+      assert @merge.minifyer.class == Juicer::Minifyer::YuiCompressor
     end
   end
 
