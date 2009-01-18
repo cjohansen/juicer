@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require 'tempfile'
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'shell', 'binary')) unless defined?(Juicer::Shell::Binary)
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'binary')) unless defined?(Juicer::Shell::Binary)
 
 module Juicer
   module Minifyer
@@ -35,7 +35,7 @@ module Juicer
     #
     #
     class YuiCompressor
-      include Juicer::Shell::Binary
+      include Juicer::Binary
       include Juicer::Chainable
 
       def initialize(options = {})
