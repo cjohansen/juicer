@@ -59,7 +59,6 @@ module Juicer
       #        is guessed from the suffix on the input file name
       def save(file, output = nil, type = nil)
         type = type.nil? ? file.split('.')[-1].to_sym : type
-        # cmd = @command = @command.nil? || @opt_set || type != @type ? command(type) : @command
 
         output ||= file
         use_tmp = !output.is_a?(String)
