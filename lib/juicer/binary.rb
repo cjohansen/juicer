@@ -17,7 +17,7 @@ module Juicer
     # options = Hash of options, optional
     #
     def initialize(binary, options = {})
-      @options = default_options.merge(options)
+      @options = self.respond_to?(:defualt_options) ? default_options.merge(options) : options
       @opt_set = false
       @command = nil
       @binary = binary
@@ -31,8 +31,9 @@ module Juicer
     # Run command
     #
     def execute(params = nil)
+      #puts "#{self.command} #{params}"
       cmd = IO.popen("#{self.command} #{params}", "r")
-      results = cmd.gets
+      results = cmd.gets(nil)
       cmd.close
       results
     end
