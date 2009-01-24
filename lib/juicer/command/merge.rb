@@ -1,4 +1,5 @@
 require File.join(File.dirname(__FILE__), "util")
+require File.join(File.dirname(__FILE__), "verify")
 require "rubygems"
 require "cmdparse"
 require "pathname"
@@ -22,6 +23,7 @@ module Juicer
         @minifyer = "yui_compressor"
         @opts = {}
         @arguments = nil
+        @ignore = false
         @log = log || Logger.new(STDOUT)
 
         self.short_desc = "Combines and minifies CSS and JavaScript files"
@@ -48,6 +50,7 @@ the YUI Compressor the path should be the path to where the jar file is found.
           opt.on("-m", "--minifyer name", "Which minifer to use. Currently only supports yui_compressor") { |name| @minifyer = name }
           opt.on("-f", "--force", "Force overwrite of target file") { @force = true }
           opt.on("-a", "--arguments arguments", "Arguments to minifyer, escape with quotes") { |arguments| @arguments = arguments }
+          opt.on("-i", "--ignore-problems", "Merge and minify even if verifyer finds problems") { @ignore = true }
           opt.on("-t", "--type type", "Juicer can only guess type when files have .css or .js extensions. Specify js or\n" +
                            (" " * 37) + "css with this option in cases where files have other extensions.") { |type| @type = type }
         end
@@ -72,6 +75,13 @@ the YUI Compressor the path should be the path to where the jar file is found.
 
         merger = merger(output).new(files)
         merger.set_next(min) if min
+
+        if !Juicer::Command::Verify.check_all(merger.files.reject { |f| f =~ /\.css$/ }, @log)
+          @log.error "Problems were detected during verification"
+          raise SystemExit.new("Input files contain problems") unless @ignore
+          @log.warn "Ignoring detected problems"
+        end
+
         merger.save(output)
 
         # Print report
@@ -121,6 +131,18 @@ the YUI Compressor the path should be the path to where the jar file is found.
         end
 
         @types[type]
+      end
+
+      #
+      # Loads verifyer
+      #
+      def verifyer
+        jslint = Juicer::JsLint.new(:bin_path => Juicer.home)
+
+        # Check that JsLint is installed
+        raise FileNotFoundError.new("Missing 3rd party library JsLint, install with\njuicer install jslint") if jslint.locate_lib.nil?
+
+        jslint
       end
 
       #

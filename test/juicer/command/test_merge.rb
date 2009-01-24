@@ -9,9 +9,14 @@ class TestMergeCommand < Test::Unit::TestCase
     @file_setup = Juicer::Test::FileSetup.new($DATA_DIR)
     @file_setup.create!
 
+    ["a.min.css", "not-ok.js", "not-ok.min.js"].each { |f| File.delete(path(f)) if File.exists?(path(f)) }
+
     Juicer.home = path(".juicer")
     installer = Juicer::Install::YuiCompressorInstaller.new(Juicer.home)
     installer.install("2.4.1") unless installer.installed?("2.4.1")
+
+    installer = Juicer::Install::JSLintInstaller.new(Juicer.home)
+    installer.install unless installer.installed?
   end
 
   def test_get_minifier_from_nil_minifyer
@@ -118,9 +123,35 @@ class TestMergeCommand < Test::Unit::TestCase
   end
 
   def test_merge_successful
-    File.delete(path("a.min.css")) if File.exists?(path("a.min.css"))
-    @merge.instance_eval { @output = path("a.min.css") }
-    assert @merge.execute(path("a1.css"))
-    assert_equal "h2{font-size:10px;}html{background:red;}h1{font-size:12px;}body{width:800px;}", IO.read(path("a.min.css"))
+    begin
+      @merge.instance_eval { @output = path("a.min.css") }
+      assert @merge.execute(path("a1.css"))
+      assert_equal "h2{font-size:10px;}html{background:red;}h1{font-size:12px;}body{width:800px;}", IO.read(path("a.min.css"))
+    rescue Exception => err
+      puts err.message
+    end
+  end
+
+  def test_fail_when_syntax_no_good
+    File.open(path("not-ok.js"), "w") { |file| file.puts "a == 98\nb = 45" }
+
+    assert_raise SystemExit do
+      @merge.execute(path("not-ok.js"))
+      assert_match(/Problems were detected during verification/, @io.string)
+      assert_no_match(/Ignoring detected problems/, @io.string)
+    end
+
+    File.delete(path("not-ok.js"))
+  end
+
+  def test_ignore_problems
+    File.open(path("not-ok.js"), "w") { |file| file.puts "a == 98\nb = 45" }
+    @merge.instance_eval { @ignore = true }
+
+    assert_nothing_raised do
+      @merge.execute(path("not-ok.js"))
+      assert_match(/Problems were detected during verification/, @io.string)
+      assert_match(/Ignoring detected problems/, @io.string)
+    end
   end
 end

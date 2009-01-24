@@ -14,7 +14,7 @@ module Juicer
       #
       def initialize(log = nil)
         super('verify', false, true)
-        @log = log || Logger.new(STDIO)
+        @log = log || Logger.new($STDIO)
         self.short_desc = "Verifies that the given JavaScript/CSS file is problem free"
         self.description = <<-EOF
 Uses JsLint (http://www.jslint.com) to check that code adheres to good coding
@@ -28,24 +28,32 @@ minifying.
       def execute(args)
         # Need atleast one file
         raise ArgumentError.new('Please provide atleast one input file/pattern') if args.length == 0
+        Juicer::Command::Verify.check_all(files(args), @log)
+      end
 
+      def self.check_all(files, log = nil)
+        log ||= Logger.new($stdio)
         jslint = Juicer::JsLint.new(:bin_path => Juicer.home)
+        problems = false
 
         # Check that JsLint is installed
         raise FileNotFoundError.new("Missing 3rd party library JsLint, install with\njuicer install jslint") if jslint.locate_lib.nil?
 
         # Verify all files
-        files(args).each do |file|
-          @log.info "Verifying #{file} with JsLint"
+        files.each do |file|
+          log.info "Verifying #{file} with JsLint"
           report = jslint.check(file)
 
           if report.ok?
-            @log.info "  OK!"
+            log.info "  OK!"
           else
-            @log.warn "  Problems detected"
-            @log.warn "  #{report.errors.join("\n").gsub(/\n/, "\n  ")}\n"
+            problems = true
+            log.warn "  Problems detected"
+            log.warn "  #{report.errors.join("\n").gsub(/\n/, "\n  ")}\n"
           end
         end
+
+        !problems
       end
     end
   end
