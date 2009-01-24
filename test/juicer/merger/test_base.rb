@@ -4,8 +4,7 @@ class TestMergerBase < Test::Unit::TestCase
 
   def setup
     @file_merger = Juicer::Merger::Base.new
-    @file_setup = Juicer::Test::FileSetup.new($DATA_DIR)
-    @file_setup.create!
+    Juicer::Test::FileSetup.new.create
   end
 
   def teardown

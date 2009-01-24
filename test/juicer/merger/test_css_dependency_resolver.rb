@@ -3,8 +3,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. test_helper]
 class TestCssDependencyResolver < Test::Unit::TestCase
   def setup
     @resolver = Juicer::Merger::CssDependencyResolver.new
-    @file_setup = Juicer::Test::FileSetup.new($DATA_DIR)
-    @file_setup.create!
+    Juicer::Test::FileSetup.new.create
   end
 
   def test_init
