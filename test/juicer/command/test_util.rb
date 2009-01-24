@@ -8,8 +8,7 @@ class TestCommandUtil < Test::Unit::TestCase
 
   def setup
     @impl = Dummy.new
-    @file_setup = Juicer::Test::FileSetup.new($DATA_DIR)
-    @file_setup.create!
+    Juicer::Test::FileSetup.new.create
     Dir.glob("test/data/*.min.css").each { |file| File.delete(file) }
   end
 
