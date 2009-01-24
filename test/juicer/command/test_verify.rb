@@ -4,7 +4,7 @@ class TestVerifyCommand < Test::Unit::TestCase
 
   def setup
     @io = StringIO.new
-    @command = Juicer::Command::Verify.new(Logger.new @io)
+    @command = Juicer::Command::Verify.new(Logger.new(@io))
 
     File.open(path("ok.js"), "w") do |file|
       js = <<-JS
@@ -51,7 +51,7 @@ b = 78;
     installer.install unless installer.installed?
 
     @command.execute([path("ok.js"), path("not-ok.js"), path("a.js")])
-    assert_match /OK!/, @io.string
-    assert_match /Problems detected/, @io.string
+    assert_match(/OK!/, @io.string)
+    assert_match(/Problems detected/, @io.string)
   end
 end

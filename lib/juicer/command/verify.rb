@@ -28,11 +28,11 @@ minifying.
       def execute(args)
         # Need atleast one file
         raise ArgumentError.new('Please provide atleast one input file/pattern') if args.length == 0
-        Juicer::Command::Verify.check_all(files(args))
+        Juicer::Command::Verify.check_all(files(args), @log)
       end
 
       def self.check_all(files, log = nil)
-        log ||= Logger.new($STDIO)
+        log ||= Logger.new($stdio)
         jslint = Juicer::JsLint.new(:bin_path => Juicer.home)
         problems = false
 

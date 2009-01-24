@@ -76,7 +76,7 @@ the YUI Compressor the path should be the path to where the jar file is found.
         merger = merger(output).new(files)
         merger.set_next(min) if min
 
-        if !Juicer::Command::Verify.check_all(merger.files, @log)
+        if !Juicer::Command::Verify.check_all(merger.files.reject { |f| f =~ /\.css$/ }, @log)
           @log.error "Problems were detected during verification"
           raise SystemExit.new("Input files contain problems") unless @ignore
           @log.warn "Ignoring detected problems"
