@@ -3,12 +3,6 @@ require 'test/unit'
 require 'rubygems'
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib juicer])) unless defined?(Juicer)
 
-# Test directory
-# $TEST_DIR = File.expand_path(File.dirname(__FILE__))
-
-# Directory containing test data
-# $DATA_DIR = File.join($TEST_DIR, 'data')
-
 $data_dir = File.join(File.expand_path(File.dirname(__FILE__)), "data")
 
 # Prefixes paths with the data dir
