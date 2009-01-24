@@ -10,6 +10,7 @@ class TestRhinoInstaller < Test::Unit::TestCase
   end
 
   def test_check_installation
+    FileUtils.rm_rf(path(".juicer/lib")) if File.exists?(path(".juicer/lib"))
     assert !@installer.installed?
   end
 
