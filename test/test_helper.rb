@@ -24,6 +24,19 @@ class Class
   end
 end
 
+alias_method :_open, :open
+
+#
+# Mock open for the cases where it's set to download third party libraries
+#
+#def open(url)
+#  if url =~ /yuicompressor/
+#    File.open(File.join($data_dir, "mock", "yuicompressor-2.4.2.zip"), "r")
+#  end
+
+#  _open(file, mode, &block)
+#end
+
 module Juicer
   module Test
 

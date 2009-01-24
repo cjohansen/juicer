@@ -6,8 +6,7 @@ class TestMergeCommand < Test::Unit::TestCase
     @io = StringIO.new
     @merge = Juicer::Command::Merge.new(Logger.new(@io))
 
-    @file_setup = Juicer::Test::FileSetup.new($DATA_DIR)
-    @file_setup.create!
+    Juicer::Test::FileSetup.new.create
 
     ["a.min.css", "not-ok.js", "not-ok.min.js"].each { |f| File.delete(path(f)) if File.exists?(path(f)) }
 

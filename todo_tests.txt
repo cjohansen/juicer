@@ -1,0 +1,10 @@
+test/juicer/test_jslint.rb - Mock jslint-saken
+test/juicer/install/test_installer_base.rb - Mock zip-filer
+test/juicer/install/test_jslint_installer.rb - Mock zip-filer
+test/juicer/install/test_yui_compressor_installer.rb - Mock zip-filer
+test/juicer/install/test_rhino_installer.rb - Mock zip-filer
+test/juicer/command/test_verify.rb - Mock installasjon
+test/juicer/command/test_install.rb - Mock installasjon
+test/juicer/command/test_merge.rb - Mock installasjon
+test/juicer/minifyer/test_yui_compressor.rb - Bør fikse jar-fil sak
+

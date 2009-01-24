@@ -4,11 +4,10 @@ class TestYuiCompressor < Test::Unit::TestCase
 
   def setup
     @path = ENV.key?('YUI_HOME') ? ENV['YUI_HOME'] : File.expand_path('~/sources/yuicompressor-2.3.5/build')
-    # @path = File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. ..]))
+
     @yui_compressor = Juicer::Minifyer::YuiCompressor.new({ :bin_path => @path })
-   @file_setup = Juicer::Test::FileSetup.new($DATA_DIR)
-   @file_setup.create!
-   @file = path('out.min.css')
+    Juicer::Test::FileSetup.new.create
+    @file = path('out.min.css')
   end
 
   def teardown
