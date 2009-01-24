@@ -5,6 +5,7 @@ class TestListCommand < Test::Unit::TestCase
   def setup
     @io = StringIO.new
     @command = Juicer::Command::List.new(@io)
+    Juicer::Test::FileSetup.new.create
   end
 
   def test_list_nothing
@@ -44,7 +45,7 @@ Dependency chain for test/data/a.js:
   end
 
   def test_list_several_files
-    @command.execute "test/data/*.js"
+    @command.execute ["test/data/a.js", "test/data/b.js"]
 
     msg = <<-STDOUT
 Dependency chain for test/data/a.js:
