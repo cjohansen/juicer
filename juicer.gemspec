@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christian Johansen"]
-  s.date = %q{2009-01-19}
+  s.date = %q{2009-01-24}
   s.default_executable = %q{juicer}
   s.description = %q{Juicer is a command line tool aimed at easing JavaScript and CSS development. Currently it only provides a wrapper to YUI Compressor along with a module that can dynamically link together files, but there are plans for more functionality.}
   s.email = %q{christian@cjohansen.no}
