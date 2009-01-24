@@ -4,6 +4,7 @@
 
 begin
   require 'bones'
+  load 'tasks/test/setup.rake'
   Bones.setup
 rescue LoadError
   load 'tasks/setup.rb'
@@ -21,7 +22,7 @@ PROJ.url = 'http://www.cjohansen.no/en/projects/juicer'
 PROJ.version = Juicer::VERSION
 PROJ.rubyforge.name = 'juicer'
 PROJ.readme_file = 'Readme.rdoc'
-PROJ.exclude = %w(tmp$ bak$ ~$ CVS \.svn ^pkg ^doc \.git ^rcov ^test\/data gemspec$)
+PROJ.exclude = %w(tmp$ bak$ ~$ CVS \.svn ^pkg ^doc \.git ^rcov ^test\/data gemspec ^test\/mock$)
 
 PROJ.spec.opts << '--color'
 

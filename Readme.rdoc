@@ -82,6 +82,13 @@ Alternatively you can keep a copy of the jar file in the same directory that you
 run the <tt>juicer</tt> command from. I imagine that would only make sense in a
 testing scenario.
 
+== For developers
+
+Before running tests you should run
+  rake test:setup
+
+which brings in third party libraries (ie, requires a working network connection)
+
 == LICENSE:
 
 (The MIT License)
