@@ -5,6 +5,7 @@ Readme.rdoc
 bin/juicer
 lib/juicer.rb
 lib/juicer/binary.rb
+lib/juicer/cache_buster.rb
 lib/juicer/chainable.rb
 lib/juicer/cli.rb
 lib/juicer/command/install.rb
@@ -25,6 +26,13 @@ lib/juicer/merger/javascript_dependency_resolver.rb
 lib/juicer/merger/javascript_merger.rb
 lib/juicer/merger/stylesheet_merger.rb
 lib/juicer/minifyer/yui_compressor.rb
+tasks/test/setup.rake
+test/bin/jslint.js
+test/bin/rhino1_7R1.zip
+test/bin/rhino1_7R2-RC1.zip
+test/bin/yuicompressor
+test/bin/yuicompressor-2.3.5.zip
+test/bin/yuicompressor-2.4.2.zip
 test/juicer/command/test_install.rb
 test/juicer/command/test_list.rb
 test/juicer/command/test_merge.rb
@@ -40,6 +48,7 @@ test/juicer/merger/test_javascript_dependency_resolver.rb
 test/juicer/merger/test_javascript_merger.rb
 test/juicer/merger/test_stylesheet_merger.rb
 test/juicer/minifyer/test_yui_compressor.rb
+test/juicer/test_cache_buster.rb
 test/juicer/test_chainable.rb
 test/juicer/test_core.rb
 test/juicer/test_jslint.rb
