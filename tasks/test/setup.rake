@@ -11,7 +11,7 @@ namespace :test do
 end
 
 def download(url)
-  filename = File.join(File.dirname(__FILE__), "../../test/mock", File.basename(url))
+  filename = File.join(File.dirname(__FILE__), "../../test/bin", File.basename(url))
   return filename if File.exists?(filename)
 
   puts "Downloading #{url} to #{filename}"
