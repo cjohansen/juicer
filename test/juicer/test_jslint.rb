@@ -2,8 +2,11 @@ require File.expand_path(File.join(File.dirname(__FILE__), %w[.. test_helper])) 
 
 class TestJsLint < Test::Unit::TestCase
   def setup
-    @jslint = Juicer::JsLint.new(:bin_path => Juicer.home)
     Juicer::Test::FileSetup.new.create
+    installer = Juicer::Install::JSLintInstaller.new path(".juicer")
+    installer.install unless installer.installed?
+
+    @jslint = Juicer::JsLint.new(:bin_path => path(".juicer"))
   end
 
   def test_check_valid_file
