@@ -12,7 +12,7 @@ class TestMergeCommand < Test::Unit::TestCase
 
     Juicer.home = path(".juicer")
     installer = Juicer::Install::YuiCompressorInstaller.new(Juicer.home)
-    installer.install("2.4.1") unless installer.installed?("2.4.1")
+    installer.install("2.4.2") unless installer.installed?("2.4.2")
 
     installer = Juicer::Install::JSLintInstaller.new(Juicer.home)
     installer.install unless installer.installed?
