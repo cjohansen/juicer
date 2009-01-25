@@ -8,7 +8,7 @@ class TestMergeCommand < Test::Unit::TestCase
 
     Juicer::Test::FileSetup.new.create
 
-    ["a.min.css", "not-ok.js", "not-ok.min.js"].each { |f| File.delete(path(f)) if File.exists?(path(f)) }
+    ["a.min.css", "not-ok.min.js"].each { |f| File.delete(path(f)) if File.exists?(path(f)) }
 
     Juicer.home = path(".juicer")
     installer = Juicer::Install::YuiCompressorInstaller.new(Juicer.home)
@@ -132,19 +132,14 @@ class TestMergeCommand < Test::Unit::TestCase
   end
 
   def test_fail_when_syntax_no_good
-    File.open(path("not-ok.js"), "w") { |file| file.puts "a == 98\nb = 45" }
-
     assert_raise SystemExit do
       @merge.execute(path("not-ok.js"))
       assert_match(/Problems were detected during verification/, @io.string)
       assert_no_match(/Ignoring detected problems/, @io.string)
     end
-
-    File.delete(path("not-ok.js"))
   end
 
   def test_ignore_problems
-    File.open(path("not-ok.js"), "w") { |file| file.puts "a == 98\nb = 45" }
     @merge.instance_eval { @ignore = true }
 
     assert_nothing_raised do

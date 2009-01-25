@@ -9,12 +9,8 @@ class TestJsLintInstaller < Test::Unit::TestCase
     FileUtils.rm_rf(path(".juicer/lib")) if File.exists?(path(".juicer/lib"))
   end
 
-  def test_check_installation
-    assert !@installer.installed?
-  end
-
   def test_install_should_download_js
-    @installer.install
+    @installer.install unless @installer.installed?
 
     assert File.exists?(path(".juicer"))
     assert File.exists?(path(".juicer/lib"))

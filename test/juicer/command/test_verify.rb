@@ -5,30 +5,6 @@ class TestVerifyCommand < Test::Unit::TestCase
   def setup
     @io = StringIO.new
     @command = Juicer::Command::Verify.new(Logger.new(@io))
-
-    File.open(path("ok.js"), "w") do |file|
-      js = <<-JS
-function hey() {
-    alert("Hey");
-}
-      JS
-
-      file.puts js
-    end
-
-    File.open(path("not-ok.js"), "w") do |file|
-      js = <<-JS
-var a = 34
-b = 78;
-      JS
-
-      file.puts js
-    end
-  end
-
-  def teardown
-    File.delete(path("ok.js"))
-    File.delete(path("not-ok.js"))
   end
 
   def test_no_files
