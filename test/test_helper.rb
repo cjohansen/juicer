@@ -1,6 +1,7 @@
 require 'fileutils'
 require 'test/unit'
 require 'rubygems'
+require 'mocha'
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib juicer])) unless defined?(Juicer)
 
 $data_dir = File.join(File.expand_path(File.dirname(__FILE__)), "data")
@@ -32,8 +33,11 @@ module Kernel
   alias juicer_original_open open # :nodoc:
 
   def open(name, *rest, &block)
-    if name =~ /http.+yuicompressor/
+    if name =~ /http.+yuicompressor.+\.zip$/
       name = File.join($data_dir, "..", "bin", "yuicompressor-2.4.2.zip")
+      puts "\nDownloading local file #{name}"
+    elsif name =~ /http.+yuicompressor/
+      name = File.join($data_dir, "..", "bin", "yuicompressor")
       puts "\nDownloading local file #{name}"
     elsif name =~ /http.+jslint/
       name = File.join($data_dir, "..", "bin", "jslint.js")
