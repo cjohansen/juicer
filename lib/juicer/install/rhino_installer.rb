@@ -27,11 +27,13 @@ module Juicer
 
         Zip::ZipFile.open(filename) do |file|
           FileUtils.mkdir_p(File.join(target, version))
+
           begin
             file.extract("#{base.sub(/-RC\d/, "")}/LICENSE.txt", File.join(target, version, "LICENSE.txt"))
           rescue Exception
             # Fail silently, some releases don't carry the license
           end
+
           file.extract("#{base.sub(/-RC\d/, "")}/js.jar", File.join(target, "bin", "#{base}.jar"))
         end
       end
