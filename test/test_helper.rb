@@ -42,8 +42,8 @@ module Kernel
     elsif name =~ /http.+jslint/
       name = File.join($data_dir, "..", "bin", "jslint.js")
       puts "\nDownloading local file #{name}"
-    elsif name =~ /ftp.+rhino/
-      name = File.join($data_dir, "..", "bin", "rhino1_7R2-RC1.zip")
+    elsif name =~ /ftp.+rhino(.+)\.zip/
+      name = File.join($data_dir, "..", "bin", "rhino#{$1}.zip")
       puts "\nDownloading local file #{name}"
     end
 
