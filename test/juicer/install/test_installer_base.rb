@@ -1,15 +1,5 @@
-require 'stringio'
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. test_helper])) unless defined?(Juicer)
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. .. lib juicer install base]))
-
-# TODO: Do this better...
-#module Kernel
-#  def open(url)
-#    str = StringIO.new
-#    str.puts "1.0.0"
-#    str
-#  end
-#end
 
 module Juicer
   module Install
@@ -119,17 +109,17 @@ class TestInstallerBase < Test::Unit::TestCase
   end
 
   def test_download_should_cache_files_and_only_redownload_when_forced_to_do_so
-    @installer.download("http://feeds.feedburner.com/cjno")
-    filename = File.join(@juicer_home, "download/some_magic/cjno")
+    @installer.download("http://www.julienlecomte.net/yuicompressor/")
+    filename = File.join(@juicer_home, "download/some_magic/yuicompressor")
     assert File.exists?(filename)
     sleep(0.5)
 
     mtime = File.stat(filename).mtime
-    @installer.download("http://feeds.feedburner.com/cjno")
+    @installer.download("http://www.julienlecomte.net/yuicompressor/")
     assert_equal mtime, File.stat(filename).mtime
     sleep(0.5)
 
-    @installer.download("http://feeds.feedburner.com/cjno", true)
+    @installer.download("http://www.julienlecomte.net/yuicompressor/", true)
     assert_not_equal mtime, File.stat(filename).mtime
   end
 
