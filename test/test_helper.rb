@@ -33,8 +33,8 @@ module Kernel
   alias juicer_original_open open # :nodoc:
 
   def open(name, *rest, &block)
-    if name =~ /http.+yuicompressor.+\.zip$/
-      name = File.join($data_dir, "..", "bin", "yuicompressor-2.4.2.zip")
+    if name =~ /http.+yuicompressor-(\d\.\d\.\d)\.zip$/
+      name = File.join($data_dir, "..", "bin", "yuicompressor-#{$1}.zip")
       puts "\nDownloading local file #{name}"
     elsif name =~ /http.+yuicompressor/
       name = File.join($data_dir, "..", "bin", "yuicompressor")
@@ -47,7 +47,7 @@ module Kernel
       puts "\nDownloading local file #{name}"
     end
 
-    juicer_original_open(name, *rest, &block)
+    juicer_original_open(File.expand_path(name), *rest, &block)
   end
 
   module_function :open
