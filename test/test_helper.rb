@@ -24,18 +24,30 @@ class Class
   end
 end
 
-alias_method :_open, :open
-
 #
-# Mock open for the cases where it's set to download third party libraries
+# Intercept calls to open, and return local files
 #
-#def open(url)
-#  if url =~ /yuicompressor/
-#    File.open(File.join($data_dir, "mock", "yuicompressor-2.4.2.zip"), "r")
-#  end
+module Kernel
+ private
+  alias juicer_original_open open # :nodoc:
 
-#  _open(file, mode, &block)
-#end
+  def open(name, *rest, &block)
+    if name =~ /http.+yuicompressor/
+      name = File.join($data_dir, "..", "bin", "yuicompressor-2.4.2.zip")
+      puts "\nDownloading local file #{name}"
+    elsif name =~ /http.+jslint/
+      name = File.join($data_dir, "..", "bin", "jslint.js")
+      puts "\nDownloading local file #{name}"
+    elsif name =~ /ftp.+rhino/
+      name = File.join($data_dir, "..", "bin", "rhino1_7R1.zip")
+      puts "\nDownloading local file #{name}"
+    end
+
+    juicer_original_open(name, *rest, &block)
+  end
+
+  module_function :open
+end
 
 module Juicer
   module Test
