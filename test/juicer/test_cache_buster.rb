@@ -1,6 +1,10 @@
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. test_helper])) unless defined?(Juicer)
 
 class TestCacheBuster < Test::Unit::TestCase
+  def setup
+    Juicer::Test::FileSetup.new.create
+  end
+
   def test_default_type_and_param_name
     file = path("a.js")
     mtime = File.new(file).mtime.to_i
