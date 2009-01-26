@@ -26,14 +26,16 @@ module Juicer
     #
     def self.path(file, type = :soft, param = :undef)
       param = (type == :soft ? "jcb" : nil) if param == :undef
-      mtime = File.new(file).mtime.to_i
+      mtime = File.new(file.split("?").first).mtime.to_i
 
       if type == :soft
         param = "#{param}".length == 0 ? "" : "#{param}="
+        file = file.sub(/#{param}\d+/, "").sub(/(\?|\&)$/, "")
         "#{file}#{file.index('?') ? '&' : '?'}#{param}#{mtime}"
       else
         parts = file.split(".")
         suffix = parts.pop
+        file = parts.join.sub(/-#{param}\d+/, "")
         "#{parts.join('.')}-#{param}#{mtime}.#{suffix}"
       end
     end

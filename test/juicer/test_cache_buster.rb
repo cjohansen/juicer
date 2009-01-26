@@ -49,4 +49,10 @@ class TestCacheBuster < Test::Unit::TestCase
     mtime = File.new(file).mtime.to_i
     assert_equal "#{File.dirname(file)}/a-cb#{mtime}.js", Juicer::CacheBuster.path(file, :hard, "cb")
   end
+
+  def test_cached_path_should_be_updated_soft
+    file = path("a.js")
+    mtime = File.new(file).mtime.to_i
+    assert_equal "#{File.dirname(file)}/a.js?cb=#{mtime}", Juicer::CacheBuster.path("#{file}?cb=1234", :soft, "cb")
+  end
 end
