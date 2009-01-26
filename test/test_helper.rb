@@ -83,6 +83,29 @@ module Juicer
         mkfile(@dir, 'ok.js', "function hey() {\n    alert(\"Hey\");\n}\n")
         mkfile(@dir, 'not-ok.js', "var a = 34\nb = 78;\n")
 
+        images = mkdir File.join(@dir, "images")
+        mkfile(images, '1.png', "")
+
+        css_dir = mkdir File.join(@dir, "css")
+        mkfile(css_dir, '2.gif', "")
+
+        css = <<-CSS
+body {
+    background: url(../images/1.png);
+}
+
+h1 {
+    background: url(../a1.css) 0 0 no-repeat;
+}
+
+h2 {
+   background: url(2.gif) no-repeat;
+}
+        CSS
+
+        mkfile(css_dir, 'test.css', css)
+        mkfile(css_dir, 'test2.css', "body { background: url(/images/1.png); }")
+
         mkfile(@dir, 'Changelog.txt', "2008.02.09 | stb-base 1.29\n\nFEATURE: Core  | Bla bla bla bla bla\nFEATURE: UI: | Bla bla bla bla bla\n\n\n2008.02.09 | stb-base 1.29\n\nFEATURE: Core  | Bla bla bla bla bla\nFEATURE: UI: | Bla bla bla bla bla\n")
       end
 
