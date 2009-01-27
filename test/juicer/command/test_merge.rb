@@ -126,6 +126,8 @@ class TestMergeCommand < Test::Unit::TestCase
       @merge.instance_eval { @output = path("a.min.css") }
       assert @merge.execute(path("a1.css"))
       assert_equal "h2{font-size:10px;}html{background:red;}h1{font-size:12px;}body{width:800px;}", IO.read(path("a.min.css"))
+    rescue Test::Unit::AssertionFailedError => err
+      raise err
     rescue Exception => err
       puts err.message
     end

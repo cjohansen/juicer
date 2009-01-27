@@ -38,6 +38,8 @@ module Juicer
       @contents = nil
     end
 
+    chain_method :save
+
     #
     # Returns all referenced URLs in +file+. Returned paths are absolute (ie,
     # they're resolved relative to the +file+ path.
