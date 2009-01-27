@@ -5,6 +5,7 @@ class TestStylesheetMerger < Test::Unit::TestCase
   def setup
     @file_merger = Juicer::Merger::StylesheetMerger.new
     Juicer::Test::FileSetup.new.create
+    Dir.chdir path("")
   end
 
   def teardown
@@ -57,5 +58,24 @@ EOF
     @file_merger.save(output_file)
 
     assert_equal merged, IO.read(output_file)
+  end
+
+  def test_included_files_should_have_referenced_relative_urls_rereferenced
+    @file_merger << path("path_test.css")
+    ios = StringIO.new
+    @file_merger.save(ios)
+    files = ios.string.scan(/url\(([^\)]*)\)/).collect { |f| f.first }.uniq.sort
+
+    assert_equal "a1.css::css/2.gif::images/1.png", files.join("::")
+  end
+
+  def test_cycle_asset_hosts
+    @file_merger = Juicer::Merger::StylesheetMerger.new nil, :hosts => ["http://assets1", "http://assets2", "http://assets3"]
+    @file_merger << path("path_test2.css")
+    ios = StringIO.new
+    @file_merger.save(ios)
+    files = ios.string.scan(/url\(([^\)]*)\)/).collect { |f| f.first }
+
+    assert_equal "1/images/1.png2/css/2.gif3/a1.css2/css/2.gif2/a2.css".gsub(/(\d\/)/, 'http://assets\1'), files.join
   end
 end

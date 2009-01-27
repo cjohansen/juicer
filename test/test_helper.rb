@@ -105,6 +105,26 @@ h2 {
 
         mkfile(css_dir, 'test.css', css)
         mkfile(css_dir, 'test2.css', "body { background: url(/images/1.png); }")
+        mkfile(@dir, 'path_test.css', "@import 'css/test.css';\n\nbody {\n    background: url(css/2.gif) no-repeat;\n}\n")
+
+        css = <<-CSS
+body {
+    background: url(/images/1.png);
+}
+
+h1 {
+    background: url(/css/2.gif);
+    background: url(/a1.css) 0 0 no-repeat;
+}
+
+h2 {
+   background: url(/css/2.gif) no-repeat;
+}
+
+p { background: url(/a2.css); }
+        CSS
+
+        mkfile(@dir, 'path_test2.css', css)
 
         mkfile(@dir, 'Changelog.txt', "2008.02.09 | stb-base 1.29\n\nFEATURE: Core  | Bla bla bla bla bla\nFEATURE: UI: | Bla bla bla bla bla\n\n\n2008.02.09 | stb-base 1.29\n\nFEATURE: Core  | Bla bla bla bla bla\nFEATURE: UI: | Bla bla bla bla bla\n")
       end

@@ -10,6 +10,8 @@ module Juicer
 
       def initialize(files = [], options = {})
         @files = []
+        @root = nil
+        @options = options
         @dependency_resolver ||= nil
         self.append files
       end
@@ -39,9 +41,18 @@ module Juicer
       #
       def save(file_or_stream)
         output = file_or_stream
-        output = File.open(output, 'w') if output.is_a? String
 
-        @files.each { |f| output.puts(merge(f)) }
+        if output.is_a? String
+          @root = Pathname.new(File.expand_path(output))
+          output = File.open(output, 'w')
+        else
+          @root = Pathname.new(File.expand_path("."))
+        end
+
+        @files.each do |f|
+          output.puts(merge(f))
+        end
+
         output.close if file_or_stream.is_a? String
       end
 
