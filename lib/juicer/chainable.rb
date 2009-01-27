@@ -63,6 +63,7 @@ module Juicer
     #
     def next_in_chain=(next_obj)
       @_next_in_chain = next_obj
+      next_obj || self
     end
 
     alias_method :set_next, :next_in_chain=

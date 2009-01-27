@@ -55,6 +55,13 @@ class TestChainable < Test::Unit::TestCase
     assert_equal host2, host.next_in_chain
   end
 
+  def test_set_next_return_self_if_next_nil
+    host = Host.new
+
+    assert_not_nil host.set_next(nil)
+    assert_equal host, host.set_next(nil)
+  end
+
   def test_simple_chain
     host = Host.new("a")
     host2 = host.next_in_chain = Host.new("b")
