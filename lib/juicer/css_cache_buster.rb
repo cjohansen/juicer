@@ -29,9 +29,11 @@ module Juicer
     #
     def save(file, output = nil)
       @contents = File.read(file)
+      path = Pathname.new(File.expand_path(File.dirname(file)))
 
       urls(file).each do |url|
-        @contents.sub!(url, Juicer::CacheBuster.path(resolve(url, file)))
+        cburl = Pathname.new(Juicer::CacheBuster.path(resolve(url, file)))
+        @contents.sub!(url, cburl.relative_path_from(path).to_s)
       end
 
       File.open(output || file, "w") { |f| f.puts @contents }

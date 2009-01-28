@@ -43,7 +43,7 @@ module Juicer
         output = file_or_stream
 
         if output.is_a? String
-          @root = Pathname.new(File.expand_path(output))
+          @root = Pathname.new(File.dirname(File.expand_path(output)))
           output = File.open(output, 'w')
         else
           @root = Pathname.new(File.expand_path("."))
