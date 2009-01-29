@@ -21,6 +21,12 @@ module Juicer
       def initialize(files = [], options = {})
         @dependency_resolver = CssDependencyResolver.new(options)
         super(files || [], options)
+        @hosts = options[:hosts] || []
+        @host_num = 0
+        @use_absolute = options.key?(:absolute_urls) ? options[:absolute_urls] : false
+        @use_relative = options.key?(:relative_urls) ? options[:relative_urls] : false
+        @web_root = options[:web_root]
+        @web_root.sub!(/\/?$/, "") if @web_root # Make sure path doesn't end in a /
       end
 
      private
@@ -33,26 +39,59 @@ module Juicer
       # by default. If the :hosts option is set, the absolute URLs will cycle
       # through these. This may help in concurrent downloads.
       #
+      # The options hash decides how Juicer recalculates referenced URLs:
+      #
+      #   options[:absolute_urls] When true, all paths are converted to absolute
+      #                           URLs. Requires options[:web_root] to define
+      #                           root directory to resolve absolute URLs from.
+      #   options[:relative_urls] When true, all paths are converted to relative
+      #                           paths. Requires options[:web_root] to define
+      #                           root directory to resolve absolute URLs from.
+      #
+      # If none if these are set then relative URLs are recalculated to match
+      # location of merged target while absolute URLs are left absolute.
+      #
+      # If options[:hosts] is set to an array of hosts, then they will be cycled
+      # for all absolute URLs regardless of absolute/relative URL strategy.
+      #
       def merge(file)
         content = super.gsub(/^\s*\@import\s("|')(.*)("|')\;?/, '')
         dir = File.expand_path(File.dirname(file))
-        i = 0
 
-        content.scan(/url\(([^\)]*)\)/).collect do |url|
-          url = path = url.first
-          hosts = @options[:hosts] || []
-
-          if url =~ %r{^/} && hosts.length > 0
-            path = File.join(hosts[i % hosts.length], url)
-            i += 1
-          else
-            path = Pathname.new(File.join(dir, url)).relative_path_from(@root)
-          end
-
+        content.scan(/url\(([^\)]*)\)/).uniq.collect do |url|
+          url = url.first
+          path = resolve_path(url, dir)
           content.gsub!(/\(#{url}\)/m, "(#{path})") unless path == url
         end
 
         content
+      end
+
+      def resolve_path(url, dir)
+        path = url
+
+        # Absolute URLs
+        if url =~ %r{^/} && @use_relative
+          raise ArgumentError.new("Unable to handle absolute URLs without :web_root option") if !@web_root
+          path = Pathname.new(File.join(@web_root, url)).relative_path_from(@root)
+        end
+
+        # All URLs that don't start with a protocol
+        if url !~ %r{^[a-z]+://}
+          if @use_absolute
+            path = File.expand_path(File.join(dir, url)).sub(@web_root, "")
+          else
+            path = Pathname.new(File.join(dir, url)).relative_path_from(@root)
+          end
+        end
+
+        # Cycle hosts, if any
+        if url =~ %r{^/} && @hosts.length > 0
+          path = File.join(@hosts[@host_num % @hosts.length], url)
+          @host_num += 1
+        end
+
+        path
       end
     end
   end

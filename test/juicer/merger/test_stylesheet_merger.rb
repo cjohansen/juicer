@@ -76,6 +76,8 @@ EOF
     @file_merger.save(ios)
     files = ios.string.scan(/url\(([^\)]*)\)/).collect { |f| f.first }
 
-    assert_equal "1/images/1.png2/css/2.gif3/a1.css2/css/2.gif2/a2.css".gsub(/(\d\/)/, 'http://assets\1'), files.join
+    assert_equal "1/images/1.png::2/css/2.gif::3/a1.css::2/css/2.gif::1/a2.css".gsub(/(\d\/)/, 'http://assets\1'), files.join("::")
   end
+
+
 end
