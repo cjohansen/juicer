@@ -1,5 +1,4 @@
 require File.join(File.dirname(__FILE__), "util")
-require "rubygems"
 require "cmdparse"
 require "pathname"
 

@@ -1,6 +1,5 @@
 require 'fileutils'
 require 'test/unit'
-require 'rubygems'
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib juicer])) unless defined?(Juicer)
 
 $data_dir = File.join(File.expand_path(File.dirname(__FILE__)), "data")

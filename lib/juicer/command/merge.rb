@@ -1,6 +1,5 @@
 require File.join(File.dirname(__FILE__), "util")
 require File.join(File.dirname(__FILE__), "verify")
-require "rubygems"
 require "cmdparse"
 require "pathname"
 
