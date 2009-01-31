@@ -77,7 +77,7 @@ module Juicer
         end
 
         # All URLs that don't start with a protocol
-        if url !~ %r{^[a-z]+://}
+        if url !~ %r{^/} && url !~ %r{^[a-z]+://}
           if @use_absolute
             path = File.expand_path(File.join(dir, url)).sub(@web_root, "")
           else

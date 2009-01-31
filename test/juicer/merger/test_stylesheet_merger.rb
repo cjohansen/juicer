@@ -79,5 +79,12 @@ EOF
     assert_equal "1/images/1.png::2/css/2.gif::3/a1.css::2/css/2.gif::1/a2.css".gsub(/(\d\/)/, 'http://assets\1'), files.join("::")
   end
 
+  def test_resolve_path_should_leave_absolute_urls
+    merger = Juicer::Merger::StylesheetMerger.new
+    url = "/some/url"
 
+    Juicer::Merger::StylesheetMerger.publicize_methods do
+      assert_equal url, merger.resolve_path(url, nil)
+    end
+  end
 end
