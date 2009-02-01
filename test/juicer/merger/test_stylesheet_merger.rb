@@ -87,4 +87,24 @@ EOF
       assert_equal url, merger.resolve_path(url, nil)
     end
   end
+
+  def test_resolve_path_error_when_relative_missing_web_root
+    merger = Juicer::Merger::StylesheetMerger.new [], :relative_urls => true
+
+    Juicer::Merger::StylesheetMerger.publicize_methods do
+      assert_raise ArgumentError do
+        merger.resolve_path("/some/url", nil)
+      end
+    end
+  end
+
+  def test_resolve_path_web_root_should_be_added_to_relative_paths
+    merger = Juicer::Merger::StylesheetMerger.new [], :relative_urls => true, :web_root => "/home/usr"
+
+    Juicer::Merger::StylesheetMerger.publicize_methods do
+      merger.instance_eval { @root = Pathname.new "/home/usr/design" }
+      assert_equal "../some/url", merger.resolve_path("/some/url", nil)
+    end
+  end
+
 end

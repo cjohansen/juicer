@@ -73,7 +73,7 @@ module Juicer
         # Absolute URLs
         if url =~ %r{^/} && @use_relative
           raise ArgumentError.new("Unable to handle absolute URLs without :web_root option") if !@web_root
-          path = Pathname.new(File.join(@web_root, url)).relative_path_from(@root)
+          path = Pathname.new(File.join(@web_root, url)).relative_path_from(@root).to_s
         end
 
         # All URLs that don't start with a protocol
