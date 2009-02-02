@@ -69,16 +69,6 @@ EOF
     assert_equal "a1.css::css/2.gif::images/1.png", files.join("::")
   end
 
-  def test_cycle_asset_hosts
-    @file_merger = Juicer::Merger::StylesheetMerger.new nil, :hosts => ["http://assets1", "http://assets2", "http://assets3"]
-    @file_merger << path("path_test2.css")
-    ios = StringIO.new
-    @file_merger.save(ios)
-    files = ios.string.scan(/url\(([^\)]*)\)/).collect { |f| f.first }
-
-    assert_equal "1/images/1.png::2/css/2.gif::3/a1.css::2/css/2.gif::1/a2.css".gsub(/(\d\/)/, 'http://assets\1'), files.join("::")
-  end
-
   def test_resolve_path_should_leave_absolute_urls
     merger = Juicer::Merger::StylesheetMerger.new
     url = "/some/url"
@@ -98,7 +88,7 @@ EOF
     end
   end
 
-  def test_resolve_path_web_root_should_be_added_to_relative_paths
+  def test_resolve_path_should_make_absolute_urls_relative
     merger = Juicer::Merger::StylesheetMerger.new [], :relative_urls => true, :web_root => "/home/usr"
 
     Juicer::Merger::StylesheetMerger.publicize_methods do
@@ -107,4 +97,60 @@ EOF
     end
   end
 
+  def test_resolve_path_should_leave_full_urls
+    merger = Juicer::Merger::StylesheetMerger.new []
+    url = "http://test.com"
+
+    Juicer::Merger::StylesheetMerger.publicize_methods do
+      merger.instance_eval { @root = Pathname.new "/home/usr/design" }
+      assert_equal url, merger.resolve_path(url, nil)
+    end
+  end
+
+  def test_resolve_path_error_when_missing_absolute_web_root
+    merger = Juicer::Merger::StylesheetMerger.new [], :absolute_urls => true
+
+    Juicer::Merger::StylesheetMerger.publicize_methods do
+      assert_raise ArgumentError do
+        merger.resolve_path("../some/url", nil)
+      end
+    end
+  end
+
+  def test_resolve_path_should_make_relative_urls_absolute
+    merger = Juicer::Merger::StylesheetMerger.new [], :absolute_urls => true, :web_root => "/home/usr"
+
+    Juicer::Merger::StylesheetMerger.publicize_methods do
+      merger.instance_eval { @root = Pathname.new "/home/usr/design" }
+      assert_equal "/design/images/1.png", merger.resolve_path("../images/1.png", "/home/usr/design/css")
+    end
+  end
+
+  def test_resolve_path_should_redefine_relative_urls
+    merger = Juicer::Merger::StylesheetMerger.new [], :relative_urls => true
+
+    Juicer::Merger::StylesheetMerger.publicize_methods do
+      merger.instance_eval { @root = Pathname.new "/home/usr/design2/css" }
+      assert_equal "../../design/images/1.png", merger.resolve_path("../images/1.png", "/home/usr/design/css")
+    end
+  end
+
+  def test_resolve_path_should_redefine_relative_urls
+    merger = Juicer::Merger::StylesheetMerger.new [], :relative_urls => true, :web_root => "/home/usr"
+
+    Juicer::Merger::StylesheetMerger.publicize_methods do
+      merger.instance_eval { @root = Pathname.new "/home/usr/design2/css" }
+      assert_equal "../../images/1.png", merger.resolve_path("/images/1.png", "/home/usr/design/css")
+    end
+  end
+
+  def test_cycle_asset_hosts
+    @file_merger = Juicer::Merger::StylesheetMerger.new nil, :hosts => ["http://assets1", "http://assets2", "http://assets3"]
+    @file_merger << path("path_test2.css")
+    ios = StringIO.new
+    @file_merger.save(ios)
+    files = ios.string.scan(/url\(([^\)]*)\)/).collect { |f| f.first }
+
+    assert_equal "1/images/1.png::2/css/2.gif::3/a1.css::2/css/2.gif::1/a2.css".gsub(/(\d\/)/, 'http://assets\1'), files.join("::")
+  end
 end
