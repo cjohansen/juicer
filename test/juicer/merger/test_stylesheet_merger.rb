@@ -144,7 +144,19 @@ EOF
     end
   end
 
-  def test_cycle_asset_hosts
+  def test_resolve_path_with_hosts_should_cycle_asset_hosts
+    merger = Juicer::Merger::StylesheetMerger.new [], :hosts => ["http://assets1", "http://assets2", "http://assets3"]
+
+    Juicer::Merger::StylesheetMerger.publicize_methods do
+      merger.instance_eval { @root = Pathname.new "/home/usr/design2/css" }
+      assert_equal "http://assets1/images/1.png", merger.resolve_path("/images/1.png", nil)
+      assert_equal "http://assets2/images/1.png", merger.resolve_path("/images/1.png", nil)
+      assert_equal "http://assets3/images/1.png", merger.resolve_path("/images/1.png", nil)
+      assert_equal "http://assets1/images/1.png", merger.resolve_path("/images/1.png", nil)
+    end
+  end
+
+  def test_cycle_asset_hosts_should_use_same_host_for_same_url
     @file_merger = Juicer::Merger::StylesheetMerger.new nil, :hosts => ["http://assets1", "http://assets2", "http://assets3"]
     @file_merger << path("path_test2.css")
     ios = StringIO.new
