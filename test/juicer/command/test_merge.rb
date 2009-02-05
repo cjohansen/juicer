@@ -150,4 +150,6 @@ class TestMergeCommand < Test::Unit::TestCase
       assert_match(/Ignoring detected problems/, @io.string)
     end
   end
+
+
 end

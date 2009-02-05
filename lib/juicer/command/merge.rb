@@ -23,9 +23,12 @@ module Juicer
         @opts = {}                   # Path to minifyer binary
         @arguments = nil             # Minifyer arguments
         @ignore = false              # Ignore syntax problems if true
-        @cache_buster = :soft        # What kind of cache buster to use
+        @cache_buster = :soft        # What kind of cache buster to use, :soft or :hard
         @hosts = nil                 # Hosts to use when replacing URLs in stylesheets
-        @web_root = nil              # Used to resolve absolute paths
+        @web_root = nil              # Used to understand absolute paths
+        @relative_urls = false       # Make the merger use relative URLs
+        @absolute_urls = false       # Make the merger use absolute URLs
+
         @log = log || Logger.new(STDOUT)
 
         self.short_desc = "Combines and minifies CSS and JavaScript files"
@@ -54,8 +57,12 @@ the YUI Compressor the path should be the path to where the jar file is found.
           opt.on("-a", "--arguments arguments", "Arguments to minifyer, escape with quotes") { |arguments| @arguments = arguments }
           opt.on("-i", "--ignore-problems", "Merge and minify even if verifyer finds problems") { @ignore = true }
           opt.on("-t", "--type type", "Juicer can only guess type when files have .css or .js extensions. Specify js or\n" +
-                           (" " * 37) + "css with this option in cases where files have other extensions.") { |type| @type = type }
+                           (" " * 37) + "css with this option in cases where files have other extensions.") { |type| @type = type.to_sym }
           opt.on("-h", "--hosts hosts", "Cycle asset hosts for referenced urls. Comma separated") { |hosts| @hosts = hosts.split(",") }
+          opt.on("-r", "--relative-urls", "Convert all referenced URLs to relative URLs. Requires --document-root if\n" +
+                           (" " * 37) + "absolute URLs are used. Only valid for CSS files") { |t| @relative_urls = true }
+          opt.on("-b", "--absolute-urls", "Convert all referenced URLs to absolute URLs. Requires --document-root.\n" +
+                           (" " * 37) + "Works with cycled asset hosts. Only valid for CSS files") { |t| @absolute_urls = true }
           opt.on("-d", "--document-root dir", "Path to resolve absolute URLs relative to") { |path| @web_root = path }
           opt.on("-c", "--cache-buster type", "none, soft or hard. Default is soft, which adds timestamps to referenced\n" +
                            (" " * 37) + "URLs as query parameters. None leaves URLs untouched and hard alters file names") do |type|
@@ -72,30 +79,41 @@ the YUI Compressor the path should be the path to where the jar file is found.
           raise SystemExit.new("Please provide atleast one input file")
         end
 
-        min = minifyer()
+        # Figure out which file to output to
         output = output(files.first)
 
+        # Warn if file already exists
         if File.exists?(output) && !@force
           msg = "Unable to continue, #{output} exists. Run again with --force to overwrite"
           @log.fatal msg
           raise SystemExit.new(msg)
         end
 
-        merger = merger(output).new(files)
-        cache_buster = cache_buster(output)
-        merger.set_next(cache_buster).set_next(min)
+        # Set up merger to resolve imports and so on. Do not touch URLs now, if
+        # asset host cycling is added at this point, the cache buster WILL be
+        # confused
+        merger = merger(output).new(files, :relative_urls => @relative_urls,
+                                           :absolute_urls => @absolute_urls,
+                                           :web_root => @web_root,
+                                           :hosts => @hosts)
 
+        # Fail if syntax trouble (js only)
         if !Juicer::Command::Verify.check_all(merger.files.reject { |f| f =~ /\.css$/ }, @log)
           @log.error "Problems were detected during verification"
           raise SystemExit.new("Input files contain problems") unless @ignore
           @log.warn "Ignoring detected problems"
         end
 
+        # Set command chain and execute
+        merger.set_next(cache_buster(output)).set_next(minifyer)
         merger.save(output)
 
         # Print report
         @log.info "Produced #{relative output} from"
         merger.files.each { |file| @log.info "  #{relative file}" }
+      rescue FileNotFoundError => err
+        # Handle missing document-root option
+        puts err.message.sub(/:web_root/, "--document-root")
       end
 
      private
@@ -131,11 +149,11 @@ the YUI Compressor the path should be the path to where the jar file is found.
       # Resolve and load merger
       #
       def merger(output = "")
-        type = @type || output.split(/\.([^\.]*)$/)[1]
-        type = type.to_sym if type
+        @type ||= output.split(/\.([^\.]*)$/)[1]
+        type = @type.to_sym if @type
 
         if !@types.include?(type)
-          @log.error "Unknown type '#{type}', defaulting to 'js'"
+          @log.warn "Unknown type '#{type}', defaulting to 'js'"
           type = :js
         end
 
@@ -143,27 +161,11 @@ the YUI Compressor the path should be the path to where the jar file is found.
       end
 
       #
-      # Loads verifyer
-      #
-      def verifyer
-        jslint = Juicer::JsLint.new(:bin_path => Juicer.home)
-
-        # Check that JsLint is installed
-        raise FileNotFoundError.new("Missing 3rd party library JsLint, install with\njuicer install jslint") if jslint.locate_lib.nil?
-
-        jslint
-      end
-
-      #
       # Load cache buster, only available for CSS files
       #
       def cache_buster(file)
         return nil if !file || file !~ /\.css$/
-
-        buster = Juicer::CssCacheBuster.new(:web_root => @web_root,
-                                            :type => @cache_buster,
-                                            :hosts => @hosts)
-        buster
+        Juicer::CssCacheBuster.new(:web_root => @web_root, :type => @cache_buster)
       end
 
       #

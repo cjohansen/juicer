@@ -135,7 +135,7 @@ EOF
     end
   end
 
-  def test_resolve_path_should_redefine_relative_urls
+  def test_resolve_path_should_redefine_absolute_urls
     merger = Juicer::Merger::StylesheetMerger.new [], :relative_urls => true, :web_root => "/home/usr"
 
     Juicer::Merger::StylesheetMerger.publicize_methods do

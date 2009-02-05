@@ -20,7 +20,9 @@ module Juicer
 
     def initialize(options = {})
       @web_root = options[:web_root]
+      @web_root.sub!(%r{/?$}, "") if @web_root # Remove trailing slash
       @type = options[:type] || :soft
+      @hosts = (options[:hosts] || []).collect { |h| h.sub!(%r{/?$}, "") } # Remove trailing slashes
       @contents = nil
     end
 
@@ -29,11 +31,14 @@ module Juicer
     #
     def save(file, output = nil)
       @contents = File.read(file)
-      path = Pathname.new(File.expand_path(File.dirname(file)))
 
       urls(file).each do |url|
-        cburl = Pathname.new(Juicer::CacheBuster.path(resolve(url, file)))
-        @contents.sub!(url, cburl.relative_path_from(path).to_s)
+        path = resolve(url, file)
+
+        if path != url
+          basename = File.basename(Juicer::CacheBuster.path(path))
+          @contents.sub!(url, File.join(File.dirname(url), basename))
+        end
       end
 
       File.open(output || file, "w") { |f| f.puts @contents }
@@ -58,16 +63,31 @@ module Juicer
     # Resolve full path from URL
     #
     def resolve(target, from)
-      return target if target =~ %r{^[a-z]+\://}
+      # If URL is external, check known hosts to see if URL can be treated
+      # like a local one (ie so we can add cache buster)
+      catch(:continue) do
+        if target =~ %r{^[a-z]+\://}
+          # This could've been a one-liner, but I prefer to be
+          # able to read my own code ;)
+          @hosts.each do |host|
+            if target =~ /^#{host}/
+              target.sub!(/^#{host}/, "")
+              throw :continue
+            end
+          end
 
-      if target =~ %r{^/}
-        unless @web_root
-          raise FileNotFoundError.new("Unable to resolve absolute path without :web_root option")
+          # No known hosts matched, return
+          return target
         end
+      end
 
+      # Simply add web root to absolute URLs
+      if target =~ %r{^/}
+        raise FileNotFoundError.new("Unable to resolve absolute path without :web_root option") unless @web_root
         return File.expand_path(File.join(@web_root, target))
       end
 
+      # Resolve relative URLs to full paths
       File.expand_path(File.join(File.dirname(File.expand_path(from)), target))
     end
   end
