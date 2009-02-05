@@ -28,6 +28,7 @@ module Juicer
         @web_root = nil              # Used to understand absolute paths
         @relative_urls = false       # Make the merger use relative URLs
         @absolute_urls = false       # Make the merger use absolute URLs
+        @local_hosts = []            # Host names that are served from :web_root
 
         @log = log || Logger.new(STDOUT)
 
@@ -59,6 +60,10 @@ the YUI Compressor the path should be the path to where the jar file is found.
           opt.on("-t", "--type type", "Juicer can only guess type when files have .css or .js extensions. Specify js or\n" +
                            (" " * 37) + "css with this option in cases where files have other extensions.") { |type| @type = type.to_sym }
           opt.on("-h", "--hosts hosts", "Cycle asset hosts for referenced urls. Comma separated") { |hosts| @hosts = hosts.split(",") }
+          opt.on("-l", "--local-hosts hosts", "Host names that are served from --document-root (can be given cache busters). Comma separated") do |hosts|
+            @local_hosts = hosts.split(",")
+          end
+          opt.on("", "--all-hosts-local", "Treat all hosts as local (ie served from --document-root") { |t| @local_hosts = @hosts }
           opt.on("-r", "--relative-urls", "Convert all referenced URLs to relative URLs. Requires --document-root if\n" +
                            (" " * 37) + "absolute URLs are used. Only valid for CSS files") { |t| @relative_urls = true }
           opt.on("-b", "--absolute-urls", "Convert all referenced URLs to absolute URLs. Requires --document-root.\n" +
@@ -165,7 +170,7 @@ the YUI Compressor the path should be the path to where the jar file is found.
       #
       def cache_buster(file)
         return nil if !file || file !~ /\.css$/
-        Juicer::CssCacheBuster.new(:web_root => @web_root, :type => @cache_buster)
+        Juicer::CssCacheBuster.new(:web_root => @web_root, :type => @cache_buster, :hosts => @local_hosts)
       end
 
       #
