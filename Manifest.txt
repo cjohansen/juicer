@@ -27,8 +27,6 @@ lib/juicer/merger/javascript_dependency_resolver.rb
 lib/juicer/merger/javascript_merger.rb
 lib/juicer/merger/stylesheet_merger.rb
 lib/juicer/minifyer/yui_compressor.rb
-online.css
-online.min.css
 tasks/test/setup.rake
 test/bin/jslint.js
 test/bin/rhino1_7R1.zip
