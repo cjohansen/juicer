@@ -67,6 +67,9 @@ module Juicer
         content
       end
 
+      #
+      # Resolves a path relative to a directory
+      #
       def resolve_path(url, dir)
         path = url
 
