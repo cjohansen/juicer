@@ -1,13 +1,25 @@
 = Juicer
+Official URL: http://github.com/cjohansen/juicer/tree/master
 Christian Johansen (http://www.cjohansen.no)
 
 == DESCRIPTION:
 
-Juicer is a command line tool aimed at easing JavaScript and CSS development.
-Currently it only provides a wrapper to YUI Compressor along with a module that
-can dynamically link together files, but there are plans for more functionality.
+Juicer is a command line tool that helps you ship frontend code for production.
+
+High level overview; Juicer can
+
+* figure out which files depend on each other and merge them together, reducing
+  the number of http requests per page view, thus improving performance
+* use YUI Compressor to compress code, thus improving performance
+* verify that your JavaScript is safe to minify/compress by running JsLint on it
+* cycle asset hosts in CSS files
+* add "cache busters" to URLs in CSS files
+* recalculate relative URLs in CSS files, as well as convert them to absolute
+  (or convert absolute URLs to relative URLs)
 
 == FEATURES:
+
+=== Merging and minifying
 
 Juicer can read @import statements in CSS files and use them to combine all your
 stylesheets into a single file. This file may be minified using the YUI
@@ -29,28 +41,51 @@ Running <tt>juicer merge</tt> on this file will result in a minified file
 <tt>filename.min.js</tt> containing the file jquery-1.2.0.js (located in the
 same directory) and the code above.
 
-== 0.1.0 STATUS:
+You can use @import (CSS files) and @depend (JavaScript) recursively, effectively
+creating a dependency chain for Juicer to climb and merge.
 
-Juicer is currently in a very early stage, please expect it to be unstable,
-poorly documented and otherwise unfinished. Some of this code is a bit old, and
-a brush up is planned that will likely result in several API changes.
+=== Paths
+
+When merging CSS files, you may want to merge CSS files in different directories.
+You may also want the resulting CSS file to end up in another directory as well.
+Juicer automatically recalculates referenced URLs to reflect this change.
+
+Absolute URLs are not changed by default, but if you provide juicer merge with
+--document-root [DIR] and --relative-urls then absolute URLs are converted to
+URLs relative to output directory. You can also use --absolute-urls to convert
+all URLs to absolute ones.
+
+=== Cache busters
+
+Juicer supports so-called cache busters. A cache buster is a pattern in a path
+whose only purpose is to "trick" browsers to redownload a file when it has
+changed in cases where a far future expires header is used.
+
+There are two types of cache busters; soft ones add a parameter to the URL, like
+so: http://assets/images/1.png?cb1234567890, ie the letters "cb" (as in cache
+buster) and then the timestamp of the files mtime.
+
+Unfortunately, the popular web proxy Squid shipped for some time with a default
+configuration which would not treat a URL as a "new" URL if the only thing changed
+was the GET parameters. For this reason Juicer provides hard cache busters.
+
+Hard cache busters result in URLs such as http://assets/images/1-cb1234567890.png,
+ie URLs that require either renaming of files, or (more conveniently) a web
+server configuration that will forward URLs to the right files anyway.
 
 == PLANNED FEATURES:
 
-There are several things on the pipeline:
+Juicer 0.2.0 is the first usable release. Work will continue from here. Improving
+documentation and APIs is one concern, but there are also new features planned:
 
 * Support more minifiers, JsMin (Ruby port), Packer and possibly others
-* Wrap code quality assurance tools, such as JsLint and CSS Tidy
-    juicer check design/*
-* A tool to build a whole proect based on a configuration file or something
-  like that
-
-As you see, Juicer will mostly rely heavily on other peoples great work. Juicers
-strength will be that it provides a single simple to use interface to run these
-tools on your project, as well as sewing it all together.
+* Add support for CssTidy to compress CSS files
+* juicer build, a command that can build several files in one swoop using a
+  configuration file
+* juicer doc, a command that produces documentation using YUI Doc or JsDoc
 
 If you have any ideas, feature requests, want to contribute or whatever, fork
-the proect on github, or get in touch through christian (at) cjohansen.no.
+the project on github, or get in touch through christian (at) cjohansen.no.
 
 == SYNOPSIS:
 
@@ -60,6 +95,8 @@ the proect on github, or get in touch through christian (at) cjohansen.no.
   juicer merge myfile.js
   -> Produces myfile.min.js, minified and combined
 
+  juicer help
+
 == REQUIREMENTS:
 
 In order to use YUI Compressor you need Java installed and the java executable
@@ -67,20 +104,10 @@ available on your path.
 
 == INSTALL:
 
-  $ wget http://www.cjohansen.no/juicer-0.1.0.gem
-  $ gem install juicer-0.1.0.gem
+  $ gem install juicer
 
-You need Java installed, and you need the YUI Compressor jar file. Get it from
-http://developer.yahoo.com/yui/compressor/
-
-Download the YUI Compressor package and unzip on your file system. Either create
-an environment variable <tt>$YUIC_HOME</tt> that points to where the file is
-found, or provide the path like so:
-  juicer merge --path ~/sources/yuicompressor/build [...]
-
-Alternatively you can keep a copy of the jar file in the same directory that you
-run the <tt>juicer</tt> command from. I imagine that would only make sense in a
-testing scenario.
+You need Java installed and available on your PATH. During gem installation,
+Juicer will download and install YUI Compressor, JsLint and Rhino for you.
 
 == For developers
 
@@ -93,7 +120,7 @@ which brings in third party libraries (ie, requires a working network connection
 
 (The MIT License)
 
-Copyright (c) 2008 Christian Johansen
+Copyright (c) 2008-2009 Christian Johansen
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
