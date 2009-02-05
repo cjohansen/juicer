@@ -23,6 +23,7 @@ PROJ.version = Juicer::VERSION
 PROJ.rubyforge.name = 'juicer'
 PROJ.readme_file = 'Readme.rdoc'
 PROJ.exclude = %w(tmp$ bak$ ~$ CVS \.svn ^pkg ^doc \.git ^rcov ^test\/data gemspec ^test\/bin$)
+PROJ.rdoc.remote_dir = 'juicer'
 
 PROJ.spec.opts << '--color'
 
