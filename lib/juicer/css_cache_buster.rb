@@ -15,6 +15,11 @@ module Juicer
   # you must specify the :web_root option that these URLs should be resolved
   # against.
   #
+  # When dealing with full URLs (ie including hosts) you can optionally specify
+  # an array of hosts to recognize as "local", meaning they serve assets from
+  # the :web_root directory. This way even asset host cycling can benefit from
+  # cache busters.
+  #
   class CssCacheBuster
     include Juicer::Chainable
 
