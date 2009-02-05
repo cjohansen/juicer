@@ -88,7 +88,7 @@ module Juicer
 
       # Simply add web root to absolute URLs
       if target =~ %r{^/}
-        raise FileNotFoundError.new("Unable to resolve absolute path without :web_root option") unless @web_root
+        raise FileNotFoundError.new("Unable to resolve absolute path #{target} without :web_root option") unless @web_root
         return File.expand_path(File.join(@web_root, target))
       end
 
