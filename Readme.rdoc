@@ -99,8 +99,8 @@ the project on github, or get in touch through christian (at) cjohansen.no.
 
 == REQUIREMENTS:
 
-In order to use YUI Compressor you need Java installed and the java executable
-available on your path.
+In order to use YUI Compressor and JsMin (requires Rhino) you need Java
+installed and the java executable available on your path.
 
 == INSTALL:
 
