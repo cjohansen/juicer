@@ -26,7 +26,7 @@ stylesheets into a single file. This file may be minified using the YUI
 Compressor. Eventually it will support other minifying tools too.
 
 Juicer can treat your JavaScript files much the same way too, parsing a comment
-switch @depends, as this example shows:
+switch @depend, as this example shows:
 
   /**
    * My script file
