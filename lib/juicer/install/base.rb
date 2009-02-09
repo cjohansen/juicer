@@ -29,7 +29,7 @@ module Juicer
       # subclasses. Raises an exception when called directly.
       #
       def latest
-        raise NotImplementedError.new "Implement in subclasses"
+        raise NotImplementedError.new("Implement in subclasses")
       end
 
       # Returns the path relative to installation path this installer will
