@@ -156,6 +156,16 @@ EOF
     end
   end
 
+  def test_resolve_paths_should_handle_relative_web_roots
+    merger = Juicer::Merger::StylesheetMerger.new [], :web_root => "test/data", :relative_urls => true
+    merger << File.expand_path("css/test2.css")
+
+    Juicer::Merger::StylesheetMerger.publicize_methods do
+      merger.instance_eval { @root = Pathname.new File.expand_path("test/data/css") }
+      assert_equal "../images/1.png", merger.resolve_path("/images/1.png", nil)
+    end
+  end
+
   def test_cycle_asset_hosts_should_use_same_host_for_same_url
     @file_merger = Juicer::Merger::StylesheetMerger.new nil, :hosts => ["http://assets1", "http://assets2", "http://assets3"]
     @file_merger << path("path_test2.css")

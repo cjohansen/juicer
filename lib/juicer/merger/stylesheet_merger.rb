@@ -26,7 +26,7 @@ module Juicer
         @use_absolute = options.key?(:absolute_urls) ? options[:absolute_urls] : false
         @use_relative = options.key?(:relative_urls) ? options[:relative_urls] : false
         @web_root = options[:web_root]
-        @web_root.sub!(/\/?$/, "") if @web_root # Make sure path doesn't end in a /
+        @web_root = File.expand_path(@web_root).sub(/\/?$/, "") if @web_root # Make sure path doesn't end in a /
       end
 
      private
