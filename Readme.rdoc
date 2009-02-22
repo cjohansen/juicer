@@ -105,6 +105,7 @@ installed and the java executable available on your path.
 == INSTALL:
 
   $ gem install juicer
+  $ juicer install yui_compressor
 
 You need Java installed and available on your PATH. During gem installation,
 Juicer will download and install YUI Compressor, JsLint and Rhino for you.

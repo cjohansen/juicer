@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christian Johansen"]
-  s.date = %q{2009-02-09}
+  s.date = %q{2009-02-22}
   s.default_executable = %q{juicer}
   s.description = %q{Juicer is a command line tool that helps you ship frontend code for production.  High level overview; Juicer can  * figure out which files depend on each other and merge them together, reducing the number of http requests per page view, thus improving performance * use YUI Compressor to compress code, thus improving performance * verify that your JavaScript is safe to minify/compress by running JsLint on it * cycle asset hosts in CSS files * add "cache busters" to URLs in CSS files * recalculate relative URLs in CSS files, as well as convert them to absolute (or convert absolute URLs to relative URLs)}
   s.email = %q{christian@cjohansen.no}
