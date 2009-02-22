@@ -129,7 +129,7 @@ the YUI Compressor the path should be the path to where the jar file is found.
         return nil if @minifyer.nil? || @minifyer == "" || @minifyer.downcase == "none"
 
         begin
-          @opts[:bin_path] = File.join(Juicer.home, @minifyer, "bin") unless @opts[:bin_path]
+          @opts[:bin_path] = File.join(Juicer.home, "lib", @minifyer, "bin") unless @opts[:bin_path]
           compressor = @minifyer.classify(Juicer::Minifyer).new(@opts)
           compressor.set_opts(@arguments) if @arguments
           @log.debug "Using #{@minifyer.camel_case} for minification"

@@ -65,7 +65,7 @@ module Juicer
         output = File.join(Dir::tmpdir, File.basename(file) + '.min.tmp.' + type.to_s) if use_tmp
         FileUtils.mkdir_p(File.dirname(output))
 
-        result = execute(%Q{-jar #{locate_jar} -o "#{output}" "#{file}"})
+        result = execute(%Q{-jar "#{locate_jar}" -o "#{output}" "#{file}"})
 
         if use_tmp                            # If no output file is provided, YUI compressor will
           output.puts IO.read(output)         # compress to a temp file. This file should be cleared
