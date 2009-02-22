@@ -140,12 +140,10 @@ module Juicer
       end
 
       #
-      # Display a message to the user if the global variable $verbose is true.
-      # TODO: Remove
+      # Display a message to the user through Juicer::LOGGER
       #
       def log(str)
-        #puts str if defined? $verbose && $verbose
-        #puts str
+        Juicer::LOGGER.info str
       end
 
       #

@@ -3,6 +3,7 @@ require 'test/unit'
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib juicer])) unless defined?(Juicer)
 
 $data_dir = File.join(File.expand_path(File.dirname(__FILE__)), "data")
+Juicer::LOGGER = Logger.new StringIO.new
 
 # Prefixes paths with the data dir
 def path(path)
