@@ -26,7 +26,9 @@ module Juicer
     #
     def self.path(file, type = :soft, param = :undef)
       param = (type == :soft ? "jcb" : nil) if param == :undef
-      mtime = File.new(file.split("?").first).mtime.to_i
+      f = File.new(file.split("?").first)
+      mtime = f.mtime.to_i
+      f.close
 
       if type == :soft
         param = "#{param}".length == 0 ? "" : "#{param}="
