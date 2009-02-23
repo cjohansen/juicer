@@ -27,6 +27,16 @@ PROJ.rdoc.remote_dir = 'juicer'
 
 PROJ.spec.opts << '--color'
 
+PROJ.gem.extras[:post_install_message] = <<-MSG
+Juicer does not ship with third party libraries. You probably want to install
+Yui Compressor and JsLint now:
+
+juicer install yui_compressor
+juicer install jslint
+
+Happy juicing!
+MSG
+
 CLOBBER.include "test/data"
 
 depend_on 'cmdparse'
