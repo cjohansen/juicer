@@ -69,4 +69,14 @@ class TestCssCacheBuster < Test::Unit::TestCase
       assert_match(/[^\?]*\?jcb=\d+/, path.first)
     end
   end
+
+  def test_urls_should_only_have_mtime_appended_once
+    File.open(path("a2.css"), "w") { |f| f.puts "" }
+    file = path("path_test2.css")
+    output = path("path_test3.css")
+    buster = Juicer::CssCacheBuster.new :web_root => path("")
+    buster.save file, output
+
+    buster.urls(output).each { |url| assert url !~ /(jcb=\d+).*(jcb=\d+)/, url }
+  end
 end

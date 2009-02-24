@@ -36,11 +36,14 @@ module Juicer
     #
     def save(file, output = nil)
       @contents = File.read(file)
+      used = []
 
       urls(file).each do |url|
         path = resolve(url, file)
+        next if used.include?(path)
 
         if path != url
+          used << path
           basename = File.basename(Juicer::CacheBuster.path(path))
           @contents.sub!(url, File.join(File.dirname(url), basename))
         end
