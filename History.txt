@@ -1,9 +1,13 @@
-== 0.2.0 / 2009-xx-xx
+== 0.2.3 / 2009-03-03
 
-* Refactored the minifyers execute method from compress to save
-* Refactored Juicer::Merger::FileMerger -> Juicer::Merger::Base
-* Refactored the mergers and minifyers to be chainable commands.
-* Added Chainable module
+* Cache busters in CSS files should only be appended once to each URL
+* Output to merge target should accept directories as well as files (in case of
+  directories, file name is generated)
+* Tests should not ship with 3rd party libraries
+
+== 0.2.0 / 2009-02-25
+
+* First usable release; merge, verify, install targets
 
 == 0.1.0 / 2008-12-17
 

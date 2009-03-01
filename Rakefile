@@ -4,10 +4,13 @@
 
 begin
   require 'bones'
-  load 'tasks/test/setup.rake'
   Bones.setup
 rescue LoadError
-  load 'tasks/setup.rb'
+  begin
+    load 'tasks/setup.rb'
+  rescue LoadError
+    raise RuntimeError, '### please install the "bones" gem ###'
+  end
 end
 
 ensure_in_path 'lib'
