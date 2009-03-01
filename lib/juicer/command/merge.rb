@@ -16,19 +16,19 @@ module Juicer
         super('merge', false, true)
         @types = { :js => Juicer::Merger::JavaScriptMerger,
                    :css => Juicer::Merger::StylesheetMerger }
-        @output = nil                # File to write to
-        @force = false               # Overwrite existing file if true
-        @type = nil                  # "css" or "js" - for minifyer
-        @minifyer = "yui_compressor" # Which minifyer to use
-        @opts = {}                   # Path to minifyer binary
-        @arguments = nil             # Minifyer arguments
-        @ignore = false              # Ignore syntax problems if true
-        @cache_buster = :soft        # What kind of cache buster to use, :soft or :hard
-        @hosts = nil                 # Hosts to use when replacing URLs in stylesheets
-        @web_root = nil              # Used to understand absolute paths
-        @relative_urls = false       # Make the merger use relative URLs
-        @absolute_urls = false       # Make the merger use absolute URLs
-        @local_hosts = []            # Host names that are served from :web_root
+        @output = nil                   # File to write to
+        @force = false                  # Overwrite existing file if true
+        @type = nil                     # "css" or "js" - for minifyer
+        @minifyer = "yui_compressor"    # Which minifyer to use
+        @opts = {}                      # Path to minifyer binary
+        @arguments = nil                # Minifyer arguments
+        @ignore = false                 # Ignore syntax problems if true
+        @cache_buster = :soft           # What kind of cache buster to use, :soft or :hard
+        @hosts = nil                    # Hosts to use when replacing URLs in stylesheets
+        @web_root = nil                 # Used to understand absolute paths
+        @relative_urls = false          # Make the merger use relative URLs
+        @absolute_urls = false          # Make the merger use absolute URLs
+        @local_hosts = []               # Host names that are served from :web_root
 
         @log = log || Logger.new(STDOUT)
 
@@ -178,7 +178,9 @@ the YUI Compressor the path should be the path to where the jar file is found.
       # name on. It will prepend the original suffix with ".min"
       #
       def output(file = "#{Time.now.to_i}.tmp")
-        @output || file.sub(/\.([^\.]+)$/, '.min.\1')
+        @output = File.dirname(file) if @output.nil?
+        @output = File.join(@output, File.basename(file).sub(/\.([^\.]+)$/, '.min.\1')) if File.directory?(@output)
+        @output = File.expand_path(@output)
       end
     end
   end

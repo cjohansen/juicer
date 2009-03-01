@@ -55,7 +55,7 @@ class TestMergeCommand < Test::Unit::TestCase
 
   def test_output_name_from_file_should_have_suffix_prepended_with_min
     Juicer::Command::Merge.publicize_methods do
-      assert_equal "test.min.js", @merge.output("test.js")
+      assert_equal File.expand_path("test.min.js"), @merge.output("test.js")
     end
   end
 
@@ -68,8 +68,15 @@ class TestMergeCommand < Test::Unit::TestCase
   def test_output_name_instance_value
     Juicer::Command::Merge.publicize_methods do
       @merge.instance_eval { @output = "output.css" }
-      assert_equal "output.css", @merge.output
-      assert_equal "output.css", @merge.output("bleh.css")
+      assert_equal File.expand_path("output.css"), @merge.output
+      assert_equal File.expand_path("output.css"), @merge.output("bleh.css")
+    end
+  end
+
+  def test_output_name_should_be_generated_when_output_is_directory
+    Juicer::Command::Merge.publicize_methods do
+      @merge.instance_eval { @output = path("css") }
+      assert_equal File.join(path("css"), "file.min.css"), @merge.output("file.css")
     end
   end
 
@@ -115,10 +122,10 @@ class TestMergeCommand < Test::Unit::TestCase
   end
 
   def test_update_output_when_force
-   assert_nothing_raised do
-     @merge.instance_eval { @force = true }
-     @merge.execute(path("a.css"))
-   end
+    assert_nothing_raised do
+      @merge.instance_eval { @force = true }
+      @merge.execute(path("a.css"))
+    end
   end
 
   def test_merge_successful
@@ -150,6 +157,4 @@ class TestMergeCommand < Test::Unit::TestCase
       assert_match(/Ignoring detected problems/, @io.string)
     end
   end
-
-
 end
