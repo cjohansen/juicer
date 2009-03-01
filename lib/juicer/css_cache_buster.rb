@@ -44,8 +44,8 @@ module Juicer
 
         if path != url
           used << path
-          basename = File.basename(Juicer::CacheBuster.path(path))
-          @contents.sub!(url, File.join(File.dirname(url), basename))
+          basename = File.basename(Juicer::CacheBuster.path(path, @type))
+          @contents.gsub!(url, File.join(File.dirname(url), basename))
         end
       end
 
