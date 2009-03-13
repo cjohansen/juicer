@@ -15,6 +15,7 @@ end
 
 ensure_in_path 'lib'
 require 'juicer'
+load 'tasks/test/setup.rake'
 
 task :default => 'test:run'
 
