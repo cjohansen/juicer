@@ -32,7 +32,7 @@ module Juicer
       raise FileNotFoundError.new("Unable to locate JsLint '#{js_file}'") if !js_file || !File.exists?(js_file)
       raise FileNotFoundError.new("Unable to locate input file '#{file}'") unless File.exists?(file)
 
-      lines = execute(%Q{-jar #{rhino} #{locate_lib} "#{file}"}).split("\n")
+      lines = execute(%Q{-jar "#{rhino}" "#{locate_lib}" "#{file}"}).split("\n")
       return Report.new if lines.length == 1 && lines[0] =~ /jslint: No problems/
 
       report = Report.new
