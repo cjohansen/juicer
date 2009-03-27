@@ -31,8 +31,10 @@ class String
   #
   # Turn a camelcase string into underscore string
   #
-  def underscore
-    self.split(/([A-Z][^A-Z]*)/).find_all { |str| str != "" }.join("_").downcase
+  unless String.method_defined?(:underscore)
+    def underscore
+      self.split(/([A-Z][^A-Z]*)/).find_all { |str| str != "" }.join("_").downcase
+    end
   end
 end
 
