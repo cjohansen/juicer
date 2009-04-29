@@ -169,7 +169,7 @@ the YUI Compressor the path should be the path to where the jar file is found.
       # Load cache buster, only available for CSS files
       #
       def cache_buster(file)
-        return nil if !file || file !~ /\.css$/
+        return nil if !file || file !~ /\.css$/ || @cache_buster.nil?
         Juicer::CssCacheBuster.new(:web_root => @web_root, :type => @cache_buster, :hosts => @local_hosts)
       end
 
