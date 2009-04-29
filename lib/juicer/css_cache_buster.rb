@@ -62,7 +62,7 @@ module Juicer
     def urls(file)
       @contents = File.read(file) unless @contents
 
-      @contents.scan(/url\([\s"']*([^\)"']*)[\s"']*\)/m).collect do |match|
+      @contents.scan(/url\([\s"']*([^\)"'\s]*)[\s"']*\)/m).collect do |match|
         match.first
       end
     end
