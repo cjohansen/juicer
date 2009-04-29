@@ -1,3 +1,11 @@
+== 0.2.4 / 2009-04-29
+
+* More robust pattern checking for url() references in CSS files
+* Allow skipping verification
+* Bug fix: Skip cache buster if type=none
+* Bug fix: Quote JsLint command parts to allow for spaces in jar file paths
+* Bug fix: cache buster type wasn't carried all the way (ie had no effect)
+
 == 0.2.3 / 2009-03-03
 
 * Cache busters in CSS files should only be appended once to each URL
