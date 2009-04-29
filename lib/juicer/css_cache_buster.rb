@@ -39,13 +39,17 @@ module Juicer
       used = []
 
       urls(file).each do |url|
-        path = resolve(url, file)
-        next if used.include?(path)
+        begin
+          path = resolve(url, file)
+          next if used.include?(path)
 
-        if path != url
-          used << path
-          basename = File.basename(Juicer::CacheBuster.path(path, @type))
-          @contents.gsub!(url, File.join(File.dirname(url), basename))
+          if path != url
+            used << path
+            basename = File.basename(Juicer::CacheBuster.path(path, @type))
+            @contents.gsub!(url, File.join(File.dirname(url), basename))
+          end
+        rescue Errno::ENOENT
+          puts "Unable to locate file #{path || url}, skipping"
         end
       end
 
