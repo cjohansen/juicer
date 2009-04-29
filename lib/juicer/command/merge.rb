@@ -29,6 +29,7 @@ module Juicer
         @relative_urls = false          # Make the merger use relative URLs
         @absolute_urls = false          # Make the merger use absolute URLs
         @local_hosts = []               # Host names that are served from :web_root
+        @verify = true                  # Verify js files with JsLint
 
         @log = log || Logger.new(STDOUT)
 
@@ -57,6 +58,7 @@ the YUI Compressor the path should be the path to where the jar file is found.
           opt.on("-f", "--force", "Force overwrite of target file") { @force = true }
           opt.on("-a", "--arguments arguments", "Arguments to minifyer, escape with quotes") { |arguments| @arguments = arguments }
           opt.on("-i", "--ignore-problems", "Merge and minify even if verifyer finds problems") { @ignore = true }
+          opt.on("-s", "--skip-verification", "Skip JsLint verification (js files only). Not recomended!") { @verify = false }
           opt.on("-t", "--type type", "Juicer can only guess type when files have .css or .js extensions. Specify js or\n" +
                            (" " * 37) + "css with this option in cases where files have other extensions.") { |type| @type = type.to_sym }
           opt.on("-h", "--hosts hosts", "Cycle asset hosts for referenced urls. Comma separated") { |hosts| @hosts = hosts.split(",") }
@@ -103,7 +105,7 @@ the YUI Compressor the path should be the path to where the jar file is found.
                                            :hosts => @hosts)
 
         # Fail if syntax trouble (js only)
-        if !Juicer::Command::Verify.check_all(merger.files.reject { |f| f =~ /\.css$/ }, @log)
+        if @verify && !Juicer::Command::Verify.check_all(merger.files.reject { |f| f =~ /\.css$/ }, @log)
           @log.error "Problems were detected during verification"
           raise SystemExit.new("Input files contain problems") unless @ignore
           @log.warn "Ignoring detected problems"
