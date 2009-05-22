@@ -58,7 +58,7 @@ module Juicer
         content = super.gsub(/^\s*\@import\s("|')(.*)("|')\;?/, '')
         dir = File.expand_path(File.dirname(file))
 
-        content.scan(/url\(([^\)]*)\)/).uniq.collect do |url|
+        content.scan(/url\([\s"']*([^\)"'\s]*)[\s"']*\)/m).uniq.collect do |url|
           url = url.first
           path = resolve_path(url, dir)
           content.gsub!(/\(#{url}\)/m, "(#{path})") unless path == url
