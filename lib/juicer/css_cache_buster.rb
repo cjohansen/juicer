@@ -49,7 +49,7 @@ module Juicer
             @contents.gsub!(url, File.join(File.dirname(url), basename))
           end
         rescue Errno::ENOENT
-          puts "Unable to locate file #{path || url}, skipping"
+          puts "Unable to locate file #{path || url}, skipping cache buster"
         end
       end
 
