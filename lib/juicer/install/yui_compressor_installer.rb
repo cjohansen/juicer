@@ -12,7 +12,7 @@ module Juicer
       def initialize(install_dir = Juicer.home)
         super(install_dir)
         @latest = nil
-        @website = "http://www.julienlecomte.net/yuicompressor/"
+        @website = "http://yuilibrary.com/downloads/"
       end
 
       #
@@ -27,7 +27,7 @@ module Juicer
       def install(version = nil)
         version = super(version)
         base = "yuicompressor-#{version}"
-        filename = download(File.join(@website, "#{base}.zip"))
+        filename = download(File.join(@website, "yuicompressor", "#{base}.zip"))
         target = File.join(@install_dir, path)
 
         Zip::ZipFile.open(filename) do |file|
@@ -59,7 +59,7 @@ module Juicer
       def latest
         return @latest if @latest
         webpage = Hpricot(open(@website))
-        @latest = (webpage / "#downloadbutton a")[0].get_attribute("href").match(/(\d\.\d\.\d)/)[1]
+        @latest = (webpage / "//h2[@id='yuicompressor']/../../../..//a")[0].get_attribute("href").match(/(\d\.\d\.\d)/)[1]
       end
     end
   end
