@@ -1,5 +1,6 @@
 module Juicer
   class DependencyResolver
+    include Enumerable
     attr_reader :files
 
     # Constructor
@@ -18,6 +19,14 @@ module Juicer
     def resolve(file, &block)
       @files = []
       _resolve(file, &block)
+    end
+
+    #
+    # Yield files recursively. Resolve dependencies first, then call each, or
+    # any other enumerable methods.
+    #
+    def each(&block)
+      @files.each(&block)
     end
 
     #
