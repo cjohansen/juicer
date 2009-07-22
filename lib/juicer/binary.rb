@@ -12,7 +12,6 @@ module Juicer
   # allowed to set on the binary.
   #
   module Binary
-
     # Initialize binary with options
     # options = Hash of options, optional
     #
@@ -31,7 +30,6 @@ module Juicer
     # Run command
     #
     def execute(params = nil)
-      #puts "#{self.command} #{params}"
       cmd = IO.popen("#{self.command} #{params}", "r")
       results = cmd.gets(nil)
       cmd.close

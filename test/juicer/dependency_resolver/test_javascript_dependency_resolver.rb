@@ -3,7 +3,7 @@ require File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. test_helper]
 class TestJavaScriptDependencyResolver < Test::Unit::TestCase
 
   def setup
-    @resolver = Juicer::Merger::JavaScriptDependencyResolver.new
+    @resolver = Juicer::JavaScriptDependencyResolver.new
     Juicer::Test::FileSetup.new.create
   end
 
