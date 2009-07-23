@@ -14,7 +14,7 @@ class TestJavaScriptMerger < Test::Unit::TestCase
 
   def test_init
     Juicer::Merger::JavaScriptMerger.publicize_methods do
-      assert_equal Juicer::Merger::JavaScriptDependencyResolver, @file_merger.dependency_resolver.class
+      assert_equal Juicer::JavaScriptDependencyResolver, @file_merger.dependency_resolver.class
     end
   end
 

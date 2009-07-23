@@ -15,7 +15,7 @@ class TestStylesheetMerger < Test::Unit::TestCase
 
   def test_init
     Juicer::Merger::StylesheetMerger.publicize_methods do
-      assert_equal Juicer::Merger::CssDependencyResolver, @file_merger.dependency_resolver.class
+      assert_equal Juicer::CssDependencyResolver, @file_merger.dependency_resolver.class
     end
   end
 

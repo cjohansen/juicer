@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-['base', 'javascript_dependency_resolver'].each do |lib|
+['base', '../dependency_resolver/javascript_dependency_resolver'].each do |lib|
   require File.expand_path(File.join(File.dirname(__FILE__), lib))
 end
 

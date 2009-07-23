@@ -34,8 +34,8 @@ Input parameters may be:
           raise ArgumentError.new('Please provide atleast one input file/pattern')
         end
 
-        types = { :js => Juicer::Merger::JavaScriptDependencyResolver.new,
-                  :css => Juicer::Merger::CssDependencyResolver.new }
+        types = { :js => Juicer::JavaScriptDependencyResolver.new,
+                  :css => Juicer::CssDependencyResolver.new }
 
         files(args).each do |file|
           type = file.split(".").pop.to_sym
