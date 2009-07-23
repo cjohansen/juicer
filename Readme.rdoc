@@ -1,5 +1,6 @@
 = Juicer
 Official URL: http://github.com/cjohansen/juicer/tree/master
+
 Christian Johansen (http://www.cjohansen.no)
 
 == DESCRIPTION:
@@ -50,10 +51,10 @@ When merging CSS files, you may want to merge CSS files in different directories
 You may also want the resulting CSS file to end up in another directory as well.
 Juicer automatically recalculates referenced URLs to reflect this change.
 
-Absolute URLs are not changed by default, but if you provide juicer merge with
---document-root [DIR] and --relative-urls then absolute URLs are converted to
-URLs relative to output directory. You can also use --absolute-urls to convert
-all URLs to absolute ones.
+Absolute URLs are not changed by default, but if you provide juicer merge
+with <code>--document-root [DIR]</code> and <code>--relative-urls</code> then
+absolute URLs are converted to URLs relative to output directory. You can also
+use <code>--absolute-urls</code> to convert all URLs to absolute ones.
 
 === Cache busters
 
