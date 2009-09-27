@@ -44,5 +44,5 @@ MSG
 CLOBBER.include "test/data"
 
 depend_on 'cmdparse'
-depend_on 'hpricot'
+depend_on 'nokogiri'
 depend_on 'rubyzip'
