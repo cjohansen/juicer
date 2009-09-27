@@ -82,7 +82,7 @@ module Juicer
         mkfile(@dir, 'b1.css', "@import 'd1.css';\n\nhtml {\n    background: red;\n}\n")
         mkfile(@dir, 'c1.css', "h1 {\n    font-size: 12px;\n}\n")
         mkfile(@dir, 'd1.css', "h2 {\n    font-size: 10px;\n}\n")
-        mkfile(@dir, 'ok.js', "function hey() {\n    alert(\"Hey\");\n}\n")
+        mkfile(@dir, 'ok.js', "function hey() {\n    return \"Hey\";\n}\n")
         mkfile(@dir, 'not-ok.js', "var a = 34\nb = 78;\n")
 
         images = mkdir File.join(@dir, "images")

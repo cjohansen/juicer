@@ -12,8 +12,8 @@ namespace :test do
     download("http://www.julienlecomte.net/yuicompressor/yuicompressor-2.4.2.zip")
     FileUtils.cp(File.join(root, "yuicompressor-2.4.2.zip"), File.join(root, "yuicompressor-2.3.5.zip"))
     download("http://www.jslint.com/rhino/jslint.js")
-    download("ftp://ftp.mozilla.org/pub/mozilla.org/js/rhino1_7R1.zip")
-    download("ftp://ftp.mozilla.org/pub/mozilla.org/js/rhino1_7R2-RC1.zip")
+    download("http://ftp.mozilla.org/pub/mozilla.org/js/rhino1_7R1.zip")
+    download("http://ftp.mozilla.org/pub/mozilla.org/js/rhino1_7R2-RC1.zip")
     download("http://www.julienlecomte.net/yuicompressor/")
   end
 end
