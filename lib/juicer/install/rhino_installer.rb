@@ -12,7 +12,7 @@ module Juicer
       def initialize(install_dir = Juicer.home)
         super(install_dir)
         @latest = "1_7R2-RC1"
-        @website = "ftp://ftp.mozilla.org/pub/mozilla.org/js/"
+        @website = "http://ftp.mozilla.org/pub/mozilla.org/js/"
       end
 
       #
