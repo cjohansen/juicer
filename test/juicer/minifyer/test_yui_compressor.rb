@@ -1,17 +1,17 @@
-require File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. test_helper])) unless defined?(Juicer)
+require "test_helper"
 
 class TestYuiCompressor < Test::Unit::TestCase
 
   def setup
-    @path = ENV.key?('YUI_HOME') ? ENV['YUI_HOME'] : File.expand_path('~/sources/yuicompressor-2.3.5/build')
-
+    @path = File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "bin"))
     @yui_compressor = Juicer::Minifyer::YuiCompressor.new({ :bin_path => @path })
     Juicer::Test::FileSetup.new.create
     @file = path('out.min.css')
   end
 
   def teardown
-   File.delete(@file) if @file && File.exists?(@file)
+    File.delete(@file) if @file && File.exists?(@file)
+    File.delete(path("a-1.css")) if File.exists?(path("a-1.css"))
   end
 
   def test_save_overwrite
@@ -56,104 +56,77 @@ class TestYuiCompressor < Test::Unit::TestCase
 #    end
 #  end
 
-  def test_locate_jar_no_existing_jar
-    Juicer::Minifyer::YuiCompressor.publicize_methods do
+  context "locating jar" do
+    setup do
       # Avoid developer env settings
-      yuic_home = ENV['YUIC_HOME']
+      @yuic_home = ENV['YUIC_HOME']
       ENV.delete('YUIC_HOME')
-
-      assert_nil @yui_compressor.locate_jar
-
-      # Reset developer env settings
-      ENV['YUIC_HOME'] = yuic_home
     end
-  end
 
-  def test_locate_jar_one_file_in_cwd
-    Juicer::Minifyer::YuiCompressor.publicize_methods do
-      # Avoid developer env settings
-      yuic_home = ENV['YUIC_HOME']
-      ENV.delete('YUIC_HOME')
-
-      File.open('yuicompressor-2.3.4.jar', 'w') { |f| f.puts '' }
-      assert_equal File.expand_path('yuicompressor-2.3.4.jar'), @yui_compressor.locate_jar
-
-      # Cleanup
-      File.delete('yuicompressor-2.3.4.jar')
-
-      # Reset developer env settings
-      ENV['YUIC_HOME'] = yuic_home
+    teardown do
+      ENV['YUIC_HOME'] = @yuic_home
+      File.delete('yuicompressor-2.3.4.jar') if File.exists?('yuicompressor-2.3.4.jar')
+      File.delete('yuicompressor-2.3.5.jar') if File.exists?('yuicompressor-2.3.5.jar')
+      File.delete('yuicompressor.jar') if File.exists?('yuicompressor.jar')
+      FileUtils.rm_rf("another") if File.exists?("another")
     end
-  end
+    
+    should "not find jar when no jars on path" do
+      Juicer::Minifyer::YuiCompressor.publicize_methods do
+        yui_compressor = Juicer::Minifyer::YuiCompressor.new
 
-  def test_locate_jar_two_files_in_cwd
-    Juicer::Minifyer::YuiCompressor.publicize_methods do
-      # Avoid developer env settings
-      yuic_home = ENV['YUIC_HOME']
-      ENV.delete('YUIC_HOME')
-
-      # Create files
-      File.open('yuicompressor-2.3.4.jar', 'w') { |f| f.puts '' }
-      File.open('yuicompressor-2.3.5.jar', 'w') { |f| f.puts '' }
-
-      # Test
-      assert_equal File.expand_path('yuicompressor-2.3.5.jar'), @yui_compressor.locate_jar
-
-      # Cleanup
-      File.delete('yuicompressor-2.3.4.jar')
-      File.delete('yuicompressor-2.3.5.jar')
-
-      # Reset developer env settings
-      ENV['YUIC_HOME'] = yuic_home
+        assert_nil yui_compressor.locate_jar
+      end
     end
-  end
 
-  def test_locate_jar_three_files_in_cwd
-    Juicer::Minifyer::YuiCompressor.publicize_methods do
-      # Avoid developer env settings
-      yuic_home = ENV['YUIC_HOME']
-      ENV.delete('YUIC_HOME')
-
-      # Create files
-      File.open('yuicompressor-2.3.4.jar', 'w') { |f| f.puts '' }
-      File.open('yuicompressor-2.3.5.jar', 'w') { |f| f.puts '' }
-      File.open('yuicompressor.jar', 'w') { |f| f.puts '' }
-
-      # Test
-      assert_equal File.expand_path('yuicompressor.jar'), @yui_compressor.locate_jar
-
-      # Cleanup
-      File.delete('yuicompressor-2.3.4.jar')
-      File.delete('yuicompressor-2.3.5.jar')
-      File.delete('yuicompressor.jar')
-
-      # Reset developer env settings
-      ENV['YUIC_HOME'] = yuic_home
+    should "find only jar in path" do
+      Juicer::Minifyer::YuiCompressor.publicize_methods do
+        File.open('yuicompressor-2.3.4.jar', 'w') { |f| f.puts '' }
+        yui_compressor = Juicer::Minifyer::YuiCompressor.new
+        assert_equal File.expand_path('yuicompressor-2.3.4.jar'), yui_compressor.locate_jar
+      end
     end
-  end
 
-  def test_locate_jar_custom_directory
-    Juicer::Minifyer::YuiCompressor.publicize_methods do
-      # Avoid developer env settings
-      yuic_home = ENV['YUIC_HOME']
-      ENV.delete('YUIC_HOME')
+    should "find most recent of two jars on path" do
+      Juicer::Minifyer::YuiCompressor.publicize_methods do
+        # Create files
+        File.open('yuicompressor-2.3.4.jar', 'w') { |f| f.puts '' }
+        File.open('yuicompressor-2.3.5.jar', 'w') { |f| f.puts '' }
 
-      # Prepare
-      Dir.mkdir('another')
-      Dir.chdir('another')
-      File.open('yuicompressor-2.3.4.jar', 'w')
-      Dir.chdir('..')
+        yui_compressor = Juicer::Minifyer::YuiCompressor.new
+        
+        # Test
+        assert_equal File.expand_path('yuicompressor-2.3.5.jar'), yui_compressor.locate_jar
+      end
+    end
 
-      # Test
-      assert_nil @yui_compressor.locate_jar
-      @yui_compressor = Juicer::Minifyer::YuiCompressor.new({ :bin_path => 'another' })
-      assert_equal File.expand_path('another/yuicompressor-2.3.4.jar'), @yui_compressor.locate_jar
+    should "find most recent of three jar files on path" do
+      Juicer::Minifyer::YuiCompressor.publicize_methods do
+        # Create files
+        File.open('yuicompressor-2.3.4.jar', 'w') { |f| f.puts '' }
+        File.open('yuicompressor-2.3.5.jar', 'w') { |f| f.puts '' }
+        File.open('yuicompressor.jar', 'w') { |f| f.puts '' }
 
-      # Clean up
-      FileUtils.rm_rf("another")
+        yui_compressor = Juicer::Minifyer::YuiCompressor.new
+        
+        # Test
+        assert_equal File.expand_path('yuicompressor.jar'), yui_compressor.locate_jar
+      end
+    end
 
-      # Reset developer env settings
-      ENV['YUIC_HOME'] = yuic_home
+    should "find jar in custom directory" do
+      Juicer::Minifyer::YuiCompressor.publicize_methods do
+        # Prepare
+        Dir.mkdir('another')
+        File.open('another/yuicompressor-2.3.4.jar', 'w') { |f| f.puts "" }
+
+        yui_compressor = Juicer::Minifyer::YuiCompressor.new
+        
+        # Test
+        assert_nil yui_compressor.locate_jar
+        yui_compressor = Juicer::Minifyer::YuiCompressor.new({ :bin_path => 'another' })
+        assert_equal File.expand_path('another/yuicompressor-2.3.4.jar'), yui_compressor.locate_jar
+      end
     end
   end
 end
