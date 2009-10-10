@@ -129,7 +129,7 @@ module Juicer
     #
     def locate(bin_glob, env = nil)
       path << ENV[env] if env && ENV.key?(env) && File.exist?(ENV[env])
-
+      
       (path << Dir.pwd).each do |path|
         files = Dir.glob(File.expand_path(File.join(path, bin_glob)))
         return files unless files.empty?
