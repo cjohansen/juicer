@@ -84,6 +84,7 @@ module Juicer
         mkfile(@dir, 'd1.css', "h2 {\n    font-size: 10px;\n}\n")
         mkfile(@dir, 'ok.js', "function hey() {\n    return \"Hey\";\n}\n")
         mkfile(@dir, 'not-ok.js', "var a = 34\nb = 78;\n")
+        
 
         images = mkdir File.join(@dir, "images")
         mkfile(images, '1.png', "")
@@ -127,6 +128,15 @@ p { background: url(/a2.css); }
         CSS
 
         mkfile(@dir, 'path_test2.css', css)
+
+
+        css = <<-CSS
+body { background: url(1.png?emded=true); }
+h1 { background: url(2.gif?emded=false); }
+h2 { background: url(3.jpg); }
+h2 { background: url(4.bmp); }
+CSS
+        mkfile(@dir, 'image_embed_test.css', css)
 
         mkfile(@dir, 'Changelog.txt', "2008.02.09 | stb-base 1.29\n\nFEATURE: Core  | Bla bla bla bla bla\nFEATURE: UI: | Bla bla bla bla bla\n\n\n2008.02.09 | stb-base 1.29\n\nFEATURE: Core  | Bla bla bla bla bla\nFEATURE: UI: | Bla bla bla bla bla\n")
       end
