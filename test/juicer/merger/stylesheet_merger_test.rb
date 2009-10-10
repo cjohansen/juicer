@@ -1,23 +1,25 @@
-require File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. test_helper])) unless defined?(Juicer)
+require "test_helper"
 
 class TestStylesheetMerger < Test::Unit::TestCase
 
   def setup
     @file_merger = Juicer::Merger::StylesheetMerger.new
     Juicer::Test::FileSetup.new.create
+    @cwd = Dir.pwd
     Dir.chdir path("")
   end
 
   def teardown
     file = path('test_out.css')
     File.delete(file) if File.exists?(file)
+    Dir.chdir(@cwd)
   end
 
-  def test_init
-    Juicer::Merger::StylesheetMerger.publicize_methods do
-      assert_equal Juicer::CssDependencyResolver, @file_merger.dependency_resolver.class
-    end
-  end
+ def test_init
+   Juicer::Merger::StylesheetMerger.publicize_methods do
+     assert_equal Juicer::CssDependencyResolver, @file_merger.dependency_resolver.class
+   end
+ end
 
   def test_merge
     Juicer::Merger::StylesheetMerger.publicize_methods do

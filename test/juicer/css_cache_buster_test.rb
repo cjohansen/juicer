@@ -1,4 +1,4 @@
-require File.expand_path(File.join(File.dirname(__FILE__), %w[.. test_helper])) unless defined?(Juicer)
+require "test_helper"
 
 class TestCssCacheBuster < Test::Unit::TestCase
   def setup
@@ -8,6 +8,7 @@ class TestCssCacheBuster < Test::Unit::TestCase
 
   def teardown
     Juicer::Test::FileSetup.new.delete
+    Juicer::Test::FileSetup.new.create
   end
 
   def test_resolve_full_url

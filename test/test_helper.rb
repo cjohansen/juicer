@@ -2,9 +2,11 @@ require 'fileutils'
 require 'test/unit'
 require 'redgreen'
 require 'shoulda'
+require 'open-uri'
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib juicer])) unless defined?(Juicer)
 
 $data_dir = File.join(File.expand_path(File.dirname(__FILE__)), "data")
+Juicer.send(:remove_const, :LOGGER)
 Juicer::LOGGER = Logger.new StringIO.new
 
 # Prefixes paths with the data dir
