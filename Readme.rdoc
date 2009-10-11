@@ -70,7 +70,7 @@ Unfortunately, the popular web proxy Squid shipped for some time with a default
 configuration which would not treat a URL as a "new" URL if the only thing changed
 was the GET parameters. For this reason Juicer provides hard cache busters.
 
-Hard cache busters result in URLs such as <code>http://assets/images/1-cb1234567890.png</code>,
+Hard cache busters result in URLs such as: http://assets/images/1-cb1234567890.png,
 ie URLs that require either renaming of files, or (more conveniently) a web
 server configuration that will forward URLs to the right files anyway.
 
