@@ -82,7 +82,7 @@ class TestImageEmbed < Test::Unit::TestCase
 				}
 			]
 
-	    image_embedder = Juicer::ImageEmbed.new
+	    image_embedder = Juicer::ImageEmbed.new( :type => :data_uri )
 	
 			variations.each do |variation|
 				old_contents = File.read( variation[:css_file] )
@@ -109,9 +109,12 @@ class TestImageEmbed < Test::Unit::TestCase
 				# let's see if it exists in the file
 				assert css_contents.include?( data_uri )
 			end
-	
-
     end
-  end
+
+		should_eventually 'have tests that show that unflagged images are not embedded in final output'
+		should_eventually 'have tests that show that unsupported images are not embedded in final output'
+
+
+  end # context
 
 end

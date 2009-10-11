@@ -14,7 +14,6 @@ module Juicer
   # 
   # FIXME:
   # Add details on pros and cons of using embedded images
-  # http://dataurl.sveinbjorn.org/about
   # 
   class ImageEmbed
     include Juicer::Chainable
@@ -22,7 +21,7 @@ module Juicer
     def initialize(options = {})
       @web_root = options[:web_root]
       @web_root.sub!(%r{/?$}, "") if @web_root # Remove trailing slash
-      @type = options[:type] || :data_uri
+      @type = options[:type] || :none
       @contents = nil
     end
 
@@ -30,26 +29,28 @@ module Juicer
     # Update file. If no +output+ is provided, the input file is overwritten
     #
     def save(file, output = nil)
-      @contents = File.read(file)
-      used = []
+			if ( @type == :data_uri )
+	      @contents = File.read(file)
+	      used = []
 
-      urls(file).each do |url|
-        begin
-          path = resolve(url, file)
-          next if used.include?(path)
+	      urls(file).each do |url|
+	        begin
+	          path = resolve(url, file)
+	          next if used.include?(path)
 
-          if path != url
-            used << path            
-            # replace the url in the css file with the data uri
-            @contents.gsub!(url, embed_data_uri( path ) )
-          end
-        rescue Errno::ENOENT
-          puts "Unable to locate file #{path || url}, skipping image embedding"
-        end
-      end
+	          if path != url
+	            used << path            
+	            # replace the url in the css file with the data uri
+	            @contents.gsub!(url, embed_data_uri( path ) )
+	          end
+	        rescue Errno::ENOENT
+	          puts "Unable to locate file #{path || url}, skipping image embedding"
+	        end
+	      end
 
-      File.open(output || file, "w") { |f| f.puts @contents }
-      @contents = nil
+	      File.open(output || file, "w") { |f| f.puts @contents }
+	      @contents = nil
+			end
     end
 
     chain_method :save
