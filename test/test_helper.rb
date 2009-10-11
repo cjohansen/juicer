@@ -2,12 +2,13 @@ require 'fileutils'
 require 'test/unit'
 require 'redgreen'
 require 'shoulda'
+require 'mocha'
 require 'open-uri'
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib juicer])) unless defined?(Juicer)
 
 $data_dir = File.join(File.expand_path(File.dirname(__FILE__)), "data")
 Juicer.send(:remove_const, :LOGGER)
-Juicer::LOGGER = Logger.new StringIO.new
+Juicer::LOGGER = Logger.new(StringIO.new)
 
 # Prefixes paths with the data dir
 def path(path)
@@ -87,7 +88,6 @@ module Juicer
         mkfile(@dir, 'ok.js', "function hey() {\n    return \"Hey\";\n}\n")
         mkfile(@dir, 'not-ok.js', "var a = 34\nb = 78;\n")
         
-
         images = mkdir File.join(@dir, "images")
         mkfile(images, '1.png', "")
         mkfile(images, 'test_image.png', "hello world!")

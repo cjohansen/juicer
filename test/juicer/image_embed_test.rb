@@ -8,10 +8,11 @@ class TestImageEmbed < Test::Unit::TestCase
 
   def teardown
     Juicer::Test::FileSetup.new.delete
+    Juicer::Test::FileSetup.new.create
   end
 
   def test_does_not_modify_regular_path
-    path = 'marker.png'
+    path = path( 'images/test_image.png' )
     assert_equal( path, @embedder.embed( path ) )
   end
 
@@ -19,50 +20,50 @@ class TestImageEmbed < Test::Unit::TestCase
     path = '/somepath/somefile.png?embed=false'
     assert_equal( path, @embedder.embed( path ) )
   end
-
+  
   def test_should_embed_image_when_path_flagged_as_embeddable
     path = path( 'images/1.png?embed=true' )
     assert_not_equal( path, @embedder.embed( path ) )
   end
-
+  
   def test_should_embed_png_gif_jpg_jpeg_images
     path = path( 'images/test_image.png?embed=true' )
     assert_not_equal( path, @embedder.embed( path ) )
-
+  
     path = path( 'images/test_image.gif?embed=true' )
     assert_not_equal( path, @embedder.embed( path ) )
-
+  
     path = path( 'images/test_image.jpg?embed=true' )
     assert_not_equal( path, @embedder.embed( path ) )
-
+  
     path = path( 'images/test_image.jpeg?embed=true' )
     assert_not_equal( path, @embedder.embed( path ) )
   end
-
+  
   def test_should_not_embed_unsupported_filetypes
     path = '/somepath/somefile.js?embed=true'
     assert_equal( path, @embedder.embed( path ) )
-
+  
     path = '/somepath/somefile.swf?embed=true'
     assert_equal( path, @embedder.embed( path ) )
-
+  
     path = '/somepath/somefile.ico?embed=true'
     assert_equal( path, @embedder.embed( path ) )
-
+  
     path = '/somepath/somefile.bmp?embed=true'
     assert_equal( path, @embedder.embed( path ) )
   end
-
+  
   def test_should_set_correct_mimetype
     path = path( 'images/test_image.png?embed=true' )
     assert_match(/image\/png/, @embedder.embed( path ) )
-
+  
     path = path( 'images/test_image.gif?embed=true' )
     assert_match(/image\/gif/, @embedder.embed( path ) )
-
+  
     path = path( 'images/test_image.jpg?embed=true' )
     assert_match(/image\/jpg/, @embedder.embed( path ) )
-
+  
     path = path( 'images/test_image.jpeg?embed=true' )
     assert_match(/image\/jpeg/, @embedder.embed( path ) )
   end
