@@ -70,9 +70,27 @@ Unfortunately, the popular web proxy Squid shipped for some time with a default
 configuration which would not treat a URL as a "new" URL if the only thing changed
 was the GET parameters. For this reason Juicer provides hard cache busters.
 
-Hard cache busters result in URLs such as http://assets/images/1-cb1234567890.png,
+Hard cache busters result in URLs such as <code>http://assets/images/1-cb1234567890.png</code>,
 ie URLs that require either renaming of files, or (more conveniently) a web
 server configuration that will forward URLs to the right files anyway.
+
+=== Embedding images in stylesheets
+
+Juicer supports embedding images into stylesheets using data uri's.
+
+In order to be as unobtrusive as possible, you must indicate for each image that it 
+should be embedded in the stylesheet by using the embed suffix.
+
+Example:
+    
+    h1 { background: url(/somepath/someimage.png?embed=true); }
+
+And when building the stylesheets, you must specify which type of embedding you want,
+currently only 'none' and 'data_uri' are supported.
+
+    $ juicer merge my-stylesheet.css -o my-stylesheet.merged.css -e data_uri
+
+Support for IE7, IE6 and IE5 is planned for near future, once the data_uri scheme has stabilized.
 
 == PLANNED FEATURES:
 
