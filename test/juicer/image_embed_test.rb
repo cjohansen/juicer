@@ -1,6 +1,9 @@
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. test_helper])) unless defined?(Juicer)
 
 class TestImageEmbed < Test::Unit::TestCase
+  
+  SUPPORTED_EXTENSIONS = %w{png gif jpg jpeg}
+  
   def setup
     Juicer::Test::FileSetup.new.create
     @embedder = Juicer::ImageEmbed.new
@@ -11,61 +14,43 @@ class TestImageEmbed < Test::Unit::TestCase
     Juicer::Test::FileSetup.new.create
   end
 
-  def test_does_not_modify_regular_path
-    path = path( 'images/test_image.png' )
-    assert_equal( path, @embedder.embed( path ) )
-  end
+  context "embed method" do
+    should "not modify regular paths" do
+      path = path( 'images/test_image.png' )
+      assert_equal( path, @embedder.embed( path ) )
+    end
 
-  def test_does_not_modify_path_flagged_as_not_embeddable
-    path = '/somepath/somefile.png?embed=false'
-    assert_equal( path, @embedder.embed( path ) )
-  end
-  
-  def test_should_embed_image_when_path_flagged_as_embeddable
-    path = path( 'images/1.png?embed=true' )
-    assert_not_equal( path, @embedder.embed( path ) )
-  end
-  
-  def test_should_embed_png_gif_jpg_jpeg_images
-    path = path( 'images/test_image.png?embed=true' )
-    assert_not_equal( path, @embedder.embed( path ) )
-  
-    path = path( 'images/test_image.gif?embed=true' )
-    assert_not_equal( path, @embedder.embed( path ) )
-  
-    path = path( 'images/test_image.jpg?embed=true' )
-    assert_not_equal( path, @embedder.embed( path ) )
-  
-    path = path( 'images/test_image.jpeg?embed=true' )
-    assert_not_equal( path, @embedder.embed( path ) )
-  end
-  
-  def test_should_not_embed_unsupported_filetypes
-    path = '/somepath/somefile.js?embed=true'
-    assert_equal( path, @embedder.embed( path ) )
-  
-    path = '/somepath/somefile.swf?embed=true'
-    assert_equal( path, @embedder.embed( path ) )
-  
-    path = '/somepath/somefile.ico?embed=true'
-    assert_equal( path, @embedder.embed( path ) )
-  
-    path = '/somepath/somefile.bmp?embed=true'
-    assert_equal( path, @embedder.embed( path ) )
-  end
-  
-  def test_should_set_correct_mimetype
-    path = path( 'images/test_image.png?embed=true' )
-    assert_match(/image\/png/, @embedder.embed( path ) )
-  
-    path = path( 'images/test_image.gif?embed=true' )
-    assert_match(/image\/gif/, @embedder.embed( path ) )
-  
-    path = path( 'images/test_image.jpg?embed=true' )
-    assert_match(/image\/jpg/, @embedder.embed( path ) )
-  
-    path = path( 'images/test_image.jpeg?embed=true' )
-    assert_match(/image\/jpeg/, @embedder.embed( path ) )
-  end
+    should "not modify paths flagged as not embeddable" do
+      path = '/somepath/somefile.png?embed=false'
+      assert_equal( path, @embedder.embed( path ) )
+    end
 
+    should "embed image when path flagged as embeddable" do
+      path = path( 'images/1.png?embed=true' )
+      assert_not_equal( path, @embedder.embed( path ) )
+    end
+
+    should "support png, gif, jpg and jpeg images" do
+      SUPPORTED_EXTENSIONS.each do |extension|
+        path = path( "images/test_image.#{extension}?embed=true" )
+        assert_not_equal( path, @embedder.embed( path ) )
+      end
+    end
+    
+    should "not embed unsupported filetypes" do
+      unsupported_extensions = %w{js txt swf ico bmp tif tiff applet jar}
+      unsupported_extensions.each do |extension|
+        path = "/somepath/somefile.#{extension}?embed=true"
+        assert_equal( path, @embedder.embed( path ) )
+      end
+    end
+
+    should "set correct mimetype for supported extensions" do
+      SUPPORTED_EXTENSIONS.each do |extension|
+        path = path( "images/test_image.#{extension}?embed=true" )
+        assert_match(/image\/#{extension}/, @embedder.embed( path ) )
+      end
+    end
+
+  end  
 end

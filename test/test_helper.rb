@@ -90,10 +90,13 @@ module Juicer
         
         images = mkdir File.join(@dir, "images")
         mkfile(images, '1.png', "")
+        
+        # set up image files for testing ImageEmbed
         mkfile(images, 'test_image.png', "hello world!")
         mkfile(images, 'test_image.gif', "hello world!")
         mkfile(images, 'test_image.jpg', "hello world!")
         mkfile(images, 'test_image.jpeg', "hello world!")
+        mkfile(images, 'test_image.bmp', "hello world!")
 
         css_dir = mkdir File.join(@dir, "css")
         mkfile(css_dir, '2.gif', "")
@@ -137,10 +140,11 @@ p { background: url(/a2.css); }
 
 
         css = <<-CSS
-body { background: url(1.png?emded=true); }
-h1 { background: url(2.gif?emded=false); }
-h2 { background: url(3.jpg); }
-h2 { background: url(4.bmp); }
+body { background: url(test_image.png?emded=true); }
+h1 { background: url(test_image.gif?emded=false); }
+h2 { background: url(test_image.jpg); }
+h3 { background: url(test_image.bmp?embed=true); }
+h4 { background: url(test_image.bmp); }
 CSS
         mkfile(@dir, 'image_embed_test.css', css)
 
