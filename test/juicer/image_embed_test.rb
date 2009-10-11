@@ -3,11 +3,6 @@ require File.expand_path(File.join(File.dirname(__FILE__), %w[.. test_helper])) 
 class TestImageEmbed < Test::Unit::TestCase
   
   SUPPORTED_EXTENSIONS = %w{png gif jpg jpeg}
-  PNG_FILE_CONTENT  = 'aGVsbG8gcG5n'      # 'hello png' base64 encoded
-  GIF_FILE_CONTENT  = 'aGVsbG8gZ2lm'      # 'hello gif' base64 encoded
-  JPG_FILE_CONTENT  = 'aGVsbG8ganBn'			# 'hello jpg' base64 encoded
-  JPEG_FILE_CONTENT = 'aGVsbG8ganBlZw=='	# 'hello jpeg' base64 encoded
-  BMP_FILE_CONTENT  = 'aGVsbG8gYm1w'			# 'hello bmp' base64 encoded
 	EMBEDDABLE_URL = /\.\.\/images\/test_image\.(png|gif|jpg|jpeg)\?embed=true/
   
   def setup
