@@ -16,4 +16,9 @@ module Datafy
     end
     outuri += ",#{content}"
   end
+  
+  # TODO
+  def Datafy::make_mhtml_uri
+    
+  end
 end

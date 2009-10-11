@@ -12,6 +12,10 @@ module Juicer
   # Only local resources will be processed this way, external resources referenced
   # by absolute urls will be left alone
   # 
+  # FIXME:
+  # Add details on pros and cons of using embedded images
+  # http://dataurl.sveinbjorn.org/about
+  # 
   class ImageEmbed
     include Juicer::Chainable
 
@@ -45,7 +49,7 @@ module Juicer
             @contents.gsub!(url, File.join(File.dirname(url), basename))
           end
         rescue Errno::ENOENT
-          puts "Unable to locate file #{path || url}, skipping cache buster"
+          puts "Unable to locate file #{path || url}, skipping image embedding"
         end
       end
 
@@ -63,15 +67,19 @@ module Juicer
           filetype = supported_file_matches[1] if supported_file_matches
           if ( filetype )
             
+            filename = path.gsub('?embed=true','')
+            
             # check if file exists, throw an error if it doesn't exist
-            
-            # read contents of file into memory
-            
-            content = 'hello world'
-            content_type = "image/#{filetype}"
-            
-            # encode the url
-            new_path = Datafy::make_data_uri( content, content_type )
+            if File.exist?( filename )
+              # read contents of file into memory              
+              content = File.read( filename )
+              content_type = "image/#{filetype}"
+
+              # encode the url
+              new_path = Datafy::make_data_uri( content, content_type )              
+            else
+              puts "Unable to locate file #{filename} on local file system, skipping image embedding"
+            end
           end
         else
           # throw error about other schemes not yet being supported

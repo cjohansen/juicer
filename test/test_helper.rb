@@ -90,6 +90,10 @@ module Juicer
 
         images = mkdir File.join(@dir, "images")
         mkfile(images, '1.png', "")
+        mkfile(images, 'test_image.png', "hello world!")
+        mkfile(images, 'test_image.gif', "hello world!")
+        mkfile(images, 'test_image.jpg', "hello world!")
+        mkfile(images, 'test_image.jpeg', "hello world!")
 
         css_dir = mkdir File.join(@dir, "css")
         mkfile(css_dir, '2.gif', "")
