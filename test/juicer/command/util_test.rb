@@ -6,7 +6,7 @@ end
 
 class TestCommandUtil < Test::Unit::TestCase
 
-  CSS_FILES = %w{a.css a1.css b.css b1.css c1.css d1.css image_embed_test.css path_test.css path_test2.css}
+  CSS_FILES = %w{a.css a1.css b.css b1.css c1.css d1.css path_test.css path_test2.css}
   JS_FILES = %w{a.js}
   ALL_FILES = (CSS_FILES + JS_FILES).sort
 

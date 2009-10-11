@@ -92,11 +92,11 @@ module Juicer
         mkfile(images, '1.png', "")
         
         # set up image files for testing ImageEmbed
-        mkfile(images, 'test_image.png', "hello world!")
-        mkfile(images, 'test_image.gif', "hello world!")
-        mkfile(images, 'test_image.jpg', "hello world!")
-        mkfile(images, 'test_image.jpeg', "hello world!")
-        mkfile(images, 'test_image.bmp', "hello world!")
+        mkfile(images, 'test_image.png', 'hello png')
+        mkfile(images, 'test_image.gif', "hello gif")
+        mkfile(images, 'test_image.jpg', "hello jpg")
+        mkfile(images, 'test_image.jpeg', "hello jpeg")
+        mkfile(images, 'test_image.bmp', "hello bmp")
 
         css_dir = mkdir File.join(@dir, "css")
         mkfile(css_dir, '2.gif', "")
@@ -140,13 +140,19 @@ p { background: url(/a2.css); }
 
 
         css = <<-CSS
-body { background: url(test_image.png?emded=true); }
-h1 { background: url(test_image.gif?emded=false); }
-h2 { background: url(test_image.jpg); }
-h3 { background: url(test_image.bmp?embed=true); }
-h4 { background: url(test_image.bmp); }
+body { background: url(../images/test_image.png?embed=true); }
+h1 { background: url(../images/test_image.gif?embed=false); }
+h2 { background: url(../images/test_image.jpg); }
+h3 { background: url(../images/test_image.bmp?embed=true); }
+h4 { background: url(../images/test_image.bmp); }
 CSS
-        mkfile(@dir, 'image_embed_test.css', css)
+        mkfile(@dir, 'css/image_embed_test.css', css)
+
+				css = <<-CSS
+body { background: url(../images/test_image.png?embed=true); }
+CSS
+				        mkfile(@dir, 'css/image_embed_test_png_embed.css', css)
+
 
         mkfile(@dir, 'Changelog.txt', "2008.02.09 | stb-base 1.29\n\nFEATURE: Core  | Bla bla bla bla bla\nFEATURE: UI: | Bla bla bla bla bla\n\n\n2008.02.09 | stb-base 1.29\n\nFEATURE: Core  | Bla bla bla bla bla\nFEATURE: UI: | Bla bla bla bla bla\n")
       end

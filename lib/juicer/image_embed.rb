@@ -39,14 +39,9 @@ module Juicer
           next if used.include?(path)
 
           if path != url
-            used << path
-            basename = File.basename(Juicer::CacheBuster.path(path, @type))
-            
-            filecontent = "hello world"
-            puts "value: #{filecontent}"
-            puts Datafy::make_data_uri( filecontent, 'image/png' )
-            
-            @contents.gsub!(url, File.join(File.dirname(url), basename))
+            used << path            
+            # replace the url in the css file with the data uri
+            @contents.gsub!(url, embed_data_uri( path ) )
           end
         rescue Errno::ENOENT
           puts "Unable to locate file #{path || url}, skipping image embedding"
@@ -59,31 +54,26 @@ module Juicer
 
     chain_method :save
     
-    def embed( path, embed_type = :data_uri )
+    def embed_data_uri( path )
       new_path = path
       if path.match( /\?embed=true$/ )
-        if embed_type == :data_uri        
-          supported_file_matches = path.match( /(?:\.)(png|gif|jpg|jpeg)(?:\?embed=true)$/i )
-          filetype = supported_file_matches[1] if supported_file_matches
-          if ( filetype )
-            
-            filename = path.gsub('?embed=true','')
-            
-            # check if file exists, throw an error if it doesn't exist
-            if File.exist?( filename )
-              # read contents of file into memory              
-              content = File.read( filename )
-              content_type = "image/#{filetype}"
+        supported_file_matches = path.match( /(?:\.)(png|gif|jpg|jpeg)(?:\?embed=true)$/i )
+        filetype = supported_file_matches[1] if supported_file_matches
+        if ( filetype )        
+          filename = path.gsub('?embed=true','')
+        
+          # check if file exists, throw an error if it doesn't exist
+          if File.exist?( filename )
+            # read contents of file into memory              
+            content = File.read( filename )
+            content_type = "image/#{filetype}"
 
-              # encode the url
-              new_path = Datafy::make_data_uri( content, content_type )              
-            else
-              puts "Unable to locate file #{filename} on local file system, skipping image embedding"
-            end
+            # encode the url
+            new_path = Datafy::make_data_uri( content, content_type )              
+          else
+            puts "Unable to locate file #{filename} on local file system, skipping image embedding"
           end
-        else
-          # throw error about other schemes not yet being supported
-        end      
+        end
       end
       return new_path
     end
