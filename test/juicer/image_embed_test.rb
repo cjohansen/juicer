@@ -8,7 +8,7 @@ class TestImageEmbed < Test::Unit::TestCase
   JPG_FILE_CONTENT  = 'aGVsbG8ganBn'			# 'hello jpg' base64 encoded
   JPEG_FILE_CONTENT = 'aGVsbG8ganBlZw=='	# 'hello jpeg' base64 encoded
   BMP_FILE_CONTENT  = 'aGVsbG8gYm1w'			# 'hello bmp' base64 encoded
-	EMBEDDABLE_URL = /\.\.\/images\/test_image\.png\?embed=true/
+	EMBEDDABLE_URL = /\.\.\/images\/test_image\.(png|gif|jpg|jpeg)\?embed=true/
   
   def setup
     Juicer::Test::FileSetup.new.create
@@ -67,33 +67,55 @@ class TestImageEmbed < Test::Unit::TestCase
     end
     
     should "embed images into css file" do
-	    css_file = path("css/image_embed_test_png_embed.css")
-			image_file = path("images/test_image.png")
+			variations = [
+				{
+					:css_file => path("css/image_embed_test_png_embed.css"),
+					:image_file => path("images/test_image.png"),
+					:mime_type => 'image/png'
+				},{
+					:css_file => path("css/image_embed_test_gif_embed.css"),
+					:image_file => path("images/test_image.gif"),
+					:mime_type => 'image/gif'
+				},{
+					:css_file => path("css/image_embed_test_jpg_embed.css"),
+					:image_file => path("images/test_image.jpg"),
+					:mime_type => 'image/jpg'
+				},{
+					:css_file => path("css/image_embed_test_jpeg_embed.css"),
+					:image_file => path("images/test_image.jpeg"),
+					:mime_type => 'image/jpeg'
+				}
+			]
+
 	    image_embedder = Juicer::ImageEmbed.new
+	
+			variations.each do |variation|
+				old_contents = File.read( variation[:css_file] )
 
-			old_contents = File.read(css_file)
+				# let's make sure there is an embeddable url
+				assert_match( EMBEDDABLE_URL, old_contents )
 
-			# let's make sure there is an embeddable url
-			assert_match( EMBEDDABLE_URL, old_contents )
+				# make sure there are no errors
+		    assert_nothing_raised do
+		      image_embedder.save variation[:css_file]
+		    end
 
-			# make sure there are no errors
-	    assert_nothing_raised do
-	      image_embedder.save css_file
-	    end
+				css_contents = File.read(variation[:css_file])
 
-			css_contents = File.read(css_file)
+				# make sure the original url does not exist anymore
+				assert_no_match( EMBEDDABLE_URL, css_contents )
 
-			# make sure the original url does not exist anymore
-			assert_no_match( EMBEDDABLE_URL, css_contents )
+				# make sure the url has been converted into a data uri
+				image_contents = File.read( variation[:image_file] )
 
-			# make sure the url has been converted into a data uri
-			image_contents = File.read( image_file )
+				# create the data uri from the image contents
+				data_uri = Datafy::make_data_uri( image_contents, variation[:mime_type] )
 
-			# create the data uri from the image contents
-			data_uri = Datafy::make_data_uri( image_contents, 'image/png' )
+				# let's see if it exists in the file
+				assert css_contents.include?( data_uri )
+			end
+	
 
-			# let's see if it exists in the file
-			assert css_contents.include?( data_uri )
     end
   end
 
