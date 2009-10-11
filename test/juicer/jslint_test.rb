@@ -1,41 +1,59 @@
 require "test_helper"
 
 class TestJsLint < Test::Unit::TestCase
+  def initialize(*args)
+    @path = File.expand_path(path("../bin"))
+    @file = path("jsltest.js")
+    super
+  end
+  
   def setup
-    Juicer::Test::FileSetup.new.create
-    #installer = Juicer::Install::JSLintInstaller.new path(".juicer")
-    #installer.install unless installer.installed?
+    FileUtils.mkdir(path("")) unless File.exists?(path(""))
+    File.open(@file, "w") { |f| f.puts "" }
+  end
 
-    @jslint = Juicer::JsLint.new(:bin_path => path("bin"))
+  def teardown
+    File.delete(@file)
   end
 
   context "verifying file with jslint" do
-    should "pass valid file" do
-      assert @jslint.check(path("ok.js")).ok?
-    end
-
-    should "not pas invalid file" do
-      assert !@jslint.check(path("not-ok.js")).ok?
+    should "shell out to rhino/jslint" do
+      jslint = Juicer::JsLint.new(:bin_path => @path)
+      jslint.expects(:execute).with("-jar \"#{@path}/rhino1_7R2-RC1.jar\" \"#{@path}/jslint-1.0.js\" \"#{@file}\"").returns("jslint: No problems")
+      
+      assert jslint.check(@file).ok?
     end
   end
 
-  context "jslint return type" do
+  context "jslint report returns" do
     should "be a report object for valid files" do
-      assert_equal Juicer::JsLint::Report, @jslint.check(path("ok.js")).class
+      jslint = Juicer::JsLint.new(:bin_path => @path)
+      jslint.expects(:execute).returns("jslint: No problems")
+
+      assert_equal Juicer::JsLint::Report, jslint.check(@file).class
     end
 
     should "be a report object for invalid files" do
-      assert_equal Juicer::JsLint::Report, @jslint.check(path("not-ok.js")).class
+      jslint = Juicer::JsLint.new(:bin_path => @path)
+      jslint.expects(:execute).returns("Wrong use of semicolon\nWrong blabla")
+      
+      assert_equal Juicer::JsLint::Report, jslint.check(path("not-ok.js")).class
     end
   end
 
   context "errors" do
     should "be available on report" do
-      assert_equal 2, @jslint.check(path("not-ok.js")).errors.length
+      jslint = Juicer::JsLint.new(:bin_path => @path)
+      jslint.expects(:execute).returns("Wrong use of semicolon\nWrong blabla\nWrong use of semicolon\nWrong blabla")
+
+      assert_equal 2, jslint.check(@file).errors.length
     end
 
     should "be error objects" do
-      error = @jslint.check(path("not-ok.js")).errors.first
+      jslint = Juicer::JsLint.new(:bin_path => @path)
+      jslint.expects(:execute).returns("Wrong use of semicolon\nWrong blabla")
+
+      error = jslint.check(@file).errors.first
       assert_equal Juicer::JsLint::Error, error.class
     end
   end
