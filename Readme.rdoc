@@ -98,6 +98,9 @@ Embedding images in stylesheets should be used very carefully, as they will bloa
 
 Support for IE7, IE6 and IE5 is planned for near future, once the data_uri scheme has stabilized.
 
+Further reading
+- 
+
 == PLANNED FEATURES:
 
 Juicer 0.2.0 is the first usable release. Work will continue from here. Improving
