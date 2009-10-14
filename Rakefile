@@ -54,7 +54,7 @@ Rake::TestTask.new("test:integration") do |test|
   test.verbose = true
 end
 
-task "test:all" => ["test:units", "test:integration"]
+task :test => ["test:units", "test:integration"]
 
 task :default => "test:units"
 
