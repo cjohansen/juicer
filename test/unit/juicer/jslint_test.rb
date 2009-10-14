@@ -20,7 +20,7 @@ class TestJsLint < Test::Unit::TestCase
     should "shell out to rhino/jslint" do
       jslint = Juicer::JsLint.new(:bin_path => @path)
       jslint.expects(:execute).with("-jar \"#{@path}/rhino1_7R2-RC1.jar\" \"#{@path}/jslint-1.0.js\" \"#{@file}\"").returns("jslint: No problems")
-
+      
       assert jslint.check(@file).ok?
     end
   end
