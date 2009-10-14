@@ -2,7 +2,7 @@ require "test_helper"
 
 class TestYuiCompressor < Test::Unit::TestCase
   def setup
-    @path = File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "bin"))
+    @path = File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "bin"))
     @yui_compressor = Juicer::Minifyer::YuiCompressor.new({ :bin_path => @path })
     Juicer::Test::FileSetup.new.create
     @file = path('out.min.css')

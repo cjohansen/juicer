@@ -47,11 +47,20 @@
 # depend_on 'rubyzip'
 
 require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
+
+Rake::TestTask.new("test:units") do |test|
   test.libs << 'test'
-  test.pattern = 'test/**/*_test.rb'
+  test.pattern = 'test/unit/**/*_test.rb'
   test.verbose = true
 end
+
+Rake::TestTask.new("test:integration") do |test|
+  test.libs << 'test'
+  test.pattern = 'test/integration/**/*_test.rb'
+  test.verbose = true
+end
+
+task "test:all" => ["test:units", "test:integration"]
 
 begin
   require 'rcov/rcovtask'
@@ -66,4 +75,4 @@ rescue LoadError
   end
 end
 
-task :default => :test
+task :default => "test:units"
