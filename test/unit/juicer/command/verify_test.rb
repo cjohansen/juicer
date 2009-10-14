@@ -1,4 +1,4 @@
-require File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. test_helper])) unless defined?(Juicer)
+require "test_helper"
 
 class TestVerifyCommand < Test::Unit::TestCase
   def setup
@@ -31,7 +31,16 @@ class TestVerifyCommand < Test::Unit::TestCase
     end
 
     should "verify several files" do
-      @command.execute([path("ok.js"), path("not-ok.js"), path("a.js")])
+      files = %w[file1.js file2.js file3.js]
+      ok = "OK!\njslint: No problems"
+
+      Juicer::Command::Verify.any_instance.expects(:files).with(files).returns(files)
+      Juicer::JsLint.any_instance.expects(:check).with(files[0]).returns(Juicer::JsLint::Report.new)
+      Juicer::JsLint.any_instance.expects(:check).with(files[1]).returns(Juicer::JsLint::Report.new(["Oops"]))
+      Juicer::JsLint.any_instance.expects(:check).with(files[2]).returns(Juicer::JsLint::Report.new)
+      
+      @command.execute(files)
+     
       assert_match(/OK!/, @io.string)
       assert_match(/Problems detected/, @io.string)
     end

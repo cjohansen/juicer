@@ -1,4 +1,4 @@
-require File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. test_helper])) unless defined?(Juicer)
+require "test_helper"
 
 class TestListCommand < Test::Unit::TestCase
 
