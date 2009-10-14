@@ -1,57 +1,62 @@
-# Look in the tasks/setup.rb file for the various options that can be
-# configured in this Rakefile. The .rake files in the tasks directory
-# are where the options are used.
-
-# begin
-#   require 'bones'
-#   Bones.setup
-# rescue LoadError
-#   begin
-#     load 'tasks/setup.rb'
-#   rescue LoadError
-#     raise RuntimeError, '### please install the "bones" gem ###'
-#   end
-# end
-
-# ensure_in_path 'lib'
-# require 'juicer'
-
-# task :default => 'test:run'
-
-# PROJ.name = 'juicer'
-# PROJ.authors = 'Christian Johansen'
-# PROJ.email = 'christian@cjohansen.no'
-# PROJ.url = 'http://www.cjohansen.no/en/projects/juicer'
-# PROJ.version = Juicer::VERSION
-# PROJ.rubyforge.name = 'juicer'
-# PROJ.readme_file = 'Readme.rdoc'
-# PROJ.exclude = %w(tmp$ bak$ ~$ CVS \.svn ^pkg ^doc \.git ^rcov ^test\/data gemspec ^test\/bin)
-# PROJ.rdoc.remote_dir = 'juicer'
-
-# PROJ.spec.opts << '--color'
-
-# PROJ.gem.extras[:post_install_message] = <<-MSG
-# Juicer does not ship with third party libraries. You probably want to install
-# Yui Compressor and JsLint now:
-
-# juicer install yui_compressor
-# juicer install jslint
-
-# Happy juicing!
-# MSG
-
-# CLOBBER.include "test/data"
-
-# depend_on 'cmdparse'
-# depend_on 'nokogiri'
-# depend_on 'rubyzip'
-
+require 'rubygems'
+require 'rake'
 require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
+require 'rake/rdoctask'
+
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gem|
+    gem.name = "juicer"
+    gem.summary = "Command line tool for CSS and JavaScript developers"
+    gem.description = "Resolve dependencies, merge and minify CSS and JavaScript files with Juicer - the command line tool for frontend engineers"
+    gem.email = "christian@cjohansen.no"
+    gem.homepage = "http://github.com/cjohansen/juicer"
+    gem.authors = ["Christian Johansen"]
+    gem.rubyforge_project = "juicer"
+    gem.add_development_dependency "thoughtbot-shoulda"
+    gem.add_development_dependency "mocha"
+    gem.add_development_dependency "fakefs"
+    gem.add_development_dependency "jeweler"
+    gem.add_dependency "cmdparse"
+    gem.add_dependency "nokogiri"
+    gem.add_dependency "rubyzip"
+    gem.executables = ["juicer"]
+    gem.post_install_message = <<-MSG
+Juicer does not ship with third party libraries. You probably want to install
+Yui Compressor and JsLint now:
+
+juicer install yui_compressor
+juicer install jslint
+
+Happy juicing!
+    MSG
+    gem.files = FileList["[A-Z]*", "{bin,generators,lib,test}/**/*"]
+  end
+
+  Jeweler::GemcutterTasks.new
+  Jeweler::RubyforgeTasks.new do |rubyforge|
+    rubyforge.doc_task = "rdoc"
+  end
+rescue LoadError => err
+  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
+  puts err.message
+end
+
+Rake::TestTask.new("test:units") do |test|
   test.libs << 'test'
-  test.pattern = 'test/**/*_test.rb'
+  test.pattern = 'test/unit/**/*_test.rb'
   test.verbose = true
 end
+
+Rake::TestTask.new("test:integration") do |test|
+  test.libs << 'test'
+  test.pattern = 'test/integration/**/*_test.rb'
+  test.verbose = true
+end
+
+task :test => ["test:units", "test:integration"]
+
+task :default => "test:units"
 
 begin
   require 'rcov/rcovtask'
@@ -66,4 +71,15 @@ rescue LoadError
   end
 end
 
-task :default => :test
+Rake::RDocTask.new do |rdoc|
+  if File.exist?('VERSION')
+    version = File.read('VERSION')
+  else
+    version = ""
+  end
+
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title = "jstdutil #{version}"
+  rdoc.rdoc_files.include('README*')
+  rdoc.rdoc_files.include('lib/**/*.rb')
+end
