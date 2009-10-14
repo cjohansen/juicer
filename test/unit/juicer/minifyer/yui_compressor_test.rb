@@ -2,58 +2,42 @@ require "test_helper"
 
 class TestYuiCompressor < Test::Unit::TestCase
   def setup
-    @path = File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "bin"))
-    @yui_compressor = Juicer::Minifyer::YuiCompressor.new({ :bin_path => @path })
-    Juicer::Test::FileSetup.new.create
-    @file = path('out.min.css')
+    @jar = "yui-compressor.jar"
+    @input = "in-file.css"
+    @output = "out-file.css"
+    @cmd = %Q{-jar "#@jar"}
+    @yui_compressor = Juicer::Minifyer::YuiCompressor.new
+    @yui_compressor.stubs(:locate_jar).returns(@jar)
   end
 
-  def teardown
-    File.delete(@file) if @file && File.exists?(@file)
-    File.delete(path("a-1.css")) if File.exists?(path("a-1.css"))
+  context "#save" do
+    should "overwrite existing file" do
+      @yui_compressor.expects(:execute).with(%Q{#@cmd -o "#@output" "#@output"})
+      @yui_compressor.save(@output)
+    end
+
+    should "use provided symbol type" do
+      @yui_compressor.expects(:execute).with(%Q{#@cmd -o "#@output" "#@input"})
+      @yui_compressor.save(@input, @output, :css)
+    end
+
+    should "use provided string type" do
+      @yui_compressor.expects(:execute).with(%Q{#@cmd -o "#@output" "#@input"})
+      @yui_compressor.save(@input, @output, "css")
+    end
+
+    should "write compressed input to output" do
+      @yui_compressor.expects(:execute).with(%Q{#@cmd -o "#@output" "#@input"})
+      @yui_compressor.save(@input, @output)
+    end
+
+    should "create non-existant path" do
+      output = "some/nested/directory"
+      @yui_compressor.expects(:execute).with(%Q{#@cmd -o "#{output}/file.css" "#@input"})
+      FileUtils.expects(:mkdir_p).with(output)
+      @yui_compressor.save(@input, "#{output}/file.css")
+    end
   end
-
-  def test_save_overwrite
-    FileUtils.cp(path('a.css'), path('a-1.css'))
-    @yui_compressor.save(path('a-1.css'))
-    assert_equal "@import 'b.css';", IO.read(path('a-1.css'))
-  end
-
-  def test_save_with_symbol_type
-    @yui_compressor.save(path('a.css'), path('a-1.css'), :css)
-    assert_equal "@import 'b.css';", IO.read(path('a-1.css'))
-    File.delete(path('a-1.css'))
-  end
-
-  def test_save_with_string_type
-    @yui_compressor.save(path('a.css'), path('a-1.css'), "css")
-    assert_equal "@import 'b.css';", IO.read(path('a-1.css'))
-    File.delete(path('a-1.css'))
-  end
-
-  def test_save_other_file
-    @yui_compressor.save(path('a.css'), path('a-1.css'))
-    assert_equal "@import 'b.css';", IO.read(path('a-1.css'))
-    assert_not_equal IO.read(path('a-1.css')), IO.read(path('a.css'))
-    File.delete(path('a-1.css'))
-  end
-
-  def test_save_should_create_non_existant_path
-    @yui_compressor.save(path('a.css'), path('bleh/blah/a-1.css'))
-    assert File.exists? path('bleh/blah/a-1.css')
-    FileUtils.rm_rf(path('bleh'))
-  end
-
-#  def test_command
-#    Juicer::Minifyer::YuiCompressor.publicize_methods do
-#      cmd = /java -jar #{@path.sub('2.3.5', '\d\.\d\.\d')}\/yuicompressor-\d\.\d\.\d\.jar --type css/
-#      assert_match cmd, @yui_compressor.command('css')
-
-#      @yui_compressor.no_munge = true
-#      cmd = /#{cmd} --no-munge/
-#      assert_match cmd, @yui_compressor.command('css')
-#    end
-#  end
 
   context "locating jar" do
     setup do
@@ -82,6 +66,7 @@ class TestYuiCompressor < Test::Unit::TestCase
       Juicer::Minifyer::YuiCompressor.publicize_methods do
         File.open('yuicompressor-2.3.4.jar', 'w') { |f| f.puts '' }
         yui_compressor = Juicer::Minifyer::YuiCompressor.new
+
         assert_equal File.expand_path('yuicompressor-2.3.4.jar'), yui_compressor.locate_jar
       end
     end
