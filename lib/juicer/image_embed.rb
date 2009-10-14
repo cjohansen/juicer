@@ -33,6 +33,8 @@ module Juicer
 	      @contents = File.read(file)
 	      used = []
 
+				# TODO: Detect all duplicate urls, print a warning about them, and remove them from candidates
+
 	      urls(file).each do |url|
 	        begin
 	          path = resolve(url, file)

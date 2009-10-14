@@ -1,5 +1,5 @@
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. test_helper])) unless defined?(Juicer)
-require 'fakefs'
+require 'fakefs/safe'
 
 class TestImageEmbed < Test::Unit::TestCase
 	include FakeFS
@@ -7,6 +7,7 @@ class TestImageEmbed < Test::Unit::TestCase
 	context "ImageEmbed instance using data_uri," do
 		
 		setup do 
+			FakeFS.activate!
 			FileSystem.clear
 			FileUtils.mkdir_p("/stylesheets")
 			FileUtils.mkdir_p("/images")
@@ -33,6 +34,10 @@ class TestImageEmbed < Test::Unit::TestCase
 			]	
 			create_files( @unsupported_assets )
 			@embedder = Juicer::ImageEmbed.new( :type => :data_uri, :web_root => '' )
+		end
+		
+		teardown do
+			FakeFS.deactivate!
 		end
 
 		context "save method" do
