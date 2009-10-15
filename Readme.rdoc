@@ -155,7 +155,7 @@ Windows Vista, Windows 2003, Windows 7
 Tests needed
 
 Windows XP
-* IE8 - up to 32kb IS supported.
+* IE8 - up to 32kb IS supported
 * Firefox 3.5.2 - OK 
 * Opera 9.64 - OK
 * Chrome 3 - OK
@@ -176,9 +176,6 @@ Android
 
 iPhone
 * Safari - OK
-
-Nokia N73 ME
-* Opera Mini 4.2 - OK
 
 The test used is located at http://roderick.dk/experiments/data-uri-limits/
 
