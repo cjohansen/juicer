@@ -150,17 +150,43 @@ If you plan to support user-agents that do understand conditional comments and d
 Please note that image embedding is NOT a silver bullet, but can help reduce the amount of HTTP connections needed for a parge.
 Embedding images should only be used for relatively small images.
 
-FIXME: Examine the size limit of all the major user-agents.
-IE8 - 32 kb : http://msdn.microsoft.com/en-us/library/cc848897%28VS.85%29.aspx
-Safari, Chrome, WebKit?
-Firefox 2.x, Firefox 3.x, Gecko?
-Opera - 4100 characters according to https://developer.mozilla.org/en/The_data_URL_scheme, from v7.20, more tests needed
-Opera 10 seems to support at least 32K
+==== Browser support
+Windows Vista, Windows 2003, Windows 7
+Tests needed
 
-Test:
-Create png images with solid color, going from 1, 2, 4, 8, 16, 32, 64, 128kb.
-Use javascript to measure dimensions of loaded images.
-Repeat using CSS to load all the images, do a visual inspection.
+Windows XP
+* IE8 - up to 32kb IS supported.
+* Firefox 3.5.2 - OK 
+* Opera 9.64 - OK
+* Chrome 3 - OK
+* Safari 4 - OK
+
+OS X 10.6.1
+* Firefox 3.5 - OK
+* Firefox 2.0.20 - OK
+* Safari 4 - OK
+* Opera 10 - OK
+* Camino 1.6.10 - OK
+
+Debian
+* Opera 10 - OK
+
+Android
+* WebKit - OK
+
+iPhone
+* Safari - OK
+
+Nokia N73 ME
+* Opera Mini 4.2 - OK
+
+The test used is located at http://roderick.dk/experiments/data-uri-limits/
+
+The test used tests loading of styles using the href attribute, it is ASSUMED that loading images from data-uri in css has similar support.
+Soon[tm] there will be a testpage with images as well.
+
+If you have funky browser / OS combinations not listed above, please visit the test and send a screenshot and details about browser and OS to morgan@roderick.dk
+
 
 ==== Further reading
 
