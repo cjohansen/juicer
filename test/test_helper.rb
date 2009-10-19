@@ -90,13 +90,6 @@ module Juicer
         
         images = mkdir File.join(@dir, "images")
         mkfile(images, '1.png', "")
-        
-        # set up image files for testing ImageEmbed
-        mkfile(images, 'test_image.png', 'hello png')
-        mkfile(images, 'test_image.gif', "hello gif")
-        mkfile(images, 'test_image.jpg', "hello jpg")
-        mkfile(images, 'test_image.jpeg', "hello jpeg")
-        mkfile(images, 'test_image.bmp', "hello bmp")
 
         css_dir = mkdir File.join(@dir, "css")
         mkfile(css_dir, '2.gif', "")
@@ -137,35 +130,6 @@ p { background: url(/a2.css); }
         CSS
 
         mkfile(@dir, 'path_test2.css', css)
-
-
-        css = <<-CSS
-body { background: url(../images/test_image.png?embed=true); }
-h1 { background: url(../images/test_image.gif?embed=false); }
-h2 { background: url(../images/test_image.jpg); }
-h3 { background: url(../images/test_image.bmp?embed=true); }
-h4 { background: url(../images/test_image.bmp); }
-CSS
-        mkfile(@dir, 'css/image_embed_test.css', css)
-
-				css = <<-CSS
-body { background: url(../images/test_image.png?embed=true); }
-CSS
-				mkfile(@dir, 'css/image_embed_test_png_embed.css', css)
-
-				css = <<-CSS
-body { background: url(../images/test_image.gif?embed=true); }
-CSS
-				mkfile(@dir, 'css/image_embed_test_gif_embed.css', css)
-
-				css = <<-CSS
-body { background: url(../images/test_image.jpg?embed=true); }
-CSS
-				mkfile(@dir, 'css/image_embed_test_jpg_embed.css', css)
-				css = <<-CSS
-body { background: url(../images/test_image.jpeg?embed=true); }
-CSS
-				mkfile(@dir, 'css/image_embed_test_jpeg_embed.css', css)
 
         mkfile(@dir, 'Changelog.txt', "2008.02.09 | stb-base 1.29\n\nFEATURE: Core  | Bla bla bla bla bla\nFEATURE: UI: | Bla bla bla bla bla\n\n\n2008.02.09 | stb-base 1.29\n\nFEATURE: Core  | Bla bla bla bla bla\nFEATURE: UI: | Bla bla bla bla bla\n")
       end
