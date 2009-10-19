@@ -64,134 +64,151 @@ class TestInstallerBase < Test::Unit::TestCase
     end
   end
 
-  def test_path
-    assert_equal "lib/some_magic", @installer.path
+  context "paths and name" do
+    should "reflect installer class name" do
+      assert_equal "lib/some_magic", @installer.path
+    end
+
+    should "reflect installer class name for bin path" do
+      assert_equal "lib/some_magic/bin", @installer.bin_path
+    end
+
+    should "reflect class name in human name" do
+      assert_equal "Some Magic", @installer.name
+    end
   end
 
-  def test_bin_path
-    assert_equal "lib/some_magic/bin", @installer.bin_path
-  end
+  context "already installed module" do
+    should "report as installed" do
+      assert !@installer.installed?("x.y.z")
+      @installer.install("x.y.z")
+      assert @installer.installed?("x.y.z")
+    end
 
-  def test_name
-    assert_equal "Some Magic", @installer.name
-  end
-
-  def test_installed
-    assert !@installer.installed?("x.y.z")
-    @installer.install("x.y.z")
-    assert @installer.installed?("x.y.z")
-  end
-
-  def test_installation_should_fail_when_already_installed
-    @installer.install("1.0.0")
-
-    assert_raise RuntimeError do
+    should "fail re-installation" do
       @installer.install("1.0.0")
+
+      assert_raise RuntimeError do
+        @installer.install("1.0.0")
+      end
     end
   end
 
-  def test_installation_should_create_bin_and_release_folders
-    assert_equal "1.0.0", @installer.install("1.0.0")
-    assert File.exists?(File.join(@juicer_home, "lib/some_magic/bin"))
-    assert File.exists?(File.join(@juicer_home, "lib/some_magic/1.0.0"))
+  context "installation" do
+    should "create bin and release folders" do
+      assert_equal "1.0.0", @installer.install("1.0.0")
+      assert File.exists?(File.join(@juicer_home, "lib/some_magic/bin"))
+      assert File.exists?(File.join(@juicer_home, "lib/some_magic/1.0.0"))
+    end
   end
 
-  def test_uninstall_should_remove_library_path_when_only_version_is_uninstalled
-    @installer.install("1.0.0")
-    @installer.uninstall("1.0.0")
-    assert !File.exists?(File.join(@juicer_home, "lib/some_magic"))
+  context "uninstall" do
+    should "remove library path when only version is uninstalled" do
+      @installer.install("1.0.0")
+      @installer.uninstall("1.0.0")
+      assert !File.exists?(File.join(@juicer_home, "lib/some_magic"))
+    end
+
+    should "keep other versions" do
+      @installer.install("1.0.0")
+      @installer.install("1.0.1")
+      @installer.uninstall("1.0.0")
+      assert !File.exists?(File.join(@juicer_home, "lib/some_magic/1.0.0"))
+      assert File.exists?(File.join(@juicer_home, "lib/some_magic"))
+    end
   end
 
-  def test_uninstall_should_keep_other_versions
-    @installer.install("1.0.0")
-    @installer.install("1.0.1")
-    @installer.uninstall("1.0.0")
-    assert !File.exists?(File.join(@juicer_home, "lib/some_magic/1.0.0"))
-    assert File.exists?(File.join(@juicer_home, "lib/some_magic"))
+  context "download" do
+    # TODO: Don't download
+    should "cache files" do
+      File.expects(:delete).at_most(0)
+      @installer.download("http://www.julienlecomte.net/yuicompressor/")
+      filename = File.join(@juicer_home, "download/some_magic/yuicompressor")
+      assert File.exists?(filename)
+      @installer.download("http://www.julienlecomte.net/yuicompressor/")
+    end
+
+    should "redownload cached files when forced" do
+      File.expects(:delete).at_most(1)
+      @installer.download("http://www.julienlecomte.net/yuicompressor/")
+      filename = File.join(@juicer_home, "download/some_magic/yuicompressor")
+      assert File.exists?(filename)
+      File.expects(:open).at_most(1)
+      @installer.download("http://www.julienlecomte.net/yuicompressor/", true)
+    end
   end
 
-  def test_download_should_cache_files_and_only_redownload_when_forced_to_do_so
-    @installer.download("http://www.julienlecomte.net/yuicompressor/")
-    filename = File.join(@juicer_home, "download/some_magic/yuicompressor")
-    assert File.exists?(filename)
-    sleep(0.5)
+  context "installer dependencies" do
+    should "not return true from installer when missing dependencies" do
+      @installer.install
 
-    mtime = File.stat(filename).mtime
-    @installer.download("http://www.julienlecomte.net/yuicompressor/")
-    assert_equal mtime, File.stat(filename).mtime
-    sleep(0.5)
+      installer = Juicer::Install::SomeMagicInstaller.new(@juicer_home)
+      assert !installer.installed?("1.0.1"), "Installer should be installed"
 
-    @installer.download("http://www.julienlecomte.net/yuicompressor/", true)
-    assert_not_equal mtime, File.stat(filename).mtime
-  end
+      installer.dependency Juicer::Install::SomeOtherInstaller
+      assert !installer.installed?("1.0.1"), "Installer should not report as being installed when missing dependencies"
+    end
 
-  def test_installer_should_not_report_true_when_missing_dependencies
-    @installer.install
-
-    installer = Juicer::Install::SomeMagicInstaller.new(@juicer_home)
-    assert !installer.installed?("1.0.1"), "Installer should be installed"
-
-    installer.dependency Juicer::Install::SomeOtherInstaller
-    assert !installer.installed?("1.0.1"), "Installer should not report as being installed when missing dependencies"
-  end
-
-  def installer_with_single_dependency_should_have_it_installed_on_install
-    installer = Juicer::Install::SomeMagicInstaller.new(@juicer_home)
-    installer.dependency Juicer::Install::SomeOtherInstaller
-    installer.install "1.0.0"
-    assert File.exists?(File.join(@juicer_home, "lib/some_magic/1.0.0"))
-    assert File.exists?(File.join(@juicer_home, "lib/some_other/1.0.0"))
-  end
-
-  def test_installed_dependency_should_not_cause_error
-    installer = Juicer::Install::SomeMagicInstaller.new(@juicer_home)
-    installer.dependency Juicer::Install::SomeOtherInstaller
-
-    dep = Juicer::Install::SomeOtherInstaller.new
-    dep.install unless dep.installed?
-
-    assert_nothing_raised do
+    should "install single dependency" do
+      installer = Juicer::Install::SomeMagicInstaller.new(@juicer_home)
+      installer.dependency Juicer::Install::SomeOtherInstaller
       installer.install "1.0.0"
+      assert File.exists?(File.join(@juicer_home, "lib/some_magic/1.0.0"))
+      assert File.exists?(File.join(@juicer_home, "lib/some_other/1.0.0"))
+    end
+
+    should "not raise error when they exist" do
+      installer = Juicer::Install::SomeMagicInstaller.new(@juicer_home)
+      installer.dependency Juicer::Install::SomeOtherInstaller
+
+      dep = Juicer::Install::SomeOtherInstaller.new
+      dep.install unless dep.installed?
+
+      assert_nothing_raised do
+        installer.install "1.0.0"
+      end
+    end
+
+    should "get dependency from single symbol" do
+      installer = Juicer::Install::SomeMagicInstaller.new(@juicer_home)
+      installer.dependency :some_other
+      installer.install "1.0.0"
+      assert File.exists?(File.join(@juicer_home, "lib/some_magic/1.0.0"))
+      assert File.exists?(File.join(@juicer_home, "lib/some_other/1.0.0"))
+    end
+
+    should "get dependency from single string" do
+      installer = Juicer::Install::SomeMagicInstaller.new(@juicer_home)
+      installer.dependency "some_other"
+      installer.install "1.0.0"
+      assert File.exists?(File.join(@juicer_home, "lib/some_magic/1.0.0"))
+      assert File.exists?(File.join(@juicer_home, "lib/some_other/1.0.0"))
+    end
+
+    should "support multiple dependencies" do
+      installer = Juicer::Install::SomeMagicInstaller.new(@juicer_home)
+      installer.dependency :some_other
+      installer.dependency :some_other, "2.0.4"
+      installer.dependency :some_other, "3.0.5"
+      installer.install "1.0.0"
+      assert File.exists?(File.join(@juicer_home, "lib/some_magic/1.0.0"))
+      assert File.exists?(File.join(@juicer_home, "lib/some_other/1.0.0"))
+      assert File.exists?(File.join(@juicer_home, "lib/some_other/2.0.4"))
+      assert File.exists?(File.join(@juicer_home, "lib/some_other/3.0.5"))
     end
   end
 
-  def test_single_dependency_symbol
-    installer = Juicer::Install::SomeMagicInstaller.new(@juicer_home)
-    installer.dependency :some_other
-    installer.install "1.0.0"
-    assert File.exists?(File.join(@juicer_home, "lib/some_magic/1.0.0"))
-    assert File.exists?(File.join(@juicer_home, "lib/some_other/1.0.0"))
-  end
+  context "resolving class" do
+    should "accept class input" do
+      assert_equal Juicer::Install::SomeMagicInstaller, Juicer::Install.get(Juicer::Install::SomeMagicInstaller)
+    end
 
-  def test_single_dependency_string
-    installer = Juicer::Install::SomeMagicInstaller.new(@juicer_home)
-    installer.dependency "some_other"
-    installer.install "1.0.0"
-    assert File.exists?(File.join(@juicer_home, "lib/some_magic/1.0.0"))
-    assert File.exists?(File.join(@juicer_home, "lib/some_other/1.0.0"))
-  end
+    should "accept symbol input" do
+      assert_equal Juicer::Install::SomeMagicInstaller, Juicer::Install.get(:some_magic)
+    end
 
-  def test_multiple_dependencies
-    installer = Juicer::Install::SomeMagicInstaller.new(@juicer_home)
-    installer.dependency :some_other
-    installer.dependency :some_other, "2.0.4"
-    installer.dependency :some_other, "3.0.5"
-    installer.install "1.0.0"
-    assert File.exists?(File.join(@juicer_home, "lib/some_magic/1.0.0"))
-    assert File.exists?(File.join(@juicer_home, "lib/some_other/1.0.0"))
-    assert File.exists?(File.join(@juicer_home, "lib/some_other/2.0.4"))
-    assert File.exists?(File.join(@juicer_home, "lib/some_other/3.0.5"))
-  end
-
-  def test_get_class
-    assert_equal Juicer::Install::SomeMagicInstaller, Juicer::Install.get(Juicer::Install::SomeMagicInstaller)
-  end
-
-  def test_get_class_from_symbol
-    assert_equal Juicer::Install::SomeMagicInstaller, Juicer::Install.get(:some_magic)
-  end
-
-  def test_get_class_from_string
-    assert_equal Juicer::Install::SomeMagicInstaller, Juicer::Install.get("some_magic")
+    should "accept string input" do
+      assert_equal Juicer::Install::SomeMagicInstaller, Juicer::Install.get("some_magic")
+    end
   end
 end
