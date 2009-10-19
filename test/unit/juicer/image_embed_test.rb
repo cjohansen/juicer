@@ -1,4 +1,4 @@
-require File.expand_path(File.join(File.dirname(__FILE__), %w[.. test_helper])) unless defined?(Juicer)
+require File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. test_helper])) unless defined?(Juicer)
 require 'fakefs/safe'
 
 class TestImageEmbed < Test::Unit::TestCase
@@ -42,6 +42,62 @@ class TestImageEmbed < Test::Unit::TestCase
 
 		context "save method" do
 	    setup do 
+
+	    end
+			
+
+			context "with duplicated urls" do
+					setup do
+						@stylesheets = [
+							{ 
+								:path => '/stylesheets/test_embed_duplicates.css', 
+								:content => "
+									body: { background: url(#{@supported_assets.first[:path]}?embed=true); }
+									div.section: { background: url(#{@supported_assets.first[:path]}?embed=true); }
+									div.article: { background: url(#{@supported_assets.last[:path]}?embed=true); }
+								"
+							}
+						]
+						create_files( @stylesheets )
+					end
+
+					should_eventually "provide warnings for duplicate urls"
+
+					should "not embed duplicates" do
+		 				# make sure there are no errors
+		 		    assert_nothing_raised do
+		 		      @embedder.save @stylesheets.first[:path]
+		 		    end
+
+		 				css_contents = File.read( @stylesheets.first[:path] )
+
+		 				# encode the image
+		 				image_contents = File.read( @supported_assets.first[:path] )
+		 				data_uri = Datafy::make_data_uri( image_contents, 'image/png' )
+
+		 				# make sure the encoded data_uri is not present in the stylesheet
+		 				assert !css_contents.include?( data_uri )
+					end
+
+					should "embed distinct urls" do
+		 				# make sure there are no errors
+		 		    assert_nothing_raised do
+		 		      @embedder.save @stylesheets.first[:path]
+		 		    end
+
+		 				css_contents = File.read( @stylesheets.first[:path] )
+
+		 				# encode the image
+		 				image_contents = File.read( @supported_assets.last[:path] )
+		 				data_uri = Datafy::make_data_uri( image_contents, 'image/jpeg' )
+
+		 				# make sure the encoded data_uri is not present in the stylesheet
+		 				assert css_contents.include?( data_uri )
+					end
+				
+			end
+
+	    should "embed images into css file" do
 				@stylesheets = [
 					{ 
 						:path => '/stylesheets/test_embed_true.css', 
@@ -49,10 +105,7 @@ class TestImageEmbed < Test::Unit::TestCase
 					}
 				]
 				create_files( @stylesheets )
-	    end
 
-
-	    should "embed images into css file" do
    			@stylesheets.each do |stylesheet|
    				old_contents = File.read( stylesheet[:path] )
    

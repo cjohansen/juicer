@@ -34,8 +34,13 @@ module Juicer
 	      used = []
 
 				# TODO: Detect all duplicate urls, print a warning about them, and remove them from candidates
+				duplicates = duplicate_urls( file )
+				if duplicates.length > 0
+					puts "duplicates #{duplicates}"
+				end
 
-	      urls(file).each do |url|
+				usable_urls = distinct_urls_without_duplicates( file )
+	      usable_urls.each do |url|
 	        begin
 	          path = resolve(url, file)
 	          next if used.include?(path)
@@ -93,6 +98,14 @@ module Juicer
       end
     end
 
+		def distinct_urls_without_duplicates( file )
+			urls(file) - duplicate_urls(file)
+		end
+
+		def duplicate_urls( file )
+			urls(file).duplicates
+		end
+
     #
     # Resolve full path from URL
     #
@@ -124,5 +137,12 @@ module Juicer
       # Resolve relative URLs to full paths
       File.expand_path(File.join(File.dirname(File.expand_path(from)), target))
     end
+  end
+end
+
+# http://snippets.dzone.com/posts/show/3838
+module Enumerable
+  def duplicates
+    inject({}) {|h,v| h[v]=h[v].to_i+1; h}.reject{|k,v| v==1}.keys
   end
 end
