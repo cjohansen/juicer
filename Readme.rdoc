@@ -166,6 +166,8 @@ OS X 10.6.1
 * Firefox 2.0.20 - OK
 * Safari 4 - OK
 * Opera 10 - OK
+* Opera 9.27 - OK
+* Opera 8.0 - OK
 * Camino 1.6.10 - OK
 
 Debian
