@@ -158,7 +158,5 @@ class TestMergeCommand < Test::Unit::TestCase
     end
   
     should_eventually "warn about duplicated image urls for embedding"
-      
-    end
   end
 end
