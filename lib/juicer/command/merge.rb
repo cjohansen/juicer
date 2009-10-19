@@ -30,7 +30,7 @@ module Juicer
         @absolute_urls = false          # Make the merger use absolute URLs
         @local_hosts = []               # Host names that are served from :web_root
         @verify = true                  # Verify js files with JsLint
-				@image_embed_type = :none						# Embed images in css files, options are :none, :data_uri
+				@image_embed_type = :none       # Embed images in css files, options are :none, :data_uri
 
         @log = log || Logger.new(STDOUT)
 

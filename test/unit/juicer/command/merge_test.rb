@@ -156,5 +156,9 @@ class TestMergeCommand < Test::Unit::TestCase
         assert_match(/Ignoring detected problems/, @io.string)
       end
     end
+  
+    should_eventually "warn about duplicated image urls for embedding"
+      
+    end
   end
 end
