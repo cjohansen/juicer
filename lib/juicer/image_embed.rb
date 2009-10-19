@@ -33,10 +33,10 @@ module Juicer
 	      @contents = File.read(file)
 	      used = []
 
-				# TODO: Detect all duplicate urls, print a warning about them, and remove them from candidates
+				# TODO: Remove "?embed=true" from duplicate urls
 				duplicates = duplicate_urls( file )
 				if duplicates.length > 0
-					puts "duplicates #{duplicates}"
+					Juicer::LOGGER.warn("Duplicate image urls detected, these images will not be embedded: #{duplicates.collect { |v| v.gsub('?embed=true', '') }.inspect}") 
 				end
 
 				usable_urls = distinct_urls_without_duplicates( file )
