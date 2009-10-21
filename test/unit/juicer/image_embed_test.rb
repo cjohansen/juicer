@@ -45,6 +45,45 @@ class TestImageEmbed < Test::Unit::TestCase
 
 	    end
 			
+			context "with files exceeding SIZE_LIMIT" do
+				setup do
+				  
+				  @large_files = [
+            { :path => '/images/large-file.png', :content => "hello png!" + ( " " * @embedder.size_limit )	}
+				  ]
+    			create_files( @large_files )
+				  
+					@stylesheets = [
+						{ 
+							:path => '/stylesheets/test_embed_duplicates.css', 
+							:content => "
+								body: { background: url(#{@large_files.first[:path]}?embed=true); }
+							"
+						}
+					]
+					create_files( @stylesheets )					
+				end
+				
+				should "not embed images that exceeds size limit" do
+	 				# make sure there are no errors
+	 		    assert_nothing_raised do
+	 		      @embedder.save @stylesheets.first[:path]
+	 		    end
+
+	 				css_contents = File.read( @stylesheets.first[:path] )
+
+	 				# encode the image
+	 				image_contents = File.read( @large_files.first[:path] )
+	 				data_uri = Datafy::make_data_uri( image_contents, 'image/png' )
+
+	 				# make sure the encoded data_uri is not present in the stylesheet
+	 				assert !css_contents.include?( data_uri )
+	 				
+	 				# make sure the original url still exist in the stylesheet
+	 				assert_match Regexp.new( @large_files.first[:path] ), css_contents	 				
+				end
+			  
+			end
 
 			context "with duplicated urls" do
 					setup do
@@ -93,6 +132,8 @@ class TestImageEmbed < Test::Unit::TestCase
 
 		 				# make sure the encoded data_uri is not present in the stylesheet
 		 				assert css_contents.include?( data_uri )
+		 				
+		 				assert_no_match Regexp.new( @supported_assets.last[:path] ), css_contents
 					end
 				
 			end

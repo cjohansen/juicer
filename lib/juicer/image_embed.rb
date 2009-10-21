@@ -18,6 +18,16 @@ module Juicer
   class ImageEmbed
     include Juicer::Chainable
 
+    # The maximum supported limit for modern browsers, See the Readme.rdoc for details
+    SIZE_LIMIT = 32768
+    
+    #
+    # Returns the size limit
+    #
+    def size_limit
+      SIZE_LIMIT
+    end
+
     def initialize(options = {})
       @web_root = options[:web_root]
       @web_root.sub!(%r{/?$}, "") if @web_root # Remove trailing slash
@@ -47,8 +57,16 @@ module Juicer
 
 	          if path != url
 	            used << path            
-	            # replace the url in the css file with the data uri
-	            @contents.gsub!(url, embed_data_uri( path ) )
+	            
+              # make sure we do not exceed SIZE_LIMIT
+              new_path = embed_data_uri( path )
+              
+              if ( new_path.length < SIZE_LIMIT )
+  	            # replace the url in the css file with the data uri
+  	            @contents.gsub!(url, embed_data_uri( path ) )
+              else
+                Juicer::LOGGER.warn("The final data uri for the image located at #{path.gsub('?embed=true', '')} exceeds #{SIZE_LIMIT} and will not be embedded to maintain compatability.") 
+              end
 	          end
 	        rescue Errno::ENOENT
 	          puts "Unable to locate file #{path || url}, skipping image embedding"
@@ -77,7 +95,7 @@ module Juicer
             content_type = "image/#{filetype}"
 
             # encode the url
-            new_path = Datafy::make_data_uri( content, content_type )              
+            new_path = Datafy::make_data_uri( content, content_type )
           else
             puts "Unable to locate file #{filename} on local file system, skipping image embedding"
           end
