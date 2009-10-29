@@ -12,9 +12,9 @@ module Juicer
 
       # Initializes command
       #
-      def initialize(io = STDOUT)
+      def initialize(log = nil)
         super('list', false, true)
-        @io = io
+        @log = log
         self.short_desc = "Lists all dependencies for all input files/patterns"
         self.description = <<-EOF
 Dependencies are looked up recursively. The dependency chain reveals which files
@@ -41,8 +41,8 @@ Input parameters may be:
           type = file.split(".").pop.to_sym
           raise FileNotFoundError.new("Unable to guess type (CSS/JavaScript) of file #{relative(file)}") unless types[type]
 
-          @io.puts "Dependency chain for #{relative file}:"
-          @io.puts "  #{relative(types[type].resolve(file)).join("\n  ")}\n\n"
+          @log.info "Dependency chain for #{relative file}:"
+          @log.info "  #{relative(types[type].resolve(file)).join("\n  ")}"
         end
       end
     end
