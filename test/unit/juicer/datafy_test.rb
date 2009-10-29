@@ -1,5 +1,5 @@
 require 'test/unit'
-require File.expand_path(File.join(File.dirname(__FILE__), %w[.. test_helper])) unless defined?(Juicer)
+require "test_helper"
 
 class TC_Datafy < Test::Unit::TestCase
 
