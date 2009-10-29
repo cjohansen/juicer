@@ -58,6 +58,21 @@ STDOUT
     assert_equal msg, result
   end
 
+  def test_list_several_files_with_empties
+    result = @command.execute ["test/data/a.css", "test/data/b.css"]
+
+    msg = <<-STDOUT
+Dependency chain for test/data/a.css:
+  test/data/b.css
+  test/data/a.css
+
+Dependency chain for test/data/b.css:
+  test/data/b.css
+STDOUT
+
+    assert_equal msg, result
+  end
+
   def test_list_files_unable_to_guess_type
     assert_raise FileNotFoundError do
       @command.execute("test/data/*.txt")
