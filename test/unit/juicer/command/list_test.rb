@@ -3,8 +3,8 @@ require "test_helper"
 class TestListCommand < Test::Unit::TestCase
 
   def setup
-    @io = StringIO.new
-    @command = Juicer::Command::List.new(@io)
+    @log = Juicer::LOGGER
+    @command = Juicer::Command::List.new(@log)
     Juicer::Test::FileSetup.new.create
   end
 
@@ -19,33 +19,31 @@ class TestListCommand < Test::Unit::TestCase
   end
 
   def test_list_css_file
-    @command.execute "test/data/a.css"
+    result = @command.execute "test/data/a.css"
 
     msg = <<-STDOUT
 Dependency chain for test/data/a.css:
   test/data/b.css
   test/data/a.css
+STDOUT
 
-    STDOUT
-
-    assert_equal msg, @io.string
+    assert_equal msg, result
   end
 
   def test_list_js_file
-    @command.execute "test/data/a.js"
+    result = @command.execute "test/data/a.js"
 
     msg = <<-STDOUT
 Dependency chain for test/data/a.js:
   test/data/b.js
   test/data/a.js
+STDOUT
 
-    STDOUT
-
-    assert_equal msg, @io.string
+    assert_equal msg, result
   end
 
   def test_list_several_files
-    @command.execute ["test/data/a.js", "test/data/b.js"]
+    result = @command.execute ["test/data/a.js", "test/data/b.js"]
 
     msg = <<-STDOUT
 Dependency chain for test/data/a.js:
@@ -55,10 +53,9 @@ Dependency chain for test/data/a.js:
 Dependency chain for test/data/b.js:
   test/data/a.js
   test/data/b.js
+STDOUT
 
-    STDOUT
-
-    assert_equal msg, @io.string
+    assert_equal msg, result
   end
 
   def test_list_files_unable_to_guess_type

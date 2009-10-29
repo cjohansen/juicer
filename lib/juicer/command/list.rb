@@ -37,13 +37,16 @@ Input parameters may be:
         types = { :js => Juicer::JavaScriptDependencyResolver.new,
                   :css => Juicer::CssDependencyResolver.new }
 
-        files(args).each do |file|
+        result = files(args).map { |file|
           type = file.split(".").pop.to_sym
           raise FileNotFoundError.new("Unable to guess type (CSS/JavaScript) of file #{relative(file)}") unless types[type]
 
-          @log.info "Dependency chain for #{relative file}:"
-          @log.info "  #{relative(types[type].resolve(file)).join("\n  ")}"
-        end
+          "Dependency chain for #{relative file}:\n  #{relative(types[type].resolve(file)).join("\n  ")}"
+        }.join("\n\n") + "\n"
+
+        @log.info result
+
+        result
       end
     end
   end
