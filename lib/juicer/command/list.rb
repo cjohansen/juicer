@@ -41,7 +41,11 @@ Input parameters may be:
           type = file.split(".").pop.to_sym
           raise FileNotFoundError.new("Unable to guess type (CSS/JavaScript) of file #{relative(file)}") unless types[type]
 
-          "Dependency chain for #{relative file}:\n  #{relative(types[type].resolve(file)).join("\n  ")}"
+          deps = relative types[type].resolve(file)
+          # there may only be one dependency, which resolve() returns as a string
+          deps = deps.join("\n  ") if deps.is_a? Array
+
+          "Dependency chain for #{relative file}:\n  #{deps}"
         }.join("\n\n") + "\n"
 
         @log.info result
