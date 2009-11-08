@@ -16,7 +16,7 @@ module Juicer
     # options = Hash of options, optional
     #
     def initialize(binary, options = {})
-      @options = self.respond_to?(:defualt_options) ? default_options.merge(options) : options
+      @options = self.respond_to?(:default_options) ? default_options.merge(options) : options
       @opt_set = false
       @command = nil
       @binary = binary
