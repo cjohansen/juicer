@@ -193,13 +193,40 @@ class TestImageEmbed < Test::Unit::TestCase
    
    				css_contents = File.read( stylesheet[:path] )
    				   
-   				# make sure the original url does not exist anymore
+   				# make sure the original url still exists
           assert_match( Regexp.new( @supported_assets.first[:path] ), css_contents )
           assert_match( Regexp.new( @supported_assets.last[:path] ), css_contents )
 	      end
 	    end
    		
-   		should_eventually 'have tests that show that unsupported images are not embedded in final output'
+   		
+   		should "not embed unsupported images" do
+				@stylesheets = [
+					{ 
+						:path => '/stylesheets/test_embed_true.css', 
+						:content => "
+						  body: { background: url(#{@unsupported_assets.first[:path]}?embed=true); }
+						  h1: { background: url(#{@unsupported_assets.last[:path]}?embed=true); }
+						"
+					}
+				]
+				create_files( @stylesheets )
+
+   			@stylesheets.each do |stylesheet|
+   				old_contents = File.read( stylesheet[:path] )
+   
+   				# make sure there are no errors
+   		    assert_nothing_raised do
+   		      @embedder.save stylesheet[:path]
+   		    end
+   
+   				css_contents = File.read( stylesheet[:path] )
+   				   
+   				# make sure the original url still exists
+          assert_match( Regexp.new( @unsupported_assets.first[:path] ), css_contents )
+          assert_match( Regexp.new( @unsupported_assets.last[:path] ), css_contents )
+	      end
+   		end
 
 
 	  end # context
