@@ -12,9 +12,9 @@ module Juicer
 
       # Initializes command
       #
-      def initialize(io = STDOUT)
+      def initialize(log = nil)
         super('list', false, true)
-        @io = io
+        @log = log
         self.short_desc = "Lists all dependencies for all input files/patterns"
         self.description = <<-EOF
 Dependencies are looked up recursively. The dependency chain reveals which files
@@ -37,13 +37,20 @@ Input parameters may be:
         types = { :js => Juicer::JavaScriptDependencyResolver.new,
                   :css => Juicer::CssDependencyResolver.new }
 
-        files(args).each do |file|
+        result = files(args).map { |file|
           type = file.split(".").pop.to_sym
           raise FileNotFoundError.new("Unable to guess type (CSS/JavaScript) of file #{relative(file)}") unless types[type]
 
-          @io.puts "Dependency chain for #{relative file}:"
-          @io.puts "  #{relative(types[type].resolve(file)).join("\n  ")}\n\n"
-        end
+          deps = relative types[type].resolve(file)
+          # there may only be one dependency, which resolve() returns as a string
+          deps = deps.join("\n  ") if deps.is_a? Array
+
+          "Dependency chain for #{relative file}:\n  #{deps}"
+        }.join("\n\n") + "\n"
+
+        @log.info result
+
+        result
       end
     end
   end

@@ -1,6 +1,6 @@
 require 'fileutils'
 require 'test/unit'
-require 'redgreen'
+require 'redgreen' if ENV['TM_DIRECTORY'].nil?
 require 'shoulda'
 require 'mocha'
 require 'open-uri'

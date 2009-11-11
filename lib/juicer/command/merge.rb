@@ -57,7 +57,9 @@ the YUI Compressor the path should be the path to where the jar file is found.
           opt.on("-p", "--path path", "Path to compressor binary") { |path| @opts[:bin_path] = path }
           opt.on("-m", "--minifyer name", "Which minifer to use. Currently only supports yui_compressor") { |name| @minifyer = name }
           opt.on("-f", "--force", "Force overwrite of target file") { @force = true }
-          opt.on("-a", "--arguments arguments", "Arguments to minifyer, escape with quotes") { |arguments| @arguments = arguments }
+          opt.on("-a", "--arguments arguments", "Arguments to minifyer, escape with quotes") { |arguments|
+            @arguments = arguments.to_s.gsub(/(^['"]|["']$)/, "")
+          }
           opt.on("-i", "--ignore-problems", "Merge and minify even if verifyer finds problems") { @ignore = true }
           opt.on("-s", "--skip-verification", "Skip JsLint verification (js files only). Not recomended!") { @verify = false }
           opt.on("-t", "--type type", "Juicer can only guess type when files have .css or .js extensions. Specify js or\n" +
@@ -142,7 +144,8 @@ the YUI Compressor the path should be the path to where the jar file is found.
           @log.debug "Using #{@minifyer.camel_case} for minification"
 
           return compressor
-        rescue NameError
+        rescue NameError => e
+          @log.fatal e.message
           @log.fatal "No such minifyer '#{@minifyer}', aborting"
           raise SystemExit.new("No such minifyer '#{@minifyer}', aborting")
         rescue FileNotFoundError => e
