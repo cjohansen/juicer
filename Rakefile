@@ -58,6 +58,16 @@ task :test => ["test:units", "test:integration"]
 
 task :default => "test:units"
 
+# lib/tasks/cruise.rake
+desc 'Continuous build target'
+task :cruise do
+  out = ENV['CC_BUILD_ARTIFACTS']
+  mkdir_p out unless File.directory? out if out
+ 
+  Rake::Task["test:rcov"].invoke
+  mv 'coverage/', "#{out}/" if out
+end
+
 begin
   require 'rcov/rcovtask'
   Rcov::RcovTask.new do |test|
