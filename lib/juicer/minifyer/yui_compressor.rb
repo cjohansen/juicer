@@ -42,6 +42,7 @@ module Juicer
         bin = options.delete(:java) || "java"
         bin_path = options.delete(:bin_path) || nil
         @jar = nil
+        @jar_args = nil
 
         super(bin, options)
         path << bin_path if bin_path
@@ -65,7 +66,7 @@ module Juicer
         output = File.join(Dir::tmpdir, File.basename(file) + '.min.tmp.' + type.to_s) if use_tmp
         FileUtils.mkdir_p(File.dirname(output))
 
-        result = execute(%Q{-jar "#{locate_jar}" -o "#{output}" "#{file}"})
+        result = execute(%Q{-jar "#{locate_jar}"#{jar_args} -o "#{output}" "#{file}"})
 
         if use_tmp                            # If no output file is provided, YUI compressor will
           output.puts IO.read(output)         # compress to a temp file. This file should be cleared
@@ -75,6 +76,17 @@ module Juicer
 
       chain_method :save
 
+      # Overrides set_opts called from binary class
+      # This avoids sending illegal options to the java binary
+      #
+      def set_opts(args)
+        @jar_args = " #{args}"
+      end
+
+      def jar_args
+        @jar_args
+      end
+
      private
 
       # Returns a map of options accepted by YUI Compressor, currently:
@@ -83,14 +95,14 @@ module Juicer
       # :line_break
       # :no_munge (JavaScript only)
       # :preserve_semi
-      # :preserve_strings
+      # :disable_optimizations
       #
       # In addition, some class level options may be set:
       # :bin_path (defaults to Dir.cwd)
       # :java     (Java command, defaults to 'java')
       def default_options
-        { :charset => nil, :line_break => nil, :no_munge => nil,
-          :preserve_semi => nil, :preserve_strings => nil }
+        { :charset => nil, :line_break => nil, :nomunge => nil,
+          :preserve_semi => nil, :disable_optimizations => nil }
       end
 
       # Locates the Jar file by searching directories.

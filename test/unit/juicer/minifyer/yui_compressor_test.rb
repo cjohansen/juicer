@@ -2,7 +2,7 @@ require "test_helper"
 
 class TestYuiCompressor < Test::Unit::TestCase
   def setup
-    @jar = "yui-compressor.jar"
+    @jar = "yuicompressor-2.4.2.jar"
     @input = "in-file.css"
     @output = "out-file.css"
     @cmd = %Q{-jar "#@jar"}

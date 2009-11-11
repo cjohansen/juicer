@@ -119,6 +119,14 @@ Before running tests you should run
 
 which brings in third party libraries (ie, requires a working network connection)
 
+== Contributors
+
+* Morgan Roderick (http://roderick.dk)
+  Added support for embedding graphics using data-uri
+  Several small fixes and optimizations
+* Daniel Stockman (http://evocateur.org/)
+  Fixed `juicer list` when running it against files with no dependencies
+
 == LICENSE:
 
 (The MIT License)
