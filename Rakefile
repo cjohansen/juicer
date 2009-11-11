@@ -64,7 +64,7 @@ task :cruise do
   out = ENV['CC_BUILD_ARTIFACTS']
   mkdir_p out unless File.directory? out if out
  
-  Rake::Task["test:rcov"].invoke
+  Rake::Task["rcov"].invoke
   mv 'coverage/', "#{out}/" if out
 end
 
