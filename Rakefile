@@ -13,10 +13,11 @@ begin
     gem.homepage = "http://github.com/cjohansen/juicer"
     gem.authors = ["Christian Johansen"]
     gem.rubyforge_project = "juicer"
-    gem.add_development_dependency "thoughtbot-shoulda"
-    gem.add_development_dependency "mocha"
-    gem.add_development_dependency "fakefs"
-    gem.add_development_dependency "jeweler"
+    gem.add_development_dependency "shoulda", ">= 2.10.2"
+    gem.add_development_dependency "mocha", ">= 0.9.8"
+    gem.add_development_dependency "fakefs", ">= 0.2.1"
+    gem.add_development_dependency "jeweler", ">= 0.2.1"
+    gem.add_development_dependency "redgreen", ">= 1.2.2"
     gem.add_dependency "cmdparse"
     gem.add_dependency "nokogiri"
     gem.add_dependency "rubyzip"
@@ -54,7 +55,7 @@ Rake::TestTask.new("test:integration") do |test|
   test.verbose = true
 end
 
-task :test => ["test:units", "test:integration"]
+task :test => ["check_dependencies:development", "test:units", "test:integration"]
 
 task :default => "test:units"
 
