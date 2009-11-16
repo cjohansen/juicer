@@ -17,6 +17,7 @@ High level overview; Juicer can
 * add "cache busters" to URLs in CSS files
 * recalculate relative URLs in CSS files, as well as convert them to absolute
   (or convert absolute URLs to relative URLs)
+* embed images into stylesheets using data-uris
 
 == FEATURES:
 
@@ -74,9 +75,7 @@ Hard cache busters result in URLs such as: http://assets/images/1-cb1234567890.p
 ie URLs that require either renaming of files, or (more conveniently) a web
 server configuration that will forward URLs to the right files anyway.
 
-=== Embedding images in stylesheets
-
-WARNING: This feature is not yet complete, use at your own peril!
+=== Embed images in stylesheets
 
 Juicer supports embedding images into stylesheets using data uri's.
 
@@ -98,7 +97,9 @@ The result will look similar to this:
 
 Embedding images in stylesheets should be used very carefully, as they will bloat your css files considerably, and you will loose some of the fine grained control over caching of images.
 
-Support for embedding images readable by IE7, IE6 and IE5 is planned for near future, once the data_uri scheme has stabilized.
+Before using Juicer to embed images into your stylesheets, you should have control over cache expiration of stylesheets.
+
+You should also have gzip enabled, as base64 encoded images take up about 30% more space than serving them normally. With gzip enabled this is reduced to about 5-10% bloat. 
 
 ==== Usage scenario: Modern browsers and IE7, IE6 support
 
@@ -131,24 +132,23 @@ In order to only load the relevant stylesheet to supporting browsers, and preven
 
     <head>
         ...
-        <!--[if gt IE 7]>-->
+        <!--[if !IE]>-->
             <link rel="stylesheet" type="text/css" href="master.embedded.css" />
         <!--<![endif]-->
+        <!--[if gte IE 8]>
+            <link rel="stylesheet" type="text/css" href="master.embedded.css" />
+        <![endif]-->
         <!--[if lte IE 7]>
             <link rel="stylesheet" type="text/css" href="master.normal.css" />
         <![endif]-->
         ...
     </head>
+
+The first conditional comemnt allows only non-IE browsers to fetch the <code>master.embedded.css</code> stylesheet.
+The second conditional comment allows only IE8+ browsers to fetch the <code>master.embedded.css</code> stylesheet.
+The lase conditional comment allows only IE7 and lower to fetch the <code>master.normal.css</code>.
     
-The first conditional comment allows non-IE browsers and IE8 and above to get the <code>master.embedded.css</code> stylesheet, while the second conditional comment only allows IE7 and lower to fetch the <code>master.normal.css</code>.
-
-==== Warnings
-If you plan to support user-agents that do understand conditional comments and does not support the data uri scheme, you will have to do some kind of detection of support.
-
-* http://weston.ruter.net/2009/05/07/detecting-support-for-data-uris/
-
-Please note that image embedding is NOT a silver bullet, but can help reduce the amount of HTTP connections needed for a parge.
-Embedding images should only be used for relatively small images.
+Unfortunately, you will need to use three conditional comments, or you will end up with an unsightly "-->" displayed at the top of your pages in IE.
 
 ==== Browser support
 Windows Vista, Windows 2003, Windows 7
@@ -186,12 +186,22 @@ Soon[tm] there will be a testpage with images as well.
 
 If you have funky browser / OS combinations not listed above, please visit the test and send a screenshot and details about browser and OS to morgan@roderick.dk
 
+==== Warnings
+If you plan to support user-agents that do understand conditional comments and does not support the data uri scheme, you will have to do some kind of detection of support. These user-agents would be very rare, as our browser testing shows, most modern user agents support data-uris.
+
+* http://weston.ruter.net/2009/05/07/detecting-support-for-data-uris/
+
+Please note that image embedding is NOT a silver bullet, but can help reduce the amount of HTTP connections needed for a page.
 
 ==== Further reading
 
 * http://www.websiteoptimization.com/speed/tweak/inline-images/
 * http://en.wikipedia.org/wiki/Data_URI_scheme
 * http://en.wikipedia.org/wiki/MHTML 
+
+==== MHTML Support
+
+Support for using the MHTML scheme for IE7 to IE5 is in the making, so stay tuned for updates.
 
 == PLANNED FEATURES:
 
