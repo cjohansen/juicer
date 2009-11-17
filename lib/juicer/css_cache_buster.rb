@@ -41,7 +41,7 @@ module Juicer
       urls(file).each do |url|
         begin
           path = resolve(url, file)
-          next if used.include?(path) || ( path.include?( 'data:image/') && path.include?(';base64,') )
+          next if used.include?(path) || ( path.include?( 'data:image/') && path.include?(';base64,') || path.include?( 'mhtml:') )
 
           if path != url
             used << path

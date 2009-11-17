@@ -78,9 +78,9 @@ the YUI Compressor the path should be the path to where the jar file is found.
                            (" " * 37) + "URLs as query parameters. None leaves URLs untouched and hard alters file names") do |type|
             @cache_buster = [:soft, :hard].include?(type.to_sym) ? type.to_sym : nil
           end
-          opt.on("-e", "--embed-images type", "none or data_uri. Default is none. Data_uri embeds images using Base64 encoding\n" +
+          opt.on("-e", "--embed-images type", "[none|data_uri|mhtml]. Default is none. Data_uri embeds images using Base64 encoding\n" +
                            (" " * 37) + "None leaves URLs untouched. Candiate images must be flagged with '?embed=true to be considered") do |embed|
-            @image_embed_type = [:none, :data_uri].include?(embed.to_sym) ? embed.to_sym : nil
+            @image_embed_type = [:none, :data_uri, :mhtml].include?(embed.to_sym) ? embed.to_sym : nil
           end
         end
       end
@@ -119,7 +119,7 @@ the YUI Compressor the path should be the path to where the jar file is found.
         end
 
         # Set command chain and execute
-        merger.set_next(image_embed(output)).set_next(cache_buster(output)).set_next(minifyer)
+        merger.set_next(minifyer).set_next(image_embed(output, relative( output ) )).set_next(cache_buster(output))
         merger.save(output)
 
         # Print report
@@ -186,9 +186,9 @@ the YUI Compressor the path should be the path to where the jar file is found.
 			#
 			# Load image embed, only available for CSS files
 			# 
-			def image_embed(file)
+			def image_embed(file, relative_path)
         return nil if !file || file !~ /\.css$/ || @image_embed_type.nil?
-        Juicer::ImageEmbed.new( :type => @image_embed_type )
+        Juicer::ImageEmbed.new( :type => @image_embed_type, :relative_path => relative_path )
 			end
 
       #

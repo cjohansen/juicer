@@ -12,14 +12,15 @@ module Juicer
   # Only local resources will be processed this way, external resources referenced
   # by absolute urls will be left alone
   # 
-  # FIXME:
-  # Add details on pros and cons of using embedded images
-  # 
   class ImageEmbed
     include Juicer::Chainable
 
     # The maximum supported limit for modern browsers, See the Readme.rdoc for details
     SIZE_LIMIT = 32768
+
+    MHTML_START     = "/*\r\nContent-Type: multipart/related; boundary=\"MHTML\"\r\n\r\n"
+    MHTML_SEPARATOR = "--MHTML\r\n"
+    MHTML_END       = "*/\r\n"
     
     #
     # Returns the size limit
@@ -33,13 +34,16 @@ module Juicer
       @web_root.sub!(%r{/?$}, "") if @web_root # Remove trailing slash
       @type = options[:type] || :none
       @contents = nil
+      @relative_path = options[:relative_path]
     end
 
     #
     # Update file. If no +output+ is provided, the input file is overwritten
     #
     def save(file, output = nil)
-			if ( @type == :data_uri )
+			if ( @type == :data_uri || @type == :mhtml )
+			  output_file = output || file
+			  @mhtml_encoded_images = []
 	      @contents = File.read(file)
 	      used = []
 
@@ -63,7 +67,8 @@ module Juicer
               
               if ( new_path.length < SIZE_LIMIT )
   	            # replace the url in the css file with the data uri
-  	            @contents.gsub!(url, embed_data_uri( path ) )
+  	            @contents.gsub!(url, embed_data_uri( path ) ) if @type == :data_uri
+  	            @contents.gsub!(url, embed_mhtml( path, output_file ) ) if @type == :mhtml
               else
                 Juicer::LOGGER.warn("The final data uri for the image located at #{path.gsub('?embed=true', '')} exceeds #{SIZE_LIMIT} and will not be embedded to maintain compatability.") 
               end
@@ -72,34 +77,83 @@ module Juicer
 	          puts "Unable to locate file #{path || url}, skipping image embedding"
 	        end
 	      end
+	      
+	      if @mhtml_encoded_images.length > 0
+	        mhtml = []
+          @mhtml_encoded_images.each_index do |index|
+            image = @mhtml_encoded_images[index]
+            mhtml << 
+            [ 
+              MHTML_SEPARATOR, 
+              "Content-Location: image#{index}\r\n", 
+              "Content-Type: #{image[:content_type]}\r\n",
+              "Content-Transfer-Encoding: base64\r\n\r\n", image[:content], "\r\n"
+            ]
+          end	        
+          @contents = [MHTML_START, mhtml, MHTML_END, @contents].flatten.join('')
 
-	      File.open(output || file, "w") { |f| f.puts @contents }
+          puts @contents
+        end
+
+	      File.open( output_file, "w") { |f| f.puts @contents }
 	      @contents = nil
 			end
     end
 
     chain_method :save
+        
+    def image_supported?( css_path )
+      filename = filename_from_embed_path( css_path )
+      valid_image = css_path.match( /(?:\.)(png|gif|jpg|jpeg)(?:\?embed=true)$/i ) || nil
+      if ( valid_image )
+        if File.exist?( filename )
+          return true
+        else
+          puts "Unable to locate file #{filename} on local file system, skipping image"  
+          return false
+        end
+      end
+    end
+
+    # trims '?embed=true' from filenames
+    def filename_from_embed_path( css_path )
+      css_path.gsub('?embed=true','')
+    end
     
     def embed_data_uri( path )
       new_path = path
-      if path.match( /\?embed=true$/ )
-        supported_file_matches = path.match( /(?:\.)(png|gif|jpg|jpeg)(?:\?embed=true)$/i )
-        filetype = supported_file_matches[1] if supported_file_matches
-        if ( filetype )        
-          filename = path.gsub('?embed=true','')
+      if image_supported?( path )
+        filename = filename_from_embed_path( path )
+        filetype = filename.match( /(?:\.)(png|gif|jpg|jpeg)$/i )[1]
         
-          # check if file exists, throw an error if it doesn't exist
-          if File.exist?( filename )
-            # read contents of file into memory              
-            content = File.read( filename )
-            content_type = "image/#{filetype}"
+        # read contents of file into memory
+        content = File.read( filename )
+        content_type = "image/#{filetype}"
 
-            # encode the url
-            new_path = Datafy::make_data_uri( content, content_type )
-          else
-            puts "Unable to locate file #{filename} on local file system, skipping image embedding"
-          end
-        end
+        # encode the url
+        new_path = Datafy::make_data_uri( content, content_type )
+      end
+      return new_path
+    end
+
+    # translates a path into an MHTML path statement and adds the Base64 
+    # encoded image to the @mhtml_encoded_images collection
+    def embed_mhtml( path, output_file )
+      new_path = path
+      if image_supported?( path )
+        filename = filename_from_embed_path( path )
+        filetype = filename.match( /(?:\.)(png|gif|jpg|jpeg)$/i )[1]
+      
+        # read contents of file into memory
+        content = File.read( filename )
+        content_type = "image/#{filetype}"
+        
+        new_path = "mhtml:/#{@relative_path}!image#{@mhtml_encoded_images.length}"
+
+        @mhtml_encoded_images << {
+          :content => Base64.encode64(content).gsub("\n", ''),
+          :content_type => content_type
+        }
       end
       return new_path
     end
