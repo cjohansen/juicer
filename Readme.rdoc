@@ -3,9 +3,9 @@ Official URL: http://github.com/cjohansen/juicer/tree/master
 
 Christian Johansen (http://www.cjohansen.no) and contributors:
 
-Morgan Roderick (http://roderick.dk)
-Pavel Valodzka (http://github.com/valodzka)
-Daniel Stockman (http://evocateur.org/)
+* Morgan Roderick (http://roderick.dk)
+* Pavel Valodzka (http://github.com/valodzka)
+* Daniel Stockman (http://evocateur.org/)
 
 == DESCRIPTION:
 
