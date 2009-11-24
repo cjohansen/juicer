@@ -1,7 +1,11 @@
 = Juicer
 Official URL: http://github.com/cjohansen/juicer/tree/master
 
-Christian Johansen (http://www.cjohansen.no)
+Christian Johansen (http://www.cjohansen.no) and contributors:
+
+Morgan Roderick (http://roderick.dk)
+Pavel Valodzka (http://github.com/valodzka)
+Daniel Stockman (http://evocateur.org/)
 
 == DESCRIPTION:
 
@@ -76,14 +80,8 @@ server configuration that will forward URLs to the right files anyway.
 
 == PLANNED FEATURES:
 
-Juicer 0.2.0 is the first usable release. Work will continue from here. Improving
-documentation and APIs is one concern, but there are also new features planned:
-
 * Support more minifiers, JsMin (Ruby port), Packer and possibly others
 * Add support for CssTidy to compress CSS files
-* juicer build, a command that can build several files in one swoop using a
-  configuration file
-* juicer doc, a command that produces documentation using YUI Doc or JsDoc
 
 If you have any ideas, feature requests, want to contribute or whatever, fork
 the project on github, or get in touch through christian (at) cjohansen.no.
@@ -113,18 +111,13 @@ installed and the java executable available on your path.
 You need Java installed and available on your PATH. During gem installation,
 Juicer will download and install YUI Compressor, Closure Compiler, JsLint and Rhino for you.
 
-== For developers
-
-Before running tests you should run
-  rake test:setup
-
-which brings in third party libraries (ie, requires a working network connection)
-
 == Contributors
 
 * Morgan Roderick (http://roderick.dk)
   Added support for embedding graphics using data-uri
   Several small fixes and optimizations
+* Pavel Valodzka (http://github.com/valodzka)
+  Added Google Closure Compiler support
 * Daniel Stockman (http://evocateur.org/)
   Fixed `juicer list` when running it against files with no dependencies
 

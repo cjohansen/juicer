@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'tempfile'
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'binary')) unless defined?(Juicer::Shell::Binary)
+require 'juicer/minifyer/java_base'
+require 'juicer/chainable'
 
 module Juicer
   module Minifyer
@@ -35,18 +36,8 @@ module Juicer
     #
     #
     class YuiCompressor
-      include Juicer::Binary
+      include Juicer::Minifyer::JavaBase
       include Juicer::Chainable
-
-      def initialize(options = {})
-        bin = options.delete(:java) || "java"
-        bin_path = options.delete(:bin_path) || nil
-        @jar = nil
-        @jar_args = nil
-
-        super(bin, options)
-        path << bin_path if bin_path
-      end
 
       # Compresses a file using the YUI Compressor. Note that the :bin_path
       # option needs to be set in order for YuiCompressor to find and use the
@@ -76,19 +67,15 @@ module Juicer
 
       chain_method :save
 
-      # Overrides set_opts called from binary class
-      # This avoids sending illegal options to the java binary
-      #
-      def set_opts(args)
-        @jar_args = " #{args}"
+      def self.bin_base_name
+        "yuicompressor"
       end
 
-      def jar_args
-        @jar_args
+      def self.env_name
+        "YUIC_HOME"
       end
 
      private
-
       # Returns a map of options accepted by YUI Compressor, currently:
       #
       # :charset
@@ -104,38 +91,6 @@ module Juicer
         { :charset => nil, :line_break => nil, :nomunge => nil,
           :preserve_semi => nil, :disable_optimizations => nil }
       end
-
-      # Locates the Jar file by searching directories.
-      # The following directories are searched (in preferred order)
-      #
-      #  1. The directory specified by the option :bin_path
-      #  2. The directory specified by the environment variable $YUIC_HOME, if set
-      #  3. Current working directory
-      #
-      # If any of these folders contain one or more files named like
-      # yuicompressor.jar or yuicompressor-x.y.z.jar the method will pick the
-      # last file in the list returned by +Dir.glob("#{dir}/yuicompressor*.jar").sort+
-      # This means that higher version numbers will be preferred with the default
-      # naming for the YUI Compressor Jars
-      def locate_jar
-        files = locate("yuicompressor*.jar", "YUIC_HOME")
-        !files || files.empty? ? nil : files.sort.last
-      end
-    end
-
-    # Run YUI Compressor with command line interface semantics
-    #
-    class Cli
-      def self.run(args)
-        if args.length != 2
-          puts 'Usage: yui_compressor.rb input ouput'
-        else
-          yc = Juicer::Minify::YuiCompressor.new
-          yc.compress(args.shift, args.shift)
-        end
-      end
     end
   end
 end
-
-Juicer::Minifyer::Compressor::Cli.run($*) if $0 == __FILE__

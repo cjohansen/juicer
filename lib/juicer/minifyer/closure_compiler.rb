@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'tempfile'
-require File.expand_path(File.join(File.dirname(__FILE__), '..', 'binary')) unless defined?(Juicer::Shell::Binary)
+require 'juicer/minifyer/java_base'
+require 'juicer/chainable'
 
 module Juicer
   module Minifyer
@@ -28,25 +29,14 @@ module Juicer
     # License::   MIT
     #
     # = Usage example =
-    # yuic = Juicer::Minifyer::ClosureCompiler.new
-    # yuic.java = "/usr/local/bin/java" # If 'java' is not on path
-    # yuic.path << "/home/user/java/yui_compressor/"
-    # yuic.save("", "")
-    #
+    # closure = Juicer::Minifyer::ClosureCompiler.new
+    # closure.java = "/usr/local/bin/java" # If 'java' is not on path
+    # closure.path << "/home/user/java/yui_compressor/"
+    # closure.save("", "")
     #
     class ClosureCompiler
-      include Juicer::Binary
+      include Juicer::Minifyer::JavaBase
       include Juicer::Chainable
-
-      def initialize(options = {})
-        bin = options.delete(:java) || "java"
-        bin_path = options.delete(:bin_path) || nil
-        @jar = nil
-        @jar_args = nil
-
-        super(bin, options)
-        path << bin_path if bin_path
-      end
 
       # Compresses a file using the YUI Compressor. Note that the :bin_path
       # option needs to be set in order for YuiCompressor to find and use the
@@ -70,6 +60,8 @@ module Juicer
                     true
                   end
 
+        out_dir = File.dirname(output)
+        FileUtils.mkdir_p(out_dir) unless File.exists?(out_dir)
         result = execute(%Q{-jar "#{locate_jar}"#{jar_args} -js_output_file "#{output}" -js "#{file}"})
 
         File.delete(file) if use_tmp
@@ -77,15 +69,12 @@ module Juicer
 
       chain_method :save
 
-      # Overrides set_opts called from binary class
-      # This avoids sending illegal options to the java binary
-      #
-      def set_opts(args)
-        @jar_args = " #{args}"
+      def self.bin_base_name
+        "*compiler"
       end
 
-      def jar_args
-        @jar_args
+      def self.env_name
+        "CLOSUREC_HOME"
       end
 
      private
@@ -96,38 +85,6 @@ module Juicer
       def default_options
         { }
       end
-
-      # Locates the Jar file by searching directories.
-      # The following directories are searched (in preferred order)
-      #
-      #  1. The directory specified by the option :bin_path
-      #  2. The directory specified by the environment variable $CLOSUREC_HOME, if set
-      #  3. Current working directory
-      #
-      # If any of these folders contain one or more files named like
-      # *compiler*.jar the method will pick the last file in the list
-      # returned by +Dir.glob("#{dir}/yuicompressor*.jar").sort+
-      # This means that higher version numbers will be preferred with the default
-      # naming for the Closure Compiler Jars
-      def locate_jar
-        files = locate("*compiler*.jar", "CLOSUREC_HOME")
-        !files || files.empty? ? nil : files.sort.last
-      end
-    end
-
-    # Run Closure Compiler with command line interface semantics
-    #
-    class Cli
-      def self.run(args)
-        if args.length != 2
-          puts 'Usage: closure_compiler.rb input ouput'
-        else
-          yc = Juicer::Minify::ClosureCompiler.new
-          yc.compress(args.shift, args.shift)
-        end
-      end
     end
   end
 end
-
-Juicer::Minifyer::Compressor::Cli.run($*) if $0 == __FILE__
