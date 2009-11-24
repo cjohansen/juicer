@@ -29,6 +29,7 @@ High level overview; Juicer can
 Yui Compressor and JsLint now:
 
 juicer install yui_compressor
+juicer install closure_compiler
 juicer install jslint
 
 Happy juicing!
