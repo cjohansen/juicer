@@ -1,4 +1,4 @@
-require "juicer/dependency_resolver"
+require "juicer/dependency_resolver/dependency_resolver"
 
 module Juicer
   # Resolves @depends and @depend statements in comments in JavaScript files.
