@@ -22,7 +22,7 @@ end
 # or similar.
 #
 if $0 == __FILE__
-  return puts("Usage: javascript_merger.rb file[...] output") if $*.length < 2
+  puts("Usage: javascript_merger.rb file[...] output") and exit if $*.length < 2
 
   fm = JavaScriptMerger.new()
   fm << $*[0..-2]
