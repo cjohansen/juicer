@@ -11,32 +11,10 @@ class TestCssCacheBuster < Test::Unit::TestCase
     Juicer::Test::FileSetup.new.create
   end
 
-  def test_resolve_full_url
-    assert_equal "http://localhost/images/1.png", @buster.resolve("http://localhost/images/1.png", "")
-  end
-
-  def test_resolve_relative_url
-    file = path("images/1.png")
-    assert_equal(file, @buster.resolve("../images/1.png", path("css/test.css")))
-  end
-
-  def test_resolve_absolute_url_without_web_root_should_fail
-    file = path("images/1.png")
-    assert_raise FileNotFoundError do
-      @buster.resolve("/images/1.png", path("css/test.css"))
-    end
-  end
-
-  def test_resolve_absolute_url_with_web_root
-    buster = Juicer::CssCacheBuster.new :web_root => path("")
-    file = path("images/1.png")
-    assert_equal(file, buster.resolve("/images/1.png", path("css/test.css")))
-  end
-
   def test_find_urls
     urls = @buster.urls(path("css/test.css"))
     assert_equal 3, urls.length
-    assert_equal "../a1.css../images/1.png2.gif", urls.sort.join.gsub(path("/"), "")
+    assert_equal "../a1.css../images/1.png2.gif", urls.collect { |a| a.path }.sort.join.gsub(path("/"), "")
   end
 
   def test_image_references_should_be_updated
@@ -88,6 +66,6 @@ class TestCssCacheBuster < Test::Unit::TestCase
     buster = Juicer::CssCacheBuster.new :web_root => path(""), :type => :hard
     buster.save file, output
 
-    buster.urls(output).each { |url| assert_match /-jcb\d+\.[a-z]{3}$/, url }
+    buster.urls(output).each { |asset| assert_match /-jcb\d+\.[a-z]{3}$/, asset.path }
   end
 end

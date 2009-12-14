@@ -1,5 +1,6 @@
-require File.expand_path(File.join(File.dirname(__FILE__), "chainable"))
-require File.expand_path(File.join(File.dirname(__FILE__), "cache_buster"))
+require "juicer/chainable"
+require "juicer/cache_buster"
+require "juicer/asset/path_resolver"
 
 module Juicer
   #
@@ -25,10 +26,12 @@ module Juicer
 
     def initialize(options = {})
       @web_root = options[:web_root]
-      @web_root.sub!(%r{/?$}, "") if @web_root # Remove trailing slash
+      @web_root.sub!(%r{/?$}, "") if @web_root
       @type = options[:type] || :soft
-      @hosts = (options[:hosts] || []).collect { |h| h.sub!(%r{/?$}, "") } # Remove trailing slashes
+      @hosts = (options[:hosts] || []).collect { |h| h.sub!(%r{/?$}, "") }
       @contents = nil
+      @path_resolver = Juicer::Asset::PathResolver.new(:document_root => options[:web_root],
+                                                       :hosts => options[:hosts])
     end
 
     #
@@ -36,20 +39,23 @@ module Juicer
     #
     def save(file, output = nil)
       @contents = File.read(file)
+      @path_resolver = Juicer::Asset::PathResolver.new(:document_root => @web_root,
+                                                       :hosts => @hosts,
+                                                       :base => File.dirname(file))
       used = []
 
-      urls(file).each do |url|
+      urls(file).each do |asset|
         begin
-          path = resolve(url, file)
-          next if used.include?(path)
-
-          if path != url
-            used << path
-            basename = File.basename(Juicer::CacheBuster.path(path, @type))
-            @contents.gsub!(url, File.join(File.dirname(url), basename))
-          end
+          next if used.include?(asset.path)          
+          @contents.gsub!(asset.path, asset.path(:cache_buster_type => @type))
         rescue Errno::ENOENT
-          puts "Unable to locate file #{path || url}, skipping cache buster"
+          puts "Unable to locate file #{asset.path}, skipping cache buster"
+        rescue ArgumentError => e
+          if e.message =~ /No document root/
+            raise FileNotFoundError.new("Unable to resolve path #{asset.path} without :web_root option")
+          else
+            raise e
+          end
         end
       end
 
@@ -67,40 +73,8 @@ module Juicer
       @contents = File.read(file) unless @contents
 
       @contents.scan(/url\([\s"']*([^\)"'\s]*)[\s"']*\)/m).collect do |match|
-        match.first
+        @path_resolver.resolve(match.first)
       end
-    end
-
-    #
-    # Resolve full path from URL
-    #
-    def resolve(target, from)
-      # If URL is external, check known hosts to see if URL can be treated
-      # like a local one (ie so we can add cache buster)
-      catch(:continue) do
-        if target =~ %r{^[a-z]+\://}
-          # This could've been a one-liner, but I prefer to be
-          # able to read my own code ;)
-          @hosts.each do |host|
-            if target =~ /^#{host}/
-              target.sub!(/^#{host}/, "")
-              throw :continue
-            end
-          end
-
-          # No known hosts matched, return
-          return target
-        end
-      end
-
-      # Simply add web root to absolute URLs
-      if target =~ %r{^/}
-        raise FileNotFoundError.new("Unable to resolve absolute path #{target} without :web_root option") unless @web_root
-        return File.expand_path(File.join(@web_root, target))
-      end
-
-      # Resolve relative URLs to full paths
-      File.expand_path(File.join(File.dirname(File.expand_path(from)), target))
     end
   end
 end
