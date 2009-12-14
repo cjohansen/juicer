@@ -1,62 +1,104 @@
+# -*- coding: utf-8 -*-
+
 require "test_helper"
+require "juicer/cache_buster"
 
-class TestCacheBuster < Test::Unit::TestCase
+class CacheBusterTest < Test::Unit::TestCase
   def setup
-    Juicer::Test::FileSetup.new.create
+    @filename = "tmp.cachebuster.txt"
+    File.open(@filename, "w") { |f| f.puts "Testing" }
   end
 
-  context "cache buster soft path" do
-    should "use default param name" do
-      file = path("a.js")
-      mtime = File.new(file).mtime.to_i
-      assert_equal "#{file}?jcb=#{mtime}", Juicer::CacheBuster.path(file)
+  def teardown
+    File.delete(@filename)
+  end
+
+  context "cleaning files with cache busters" do
+    should "remove cache buster query parameters" do
+      assert_equal @filename, Juicer::CacheBuster.clean("#@filename?jcb=1234567890")
     end
 
-    should "use explicit soft type and default param name" do
-      file = path("a.js")
-      mtime = File.new(file).mtime.to_i
-      assert_equal "#{file}?jcb=#{mtime}", Juicer::CacheBuster.path(file, :soft)
+    should "remove cache buster query parameters, but preserve other query parameters" do
+      assert_equal "#@filename?some=param&others=again", Juicer::CacheBuster.clean("#@filename?some=param&jcb=1234567890&others=again")
     end
 
-    should "should use mtime param name" do
-      file = path("a.js")
-      mtime = File.new(file).mtime.to_i
-      assert_equal "#{file}?mtime=#{mtime}", Juicer::CacheBuster.path(file, :soft, "mtime")
-      assert_equal "#{file}?mtime=#{mtime}", Juicer::CacheBuster.path(file, :soft, :mtime)
+    should "remove cache buster query parameters with no name" do
+      assert_equal @filename, Juicer::CacheBuster.clean("#@filename?1234567890", nil)
     end
 
-    should "use empty param name" do
-      file = path("a.js")
-      mtime = File.new(file).mtime.to_i
-      assert_equal "#{file}?#{mtime}", Juicer::CacheBuster.path(file, :soft, nil)
-      assert_equal "#{file}?#{mtime}", Juicer::CacheBuster.path(file, :soft, "")
+    should "remove cache buster query parameters with custom name" do
+      assert_equal @filename, Juicer::CacheBuster.clean("#@filename?cb=1234567890", :cb)
+    end
+
+    should "remove hard cache buster" do
+      assert_equal @filename, Juicer::CacheBuster.clean(@filename.sub(/(\.txt)/, '-jcb1234567890\1'))
+    end
+
+    should "remove hard cache buster and preserve query params" do
+      assert_equal "#@filename?hey=there", Juicer::CacheBuster.clean("#@filename?hey=there".sub(/(\.txt)/, '-jcb1234567890\1'))
     end
   end
 
-  context "cache buster hard path" do
-    should "use default param name" do
-      file = path("a.js")
-      mtime = File.new(file).mtime.to_i
-      assert_equal "#{File.dirname(file)}/a-#{mtime}.js", Juicer::CacheBuster.path(file, :hard)
+  context "creating soft cache busters" do
+    should "clean file before adding new cache buster" do
+      cache_buster = "jcb=1234567890"
+      assert_no_match /#{cache_buster}/, Juicer::CacheBuster.soft("#@filename?#{cache_buster}")
     end
 
-    should "use empty param name" do
-      file = path("a.js")
-      mtime = File.new(file).mtime.to_i
-      assert_equal "#{File.dirname(file)}/a-#{mtime}.js", Juicer::CacheBuster.path(file, :hard, "")
-      assert_equal "#{File.dirname(file)}/a-#{mtime}.js", Juicer::CacheBuster.path(file, :hard, nil)
+    should "preserve query parameters" do
+      parameters = "id=1"
+      assert_match /#{parameters}/, Juicer::CacheBuster.soft("#@filename?#{parameters}")
     end
 
-    should "use param name" do
-      file = path("a.js")
-      mtime = File.new(file).mtime.to_i
-      assert_equal "#{File.dirname(file)}/a-cb#{mtime}.js", Juicer::CacheBuster.path(file, :hard, "cb")
+    should "raise error if file is not found" do
+      assert_raise ArgumentError do
+        Juicer::CacheBuster.path("#@filename.ico")
+      end
     end
 
-    should "update soft path" do
-      file = path("a.js")
-      mtime = File.new(file).mtime.to_i
-      assert_equal "#{File.dirname(file)}/a.js?cb=#{mtime}", Juicer::CacheBuster.path("#{file}?cb=1234", :soft, "cb")
+    should "include mtime as query parameter" do
+      mtime = File.mtime(@filename).to_i
+      assert_equal "#@filename?jcb=#{mtime}", Juicer::CacheBuster.soft(@filename)
+    end
+
+    should "include only mtime when parameter name is nil" do
+      mtime = File.mtime(@filename).to_i
+      assert_equal "#@filename?#{mtime}", Juicer::CacheBuster.soft(@filename, nil)
+    end
+
+    should "include custom parameter name" do
+      mtime = File.mtime(@filename).to_i
+      assert_equal "#@filename?juicer=#{mtime}", Juicer::CacheBuster.soft(@filename, :juicer)
+    end
+  end
+
+  context "hard cache busters" do
+    setup { @filename.sub!(/\.txt/, '') }
+    teardown { @filename = "#@filename.txt" }
+
+    should "clean file before adding new cache buster" do
+      cache_buster = "-jcb1234567890"
+      assert_no_match /#{cache_buster}/, Juicer::CacheBuster.hard("#@filename#{cache_buster}.txt")
+    end
+
+    should "preserve query parameters" do
+      parameters = "id=1"
+      assert_match /#{parameters}/, Juicer::CacheBuster.hard("#@filename.txt?#{parameters}")
+    end
+
+    should "include mtime in filename" do
+      mtime = File.mtime("#@filename.txt").to_i
+      assert_equal "#@filename-jcb#{mtime}.txt", Juicer::CacheBuster.hard("#@filename.txt")
+    end
+
+    should "include only mtime when parameter name is nil" do
+      mtime = File.mtime("#@filename.txt").to_i
+      assert_equal "#@filename-#{mtime}.txt", Juicer::CacheBuster.hard("#@filename.txt", nil)
+    end
+
+    should "include custom parameter name" do
+      mtime = File.mtime("#@filename.txt").to_i
+      assert_equal "#@filename-juicer#{mtime}.txt", Juicer::CacheBuster.hard("#@filename.txt", :juicer)
     end
   end
 end

@@ -24,12 +24,6 @@ class TestStringExtensions < Test::Unit::TestCase
       assert_equal String, "String".to_class
     end
 
-    should "raise error when loading String class from array class" do
-      assert_raise RuntimeError do
-        "String".to_class(Array)
-      end
-    end
-
     should "return String class from Object" do
       assert_equal String, "String".to_class(Object)
     end
