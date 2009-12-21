@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christian Johansen"]
-  s.date = %q{2009-11-27}
+  s.date = %q{2009-12-21}
   s.default_executable = %q{juicer}
   s.description = %q{Resolve dependencies, merge and minify CSS and JavaScript files with Juicer - the command line tool for frontend engineers}
   s.email = %q{christian@cjohansen.no}
@@ -22,6 +22,8 @@ Gem::Specification.new do |s|
      "VERSION",
      "bin/juicer",
      "lib/juicer.rb",
+     "lib/juicer/asset/path.rb",
+     "lib/juicer/asset/path_resolver.rb",
      "lib/juicer/binary.rb",
      "lib/juicer/cache_buster.rb",
      "lib/juicer/chainable.rb",
@@ -78,6 +80,8 @@ Gem::Specification.new do |s|
      "test/data/path_test.css",
      "test/data/path_test2.css",
      "test/test_helper.rb",
+     "test/unit/juicer/asset/path_resolver_test.rb",
+     "test/unit/juicer/asset/path_test.rb",
      "test/unit/juicer/cache_buster_test.rb",
      "test/unit/juicer/chainable_test.rb",
      "test/unit/juicer/command/install_test.rb",
@@ -86,6 +90,7 @@ Gem::Specification.new do |s|
      "test/unit/juicer/command/util_test.rb",
      "test/unit/juicer/command/verify_test.rb",
      "test/unit/juicer/css_cache_buster_test.rb",
+     "test/unit/juicer/css_file_test.rb",
      "test/unit/juicer/dependency_resolver/css_dependency_resolver_test.rb",
      "test/unit/juicer/dependency_resolver/javascript_dependency_resolver_test.rb",
      "test/unit/juicer/ext/string_test.rb",
@@ -118,6 +123,8 @@ Happy juicing!
   s.summary = %q{Command line tool for CSS and JavaScript developers}
   s.test_files = [
     "test/test_helper.rb",
+     "test/unit/juicer/asset/path_resolver_test.rb",
+     "test/unit/juicer/asset/path_test.rb",
      "test/unit/juicer/cache_buster_test.rb",
      "test/unit/juicer/chainable_test.rb",
      "test/unit/juicer/command/install_test.rb",
@@ -126,6 +133,7 @@ Happy juicing!
      "test/unit/juicer/command/util_test.rb",
      "test/unit/juicer/command/verify_test.rb",
      "test/unit/juicer/css_cache_buster_test.rb",
+     "test/unit/juicer/css_file_test.rb",
      "test/unit/juicer/dependency_resolver/css_dependency_resolver_test.rb",
      "test/unit/juicer/dependency_resolver/javascript_dependency_resolver_test.rb",
      "test/unit/juicer/ext/string_test.rb",

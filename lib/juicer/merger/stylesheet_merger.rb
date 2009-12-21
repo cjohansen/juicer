@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
-['base', '../dependency_resolver/css_dependency_resolver'].each do |lib|
-  require File.expand_path(File.join(File.dirname(__FILE__), lib))
-end
-
+require "juicer/merger/base"
+require "juicer/dependency_resolver/css_dependency_resolver"
 require 'pathname'
 
 module Juicer
