@@ -220,14 +220,15 @@ the amount of HTTP connections needed for a page.
 
 ==== MHTML Support
 
-Support for using the MHTML scheme for IE7 to IE5 is in the making, so stay tuned for updates.
+Due to MHTML being very awkward in it's implementation (having the absolute url 
+including protocol inside the stylesheet itself), it was decided to be of very
+little real value and attempts at supporting it has been dropped.
 
 
 ==== Further reading
 
 * http://www.websiteoptimization.com/speed/tweak/inline-images/
 * http://en.wikipedia.org/wiki/Data_URI_scheme
-* http://en.wikipedia.org/wiki/MHTML 
 
 
 == PLANNED FEATURES:

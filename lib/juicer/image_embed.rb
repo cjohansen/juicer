@@ -37,7 +37,6 @@ module Juicer
     def save(file, output = nil)
 			if ( @type == :data_uri )
 			  output_file = output || file
-			  @mhtml_encoded_images = []
 	      @contents = File.read(file)
 	      used = []
 
@@ -101,28 +100,6 @@ module Juicer
             puts "Unable to locate file #{filename} on local file system, skipping image embedding"
           end
         end
-      end
-      return new_path
-    end
-
-    # translates a path into an MHTML path statement and adds the Base64 
-    # encoded image to the @mhtml_encoded_images collection
-    def embed_mhtml( path, output_file )
-      new_path = path
-      if image_supported?( path )
-        filename = filename_from_embed_path( path )
-        filetype = filename.match( /(?:\.)(png|gif|jpg|jpeg)$/i )[1]
-      
-        # read contents of file into memory
-        content = File.read( filename )
-        content_type = "image/#{filetype}"
-        
-        new_path = "mhtml:/#{@relative_path}!image#{@mhtml_encoded_images.length}"
-
-        @mhtml_encoded_images << {
-          :content => Base64.encode64(content).gsub("\n", ''),
-          :content_type => content_type
-        }
       end
       return new_path
     end
