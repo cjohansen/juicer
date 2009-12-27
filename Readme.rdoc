@@ -239,8 +239,6 @@ little real value and attempts at supporting it has been dropped.
 
 * Support more minifiers, JsMin (Ruby port), Packer and possibly others
 * Add support for CssTidy to compress CSS files
-* Support for using several master stylesheets, each specifying it's own method
-of embedding images.
 
 If you have any ideas, feature requests, want to contribute or whatever, fork
 the project on github, or get in touch through christian (at) cjohansen.no.
