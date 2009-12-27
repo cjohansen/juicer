@@ -165,7 +165,7 @@ The first conditional comemnt allows only non-IE browsers to fetch the
 The second conditional comment allows only IE8+ browsers to fetch the 
 <code>master.embedded.css</code> stylesheet.
 
-The lase conditional comment allows only IE7 and lower to fetch the 
+The last conditional comment allows only IE7 and lower to fetch the 
 <code>master.normal.css</code> stylesheet.
     
 Unfortunately, you will need to use three conditional comments, or you will end 
