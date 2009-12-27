@@ -29,7 +29,9 @@ into Juicer installation directory, usually ~/.juicer
 
       # Execute command
       #
-      def execute(args)
+      def execute(*args)
+        args.flatten!
+
         if args.length == 0
           raise ArgumentError.new('Please provide a library to install')
         end

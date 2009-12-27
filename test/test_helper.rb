@@ -1,10 +1,13 @@
 require 'fileutils'
 require 'test/unit'
-require 'redgreen' if ENV['TM_DIRECTORY'].nil?
 require 'shoulda'
 require 'mocha'
 require 'open-uri'
-require File.expand_path(File.join(File.dirname(__FILE__), %w[.. lib juicer])) unless defined?(Juicer)
+require 'juicer'
+
+if RUBY_VERSION < "1.9"
+  require 'redgreen' if ENV['TM_DIRECTORY'].nil?
+end
 
 $data_dir = File.join(File.expand_path(File.dirname(__FILE__)), "data")
 Juicer.send(:remove_const, :LOGGER)

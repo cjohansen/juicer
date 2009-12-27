@@ -48,14 +48,14 @@ inside the first multi-line comment. The switch is @depend or @depends, your
 choice.
 
 The -m --minifyer switch can be used to select which minifyer to use. Currently
-only YUI Compressor is supported, ie -m yui_compressor (default). When using
-the YUI Compressor the path should be the path to where the jar file is found.
+only YUI Compressor and Google Closure Compiler is supported, ie -m yui_compressor (default) or -m closure_compiler. When using
+the compressor the path should be the path to where the jar file is found.
         EOF
 
         self.options = CmdParse::OptionParserWrapper.new do |opt|
           opt.on("-o", "--output file", "Output filename") { |filename| @output = filename }
           opt.on("-p", "--path path", "Path to compressor binary") { |path| @opts[:bin_path] = path }
-          opt.on("-m", "--minifyer name", "Which minifer to use. Currently only supports yui_compressor") { |name| @minifyer = name }
+          opt.on("-m", "--minifyer name", "Which minifer to use. Currently only supports yui_compressor and closure compiler") { |name| @minifyer = name }
           opt.on("-f", "--force", "Force overwrite of target file") { @force = true }
           opt.on("-a", "--arguments arguments", "Arguments to minifyer, escape with quotes") { |arguments|
             @arguments = arguments.to_s.gsub(/(^['"]|["']$)/, "")

@@ -1,4 +1,4 @@
-require File.expand_path(File.join(File.dirname(__FILE__), "dependency_resolver"))
+require "juicer/dependency_resolver/dependency_resolver"
 
 module Juicer
   # Resolves @depends and @depend statements in comments in JavaScript files.

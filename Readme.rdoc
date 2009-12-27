@@ -1,7 +1,11 @@
 = Juicer
 Official URL: http://github.com/cjohansen/juicer/tree/master
 
-Christian Johansen (http://www.cjohansen.no)
+Christian Johansen (http://www.cjohansen.no) and contributors:
+
+* Morgan Roderick (http://roderick.dk)
+* Pavel Valodzka (http://github.com/valodzka)
+* Daniel Stockman (http://evocateur.org/)
 
 == DESCRIPTION:
 
@@ -11,7 +15,7 @@ High level overview; Juicer can
 
 * figure out which files depend on each other and merge them together, reducing
   the number of http requests per page view, thus improving performance
-* use YUI Compressor to compress code, thus improving performance
+* use YUI Compressor or Google Closure Compiler to compress code, thus improving performance
 * verify that your JavaScript is safe to minify/compress by running JsLint on it
 * cycle asset hosts in CSS files
 * add "cache busters" to URLs in CSS files
@@ -25,7 +29,7 @@ High level overview; Juicer can
 
 Juicer can read @import statements in CSS files and use them to combine all your
 stylesheets into a single file. This file may be minified using the YUI
-Compressor. Eventually it will support other minifying tools too.
+Compressor or Google Closure Compiler. Eventually it will support other minifying tools too.
 
 Juicer can treat your JavaScript files much the same way too, parsing a comment
 switch @depend, as this example shows:
@@ -233,15 +237,10 @@ little real value and attempts at supporting it has been dropped.
 
 == PLANNED FEATURES:
 
-Juicer 0.2.0 is the first usable release. Work will continue from here. Improving
-documentation and APIs is one concern, but there are also new features planned:
-
-* Support for using several master stylesheets, each specifying it's own method of embedding images.
 * Support more minifiers, JsMin (Ruby port), Packer and possibly others
 * Add support for CssTidy to compress CSS files
-* juicer build, a command that can build several files in one swoop using a
-  configuration file
-* juicer doc, a command that produces documentation using YUI Doc or JsDoc
+* Support for using several master stylesheets, each specifying it's own method
+of embedding images.
 
 If you have any ideas, feature requests, want to contribute or whatever, fork
 the project on github, or get in touch through christian (at) cjohansen.no.
@@ -258,24 +257,18 @@ the project on github, or get in touch through christian (at) cjohansen.no.
 
 == REQUIREMENTS:
 
-In order to use YUI Compressor and JsMin (requires Rhino) you need Java
+In order to use YUI Compressor, Closure Compiler or JsMin (requires Rhino) you need Java
 installed and the java executable available on your path.
 
 == INSTALL:
 
   $ gem install juicer
   $ juicer install yui_compressor
+  $ juicer install closure_compiler
   $ juicer install jslint
 
 You need Java installed and available on your PATH. During gem installation,
-Juicer will download and install YUI Compressor, JsLint and Rhino for you.
-
-== For developers
-
-Before running tests you should run
-  rake test:setup
-
-which brings in third party libraries (ie, requires a working network connection)
+Juicer will download and install YUI Compressor, Closure Compiler, JsLint and Rhino for you.
 
   rake check_dependencies:development
   
@@ -287,6 +280,8 @@ Will tell you about other dependencies that might be missing on your system.
 * Morgan Roderick (http://roderick.dk)
   Added support for embedding graphics using data-uri
   Several small fixes and optimizations
+* Pavel Valodzka (http://github.com/valodzka)
+  Added Google Closure Compiler support
 * Daniel Stockman (http://evocateur.org/)
   Fixed `juicer list` when running it against files with no dependencies
 

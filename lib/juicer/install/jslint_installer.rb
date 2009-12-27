@@ -28,7 +28,7 @@ module Juicer
       def install(version = nil)
         version = super(version)
         filename = download(File.join(@website, "rhino/jslint.js"))
-        File.copy(filename, File.join(@install_dir, path, "bin", "jslint-#{version}.js"))
+        FileUtils.copy(filename, File.join(@install_dir, path, "bin", "jslint-#{version}.js"))
       end
 
       #
