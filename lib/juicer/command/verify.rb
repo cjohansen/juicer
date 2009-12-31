@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), "util")
+require "juicer/command/util"
 require "rubygems"
 require "cmdparse"
 require "pathname"

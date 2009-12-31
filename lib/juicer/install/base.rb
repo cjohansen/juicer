@@ -1,7 +1,7 @@
 require 'nokogiri'
 require 'open-uri'
 require 'fileutils'
-require File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. juicer])) unless defined?(Juicer)
+require "juicer"
 
 module Juicer
   module Install

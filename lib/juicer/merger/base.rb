@@ -1,4 +1,4 @@
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "chainable"))
+require "juicer/chainable"
 
 # Merge several files into one single output file
 module Juicer

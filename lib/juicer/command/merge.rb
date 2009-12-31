@@ -1,5 +1,5 @@
-require File.join(File.dirname(__FILE__), "util")
-require File.join(File.dirname(__FILE__), "verify")
+require "juicer/command/util"
+require "juicer/command/verify"
 require "cmdparse"
 require "pathname"
 
