@@ -21,6 +21,7 @@ High level overview; Juicer can
 * add "cache busters" to URLs in CSS files
 * recalculate relative URLs in CSS files, as well as convert them to absolute
   (or convert absolute URLs to relative URLs)
+* embed images into stylesheets using data-uris
 
 == FEATURES:
 
@@ -74,9 +75,165 @@ Unfortunately, the popular web proxy Squid shipped for some time with a default
 configuration which would not treat a URL as a "new" URL if the only thing changed
 was the GET parameters. For this reason Juicer provides hard cache busters.
 
-Hard cache busters result in URLs such as http://assets/images/1-cb1234567890.png,
+Hard cache busters result in URLs such as: http://assets/images/1-cb1234567890.png,
 ie URLs that require either renaming of files, or (more conveniently) a web
 server configuration that will forward URLs to the right files anyway.
+
+=== Embed images in stylesheets
+
+Juicer supports embedding images into stylesheets using data uri's.
+
+In order to be as unobtrusive as possible, you must indicate for each image that it 
+can be embedded in the stylesheet by using the embed url suffix.
+
+Example:
+    
+    h1 { background: url(/somepath/someimage.png?embed=true); }
+
+When merging the stylesheets, you must specify which type of embedding you want,
+currently only 'none' and 'data_uri' are supported.
+
+    $ juicer merge my-stylesheet.css -o my-stylesheet.merged.css --embed-images data_uri
+    
+The result will look similar to this:
+
+    h1 { background: url(data:image/png;base64,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); }
+
+Embedding images in stylesheets should be used very carefully, as they will bloat 
+your css files considerably, and you will loose some of the fine grained control 
+over caching of images.
+
+Before using Juicer to embed images into your stylesheets, you should have control 
+over cache expiration of stylesheets.
+
+You should also have gzip enabled, as base64 encoded images take up about 30% more 
+space than serving them normally. With gzip enabled this is reduced to about 5-10% bloat. 
+
+==== Usage scenario: Modern browsers and IE7, IE6 support
+
+As all of the major browsers in their later incarnations support the data uri scheme, 
+it is possible to just create two merged stylesheets, although you can create as many 
+as you want really.
+
+Let's assume you have the following files:
+
+* reset.css
+* layout.css
+* typography.css
+
+    /* layout.css */
+    body { background: url( /images/my-body-background.png?embed=true); }
+
+And let's assume that you want to merge these, and embed the flagged images in 
+layout.css into the stylesheet.
+
+To do this, you would have a master stylesheet that imports the other stylesheets using 
+the @import statemet. It could look like this:
+
+    /* master.css */
+    @import url(reset.css)
+    @import url(layout.css)
+    @import url(typography.css)
+
+Now, in order to create the two versions of the stylesheet, you would simply run 
+Juicer with and without the option to embed images
+
+    $ juicer merge master.css -o master.embedded.css --embed-images data_uri
+    $ juicer merge master.css -o master.normal.css
+    
+In order to only load the relevant stylesheet to supporting browsers, and preventing 
+doubling the effective payload of the background images, you would reference the 
+stylesheets like this:
+
+    <head>
+        ...
+        <!--[if !IE]>-->
+            <link rel="stylesheet" type="text/css" href="master.embedded.css" />
+        <!--<![endif]-->
+        <!--[if gte IE 8]>
+            <link rel="stylesheet" type="text/css" href="master.embedded.css" />
+        <![endif]-->
+        <!--[if lte IE 7]>
+            <link rel="stylesheet" type="text/css" href="master.normal.css" />
+        <![endif]-->
+        ...
+    </head>
+
+The first conditional comemnt allows only non-IE browsers to fetch the 
+<code>master.embedded.css</code> stylesheet.
+
+The second conditional comment allows only IE8+ browsers to fetch the 
+<code>master.embedded.css</code> stylesheet.
+
+The last conditional comment allows only IE7 and lower to fetch the 
+<code>master.normal.css</code> stylesheet.
+    
+Unfortunately, you will need to use three conditional comments, or you will end 
+up with an unsightly "-->" displayed at the top of your pages in IE.
+
+==== Browser support
+Windows Vista, Windows 2003, Windows 7
+Tests needed
+
+Windows XP
+* IE8 - up to 32kb IS supported
+* Firefox 3.5.2 - OK 
+* Opera 9.64 - OK
+* Chrome 3 - OK
+* Safari 4 - OK
+
+OS X 10.6.1
+* Firefox 3.5 - OK
+* Firefox 2.0.20 - OK
+* Safari 4 - OK
+* Opera 10 - OK
+* Opera 9.27 - OK
+* Opera 8.0 - OK
+* Camino 1.6.10 - OK
+
+Debian
+* Opera 10 - OK
+
+Android
+* WebKit - OK
+
+iPhone
+* Safari - OK
+
+The test used is located at http://roderick.dk/experiments/data-uri-limits/
+
+The test used tests loading of styles using the href attribute, it is ASSUMED 
+that loading images from data-uri in css has similar support.
+Soon[tm] there will be a testpage with images as well.
+
+If you have funky browser / OS combinations not listed above, please visit the 
+test and send a screenshot and details about browser and OS to morgan@roderick.dk
+
+
+==== Support for really old user-agents
+If you plan to support user-agents that do understand conditional comments and 
+does not support the data uri scheme, you will have to do some kind of detection 
+of support. These user-agents would be very rare, as our browser testing shows, 
+most modern user agents support data-uris.
+
+* http://weston.ruter.net/2009/05/07/detecting-support-for-data-uris/
+
+Please note that image embedding is NOT a silver bullet, but can help reduce 
+the amount of HTTP connections needed for a page.
+
+
+==== MHTML Support
+
+Due to MHTML being very awkward in it's implementation (having the absolute url 
+including protocol inside the stylesheet itself), it was decided to be of very
+little real value and attempts at supporting it has been dropped.
+
+
+==== Further reading
+
+* http://www.websiteoptimization.com/speed/tweak/inline-images/
+* http://en.wikipedia.org/wiki/Data_URI_scheme
+
 
 == PLANNED FEATURES:
 
@@ -110,6 +267,11 @@ installed and the java executable available on your path.
 
 You need Java installed and available on your PATH. During gem installation,
 Juicer will download and install YUI Compressor, Closure Compiler, JsLint and Rhino for you.
+
+  rake check_dependencies:development
+  
+Will tell you about other dependencies that might be missing on your system.
+
 
 == Contributors
 
