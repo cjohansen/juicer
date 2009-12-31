@@ -1,5 +1,6 @@
-require File.expand_path(File.join(File.dirname(__FILE__), "chainable"))
-require File.expand_path(File.join(File.dirname(__FILE__), "cache_buster"))
+require "juicer/chainable"
+require "juicer/cache_buster"
+require "juicer/asset/path_resolver"
 
 module Juicer
   #
@@ -29,50 +30,55 @@ module Juicer
       @web_root.sub!(%r{/?$}, "") if @web_root # Remove trailing slash
       @type = options[:type] || :none
       @contents = nil
+      @hosts = options[:hosts]
+      @path_resolver = Juicer::Asset::PathResolver.new(:document_root => options[:web_root],
+                                                       :hosts => options[:hosts])
     end
 
     #
     # Update file. If no +output+ is provided, the input file is overwritten
     #
     def save(file, output = nil)
-			if ( @type == :data_uri )
-			  output_file = output || file
-	      @contents = File.read(file)
-	      used = []
+      return unless @type == :data_uri
 
-				# TODO: Remove "?embed=true" from duplicate urls
-				duplicates = duplicate_urls( file )
-				if duplicates.length > 0
-					Juicer::LOGGER.warn("Duplicate image urls detected, these images will not be embedded: #{duplicates.collect { |v| v.gsub('?embed=true', '') }.inspect}") 
-				end
+      output_file = output || file
+      @contents = File.read(file)
+      used = []
 
-				usable_urls = distinct_urls_without_duplicates( file )
-	      usable_urls.each do |url|
-	        begin
-	          path = resolve(url, file)
-	          next if used.include?(path)
+      @path_resolver = Juicer::Asset::PathResolver.new(:document_root => @web_root,
+                                                       :hosts => @hosts,
+                                                       :base => File.dirname(file))
 
-	          if path != url
-	            used << path            
-	            
-              # make sure we do not exceed SIZE_LIMIT
-              new_path = embed_data_uri( path )
-              
-              if ( new_path.length < SIZE_LIMIT )
-  	            # replace the url in the css file with the data uri
-  	            @contents.gsub!(url, embed_data_uri( path ) )
-              else
-                Juicer::LOGGER.warn("The final data uri for the image located at #{path.gsub('?embed=true', '')} exceeds #{SIZE_LIMIT} and will not be embedded to maintain compatability.") 
-              end
-	          end
-	        rescue Errno::ENOENT
-	          puts "Unable to locate file #{path || url}, skipping image embedding"
-	        end
-	      end
+      assets = urls(file)
 
-	      File.open(output || file, "w") { |f| f.puts @contents }
-	      @contents = nil
-			end
+      # TODO: Remove "?embed=true" from duplicate urls
+      duplicates = duplicate_urls(assets)
+
+      if duplicates.length > 0
+        Juicer::LOGGER.warn("Duplicate image urls detected, these images will not be embedded: #{duplicates.collect { |v| v.gsub('?embed=true', '') }.inspect}") 
+      end
+
+      assets.each do |asset|
+        begin
+          next if used.include?(asset) || duplicates.include?(asset.path)
+          used << asset
+
+          # make sure we do not exceed SIZE_LIMIT
+          new_path = embed_data_uri(asset.filename)
+
+          if new_path.length < SIZE_LIMIT
+            # replace the url in the css file with the data uri
+            @contents.gsub!(asset.path, embed_data_uri(asset.path))
+          else
+            Juicer::LOGGER.warn("The final data uri for the image located at #{asset.path.gsub('?embed=true', '')} exceeds #{SIZE_LIMIT} and will not be embedded to maintain compatability.") 
+          end
+        rescue Errno::ENOENT
+          puts "Unable to locate file #{asset.path}, skipping image embedding"
+        end
+      end
+
+      File.open(output || file, "w") { |f| f.puts @contents }
+      @contents = nil
     end
 
     chain_method :save
@@ -105,62 +111,26 @@ module Juicer
     end
 
     #
-    # Returns all referenced URLs in +file+. Returned paths are absolute (ie,
-    # they're resolved relative to the +file+ path.
+    # Returns all referenced URLs in +file+.
     #
     def urls(file)
       @contents = File.read(file) unless @contents
 
       @contents.scan(/url\([\s"']*([^\)"'\s]*)[\s"']*\)/m).collect do |match|
-        match.first
+        @path_resolver.resolve(match.first)
       end
     end
 
-		def distinct_urls_without_duplicates( file )
-			urls(file) - duplicate_urls(file)
-		end
-
-		def duplicate_urls( file )
-			urls(file).duplicates
-		end
-
-    #
-    # Resolve full path from URL
-    #
-    def resolve(target, from)
-      # If URL is external, check known hosts to see if URL can be treated
-      # like a local one (ie so we can add cache buster)
-      catch(:continue) do
-        if target =~ %r{^[a-z]+\://}
-          # This could've been a one-liner, but I prefer to be
-          # able to read my own code ;)
-          @hosts.each do |host|
-            if target =~ /^#{host}/
-              target.sub!(/^#{host}/, "")
-              throw :continue
-            end
-          end
-
-          # No known hosts matched, return
-          return target
-        end
-      end
-
-      # Simply add web root to absolute URLs
-      if target =~ %r{^/}
-        raise FileNotFoundError.new("Unable to resolve absolute path #{target} without :web_root option") unless @web_root
-        return File.expand_path(File.join(@web_root, target))
-      end
-
-      # Resolve relative URLs to full paths
-      File.expand_path(File.join(File.dirname(File.expand_path(from)), target))
+    private
+    def duplicate_urls(urls)
+      urls.inject({}) { |h,v| h[v.path] = h[v.path].to_i+1; h }.reject{ |k,v| v == 1 }.keys
     end
   end
 end
 
 # http://snippets.dzone.com/posts/show/3838
-module Enumerable
-  def duplicates
-    inject({}) {|h,v| h[v]=h[v].to_i+1; h}.reject{|k,v| v==1}.keys
-  end
-end
+#module Enumerable
+#  def duplicates
+#    inject({}) {|h,v| h[v]=h[v].to_i+1; h}.reject{|k,v| v==1}.keys
+#  end
+#end

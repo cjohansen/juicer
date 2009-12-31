@@ -232,6 +232,10 @@ module Juicer
         (host !~ @@scheme_pattern ? "http://#{host}" : host).sub(/\/$/, '')
       end
 
+      def <=>(other)
+        filename <=> other.filename
+      end
+
       private
       #
       # Adds cache buster to paths if :cache_buster_type and :cache_buster indicates

@@ -46,14 +46,8 @@ module Juicer
 
       urls(file).each do |asset|
         begin
-          path = resolve(url, file)
-          next if used.include?(path)
-
-          if path != url
-            used << path
-            basename = File.basename(Juicer::CacheBuster.path(path, @type))
-            @contents.gsub!(url, File.join(File.dirname(url), basename))
-          end
+          next if used.include?(asset.path)          
+          @contents.gsub!(asset.path, asset.path(:cache_buster_type => @type))
         rescue Errno::ENOENT
           puts "Unable to locate file #{asset.path}, skipping cache buster"
         rescue ArgumentError => e
