@@ -42,6 +42,8 @@ module Kernel
   def open(name, *rest, &block)
     if name =~ /http.+yuicompressor-(\d\.\d\.\d)\.zip$/
       name = File.join($data_dir, "..", "bin", "yuicompressor-#{$1}.zip")
+    elsif name =~ /http:\/\/yuilibrary\.com\/download/
+      name = File.join($data_dir, "yui-download.html")
     elsif name =~ /http.+yuicompressor/
       name = File.join($data_dir, "..", "bin", "yuicompressor")
     elsif name =~ /http.+jslint/
