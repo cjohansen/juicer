@@ -1,4 +1,5 @@
 require "juicer"
+require "juicer/install/base"
 require "zip/zip"
 
 module Juicer
