@@ -20,6 +20,10 @@ module Juicer
       throw :done if imported_file && line =~ %r{/*}
       throw :done if line =~ /^[\.\#a-zA-Z\:]/
     end
+
+    def extension
+      ".css"
+    end
   end
 
 end

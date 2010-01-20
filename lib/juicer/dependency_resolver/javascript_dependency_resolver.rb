@@ -15,5 +15,9 @@ module Juicer
       # closing comment we're done.
       throw :done unless imported_file.nil? || !(line =~ /\*\//)
     end
+
+    def extension
+      ".js"
+    end
   end
 end

@@ -36,4 +36,15 @@ class TestJavaScriptDependencyResolver < Test::Unit::TestCase
 
     assert_equal [a_file, b_file], files.sort
   end
+
+  def test_directory_resolve
+    my_app = path("my_app.js")
+    expected_files = %w(pkg/pkg.js
+    pkg/module/moda.js
+    pkg/module/modb.js
+    my_app.js).map{|file| path(file)}
+
+    actual_files = @resolver.resolve(my_app)
+    assert_equal expected_files, actual_files
+  end
 end
