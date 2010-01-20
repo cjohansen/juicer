@@ -137,9 +137,22 @@ p { background: url(/a2.css); }
         mkfile(@dir, 'path_test2.css', css)
 
         mkfile(@dir, 'Changelog.txt', "2008.02.09 | stb-base 1.29\n\nFEATURE: Core  | Bla bla bla bla bla\nFEATURE: UI: | Bla bla bla bla bla\n\n\n2008.02.09 | stb-base 1.29\n\nFEATURE: Core  | Bla bla bla bla bla\nFEATURE: UI: | Bla bla bla bla bla\n")
+
+        # my_app.js depends on the pkg directory
+        mkfile(@dir, "my_app.js", "// @depend pkg\n var myApp = pkg.a;")
+
+        # package directory contains pkg.js, module/moda.js, and module/modb.js
+        # moda.js depends on ../pkg.js
+        # modb.js depends on moda.js and ../pkg.js
+        pkg_dir = mkdir File.join(@dir, "pkg")
+        module_dir = mkdir File.join(pkg_dir, "module")
+        mkfile(pkg_dir, "pkg.js", "var pkg = {};")
+        mkfile(module_dir, "moda.js", "// @depend ../pkg.js\npkg.a = '';")
+        mkfile(module_dir, "modb.js", "// @depend ../pkg.js\n// @depend moda.js\npkg.b = '';")
+
       end
 
-     private
+      private
       # Create a file
       def mkfile(parent, name, content)
         file = File.open(File.join(parent, name), 'w+') { |f| f.puts content }
