@@ -6,6 +6,7 @@ Christian Johansen (http://www.cjohansen.no) and contributors:
 * Morgan Roderick (http://roderick.dk)
 * Pavel Valodzka (http://github.com/valodzka)
 * Daniel Stockman (http://evocateur.org/)
+* Aaron Suggs (http://ktheory.com)
 
 == DESCRIPTION:
 
@@ -282,6 +283,8 @@ Will tell you about other dependencies that might be missing on your system.
   Added Google Closure Compiler support
 * Daniel Stockman (http://evocateur.org/)
   Fixed `juicer list` when running it against files with no dependencies
+* Aaron Suggs (http://ktheory.com)
+  Fixed installers on 1.0 branch
 
 == LICENSE:
 
