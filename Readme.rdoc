@@ -291,7 +291,7 @@ Will tell you about other dependencies that might be missing on your system.
 
 (The MIT License)
 
-Copyright (c) 2008-2009 Christian Johansen
+Copyright (c) 2008-2010 Christian Johansen
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
