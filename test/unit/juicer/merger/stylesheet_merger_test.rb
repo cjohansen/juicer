@@ -80,7 +80,7 @@ EOF
     end
   end
 
-  def test_resolve_path_error_when_relative_missing_web_root
+  def test_resolve_path_error_when_relative_missing_document_root
     merger = Juicer::Merger::StylesheetMerger.new [], :relative_urls => true
 
     Juicer::Merger::StylesheetMerger.publicize_methods do
@@ -91,7 +91,7 @@ EOF
   end
 
   def test_resolve_path_should_make_absolute_urls_relative
-    merger = Juicer::Merger::StylesheetMerger.new [], :relative_urls => true, :web_root => "/home/usr"
+    merger = Juicer::Merger::StylesheetMerger.new [], :relative_urls => true, :document_root => "/home/usr"
 
     Juicer::Merger::StylesheetMerger.publicize_methods do
       merger.instance_eval { @root = Pathname.new "/home/usr/design" }
@@ -109,7 +109,7 @@ EOF
     end
   end
 
-  def test_resolve_path_error_when_missing_absolute_web_root
+  def test_resolve_path_error_when_missing_absolute_document_root
     merger = Juicer::Merger::StylesheetMerger.new [], :absolute_urls => true
 
     Juicer::Merger::StylesheetMerger.publicize_methods do
@@ -120,7 +120,7 @@ EOF
   end
 
   def test_resolve_path_should_make_relative_urls_absolute
-    merger = Juicer::Merger::StylesheetMerger.new [], :absolute_urls => true, :web_root => "/home/usr"
+    merger = Juicer::Merger::StylesheetMerger.new [], :absolute_urls => true, :document_root => "/home/usr"
 
     Juicer::Merger::StylesheetMerger.publicize_methods do
       merger.instance_eval { @root = Pathname.new "/home/usr/design" }
@@ -138,7 +138,7 @@ EOF
   end
 
   def test_resolve_path_should_redefine_absolute_urls
-    merger = Juicer::Merger::StylesheetMerger.new [], :relative_urls => true, :web_root => "/home/usr"
+    merger = Juicer::Merger::StylesheetMerger.new [], :relative_urls => true, :document_root => "/home/usr"
 
     Juicer::Merger::StylesheetMerger.publicize_methods do
       merger.instance_eval { @root = Pathname.new "/home/usr/design2/css" }
@@ -158,8 +158,8 @@ EOF
     end
   end
 
-  def test_resolve_paths_should_handle_relative_web_roots
-    merger = Juicer::Merger::StylesheetMerger.new [], :web_root => "test/data", :relative_urls => true
+  def test_resolve_paths_should_handle_relative_document_roots
+    merger = Juicer::Merger::StylesheetMerger.new [], :document_root => "test/data", :relative_urls => true
     merger << File.expand_path("css/test2.css")
 
     Juicer::Merger::StylesheetMerger.publicize_methods do

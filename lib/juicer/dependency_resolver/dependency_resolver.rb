@@ -31,19 +31,19 @@ module Juicer
 
     #
     # Resolves a path relative to another. If the path is absolute (ie it
-    # starts with a protocol or /) the <tt>:web_root</tt> options has to be
+    # starts with a protocol or /) the <tt>:document_root</tt> options has to be
     # set as well.
     #
     def resolve_path(path, reference)
       # Absolute URL
       if path =~ %r{^(/|[a-z]+:)}
-        if @options[:web_root].nil?
+        if @options[:document_root].nil?
           msg = "Cannot resolve absolute path '#{path}' without web root option"
           raise ArgumentError.new(msg)
         end
 
         path.sub!(%r{^[a-z]+://[^/]+/}, '')
-        return File.expand_path(File.join(@options[:web_root], path))
+        return File.expand_path(File.join(@options[:document_root], path))
       end
 
       File.expand_path(File.join(File.dirname(reference), path))

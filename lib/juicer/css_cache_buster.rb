@@ -13,19 +13,19 @@ module Juicer
   # work.
   #
   # When dealing with CSS files that reference absolute URLs like /images/1.png
-  # you must specify the :web_root option that these URLs should be resolved
+  # you must specify the :document_root option that these URLs should be resolved
   # against.
   #
   # When dealing with full URLs (ie including hosts) you can optionally specify
   # an array of hosts to recognize as "local", meaning they serve assets from
-  # the :web_root directory. This way even asset host cycling can benefit from
+  # the :document_root directory. This way even asset host cycling can benefit from
   # cache busters.
   #
   class CssCacheBuster
     include Juicer::Chainable
 
     def initialize(options = {})
-      @document_root = options[:web_root]
+      @document_root = options[:document_root]
       @document_root.sub!(%r{/?$}, "") if @document_root
       @type = options[:type] || :soft
       @hosts = (options[:hosts] || []).collect { |h| h.sub!(%r{/?$}, "") }
@@ -48,7 +48,7 @@ module Juicer
           puts "Unable to locate file #{asset.path}, skipping cache buster"
         rescue ArgumentError => e
           if e.message =~ /No document root/
-            raise FileNotFoundError.new("Unable to resolve path #{asset.path} without :web_root option")
+            raise FileNotFoundError.new("Unable to resolve path #{asset.path} without :document_root option")
           else
             raise e
           end

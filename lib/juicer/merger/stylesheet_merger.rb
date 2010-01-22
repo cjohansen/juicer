@@ -13,7 +13,7 @@ module Juicer
       # Constructor
       #
       # Options:
-      # * <tt>:web_root</tt> - Path to web root if there is any @import statements
+      # * <tt>:document_root</tt> - Path to web root if there is any @import statements
       #   using absolute URLs
       #
       def initialize(files = [], options = {})
@@ -23,8 +23,8 @@ module Juicer
         @host_num = 0
         @use_absolute = options.key?(:absolute_urls) ? options[:absolute_urls] : false
         @use_relative = options.key?(:relative_urls) ? options[:relative_urls] : false
-        @web_root = options[:web_root]
-        @web_root = File.expand_path(@web_root).sub(/\/?$/, "") if @web_root # Make sure path doesn't end in a /
+        @document_root = options[:document_root]
+        @document_root = File.expand_path(@document_root).sub(/\/?$/, "") if @document_root # Make sure path doesn't end in a /
       end
 
      private
@@ -40,10 +40,10 @@ module Juicer
       # The options hash decides how Juicer recalculates referenced URLs:
       #
       #   options[:absolute_urls] When true, all paths are converted to absolute
-      #                           URLs. Requires options[:web_root] to define
+      #                           URLs. Requires options[:document_root] to define
       #                           root directory to resolve absolute URLs from.
       #   options[:relative_urls] When true, all paths are converted to relative
-      #                           paths. Requires options[:web_root] to define
+      #                           paths. Requires options[:document_root] to define
       #                           root directory to resolve absolute URLs from.
       #
       # If none if these are set then relative URLs are recalculated to match
@@ -73,15 +73,15 @@ module Juicer
 
         # Absolute URLs
         if url =~ %r{^/} && @use_relative
-          raise ArgumentError.new("Unable to handle absolute URLs without :web_root option") if !@web_root
-          path = Pathname.new(File.join(@web_root, url)).relative_path_from(@root).to_s
+          raise ArgumentError.new("Unable to handle absolute URLs without :document_root option") if !@document_root
+          path = Pathname.new(File.join(@document_root, url)).relative_path_from(@root).to_s
         end
 
         # All URLs that don't start with a protocol
         if url !~ %r{^/} && url !~ %r{^[a-z]+://}
           if @use_absolute
-            raise ArgumentError.new("Unable to handle absolute URLs without :web_root option") if !@web_root
-            path = File.expand_path(File.join(dir, url)).sub(@web_root, "")         # Make absolute
+            raise ArgumentError.new("Unable to handle absolute URLs without :document_root option") if !@document_root
+            path = File.expand_path(File.join(dir, url)).sub(@document_root, "")         # Make absolute
           else
             path = Pathname.new(File.join(dir, url)).relative_path_from(@root).to_s # ...or redefine relative ref
           end

@@ -25,10 +25,10 @@ module Juicer
         @ignore = false                 # Ignore syntax problems if true
         @cache_buster = :soft           # What kind of cache buster to use, :soft or :hard
         @hosts = nil                    # Hosts to use when replacing URLs in stylesheets
-        @web_root = nil                 # Used to understand absolute paths
+        @document_root = nil                 # Used to understand absolute paths
         @relative_urls = false          # Make the merger use relative URLs
         @absolute_urls = false          # Make the merger use absolute URLs
-        @local_hosts = []               # Host names that are served from :web_root
+        @local_hosts = []               # Host names that are served from :document_root
         @verify = true                  # Verify js files with JsLint
 				@image_embed_type = :none       # Embed images in css files, options are :none, :data_uri
 
@@ -73,7 +73,7 @@ the compressor the path should be the path to where the jar file is found.
                            (" " * 37) + "absolute URLs are used. Only valid for CSS files") { |t| @relative_urls = true }
           opt.on("-b", "--absolute-urls", "Convert all referenced URLs to absolute URLs. Requires --document-root.\n" +
                            (" " * 37) + "Works with cycled asset hosts. Only valid for CSS files") { |t| @absolute_urls = true }
-          opt.on("-d", "--document-root dir", "Path to resolve absolute URLs relative to") { |path| @web_root = path }
+          opt.on("-d", "--document-root dir", "Path to resolve absolute URLs relative to") { |path| @document_root = path }
           opt.on("-c", "--cache-buster type", "none, soft or hard. Default is soft, which adds timestamps to referenced\n" +
                            (" " * 37) + "URLs as query parameters. None leaves URLs untouched and hard alters file names") do |type|
             @cache_buster = [:soft, :hard].include?(type.to_sym) ? type.to_sym : nil
@@ -108,7 +108,7 @@ the compressor the path should be the path to where the jar file is found.
         # confused
         merger = merger(output).new(files, :relative_urls => @relative_urls,
                                            :absolute_urls => @absolute_urls,
-                                           :web_root => @web_root,
+                                           :document_root => @document_root,
                                            :hosts => @hosts)
 
         # Fail if syntax trouble (js only)
@@ -127,7 +127,7 @@ the compressor the path should be the path to where the jar file is found.
         merger.files.each { |file| @log.info "  #{relative file}" }
       rescue FileNotFoundError => err
         # Handle missing document-root option
-        puts err.message.sub(/:web_root/, "--document-root")
+        puts err.message.sub(/:document_root/, "--document-root")
       end
 
      private
@@ -180,7 +180,7 @@ the compressor the path should be the path to where the jar file is found.
       #
       def cache_buster(file)
         return nil if !file || file !~ /\.css$/ || @cache_buster.nil?
-        Juicer::CssCacheBuster.new(:web_root => @web_root, :type => @cache_buster, :hosts => @local_hosts)
+        Juicer::CssCacheBuster.new(:document_root => @document_root, :type => @cache_buster, :hosts => @local_hosts)
       end
 
 			#

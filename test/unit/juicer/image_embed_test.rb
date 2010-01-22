@@ -32,7 +32,7 @@ class TestImageEmbed < Test::Unit::TestCase
                              { :path => '/images/test.jar', :content => 'hello jar!' }
                             ]
       create_files(@unsupported_assets)
-      @embedder = Juicer::ImageEmbed.new(:type => :data_uri, :web_root => '')
+      @embedder = Juicer::ImageEmbed.new(:type => :data_uri, :document_root => '')
     end
 
     teardown do
