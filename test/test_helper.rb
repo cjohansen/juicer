@@ -87,7 +87,7 @@ module Juicer
         mkfile(@dir, 'b.css', "/* Dette er b.css */")
         mkfile(@dir, 'b.js', "/**\n * @depends a.js\n */\n\n/* Dette er b.css */")
         mkfile(@dir, 'a1.css', "@import\t'b1.css';\n@import 'c1.css';\nbody {\n    width: 800px;\n}\n")
-        mkfile(@dir, 'b1.css', "@import 'd1.css';\n\nhtml {\n    background: red;\n}\n")
+        mkfile(@dir, 'b1.css', "@import url('d1.css');\n\nhtml {\n    background: red;\n}\n")
         mkfile(@dir, 'c1.css', "h1 {\n    font-size: 12px;\n}\n")
         mkfile(@dir, 'd1.css', "h2 {\n    font-size: 10px;\n}\n")
         mkfile(@dir, 'ok.js', "function hey() {\n    return \"Hey\";\n}\n")

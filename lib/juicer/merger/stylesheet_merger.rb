@@ -53,7 +53,7 @@ module Juicer
       # for all absolute URLs regardless of absolute/relative URL strategy.
       #
       def merge(file)
-        content = super.gsub(/^\s*\@import\s("|')(.*)("|')\;?/, '')
+        content = super.gsub(/^\s*@import(?:\surl\(|\s)(['"]?)([^\?'"\)\s]+)(\?(?:[^'"\)]+)?)?\1\)?(?:[^?;]+)?;?/i, "")
         dir = File.expand_path(File.dirname(file))
 
         content.scan(/url\([\s"']*([^\)"'\s]*)[\s"']*\)/m).uniq.collect do |url|
