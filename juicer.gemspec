@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{juicer}
-  s.version = "1.0.0"
+  s.version = "0.9.9"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christian Johansen"]
-  s.date = %q{2009-12-21}
+  s.date = %q{2010-01-22}
   s.default_executable = %q{juicer}
   s.description = %q{Resolve dependencies, merge and minify CSS and JavaScript files with Juicer - the command line tool for frontend engineers}
   s.email = %q{christian@cjohansen.no}
@@ -34,12 +34,14 @@ Gem::Specification.new do |s|
      "lib/juicer/command/util.rb",
      "lib/juicer/command/verify.rb",
      "lib/juicer/css_cache_buster.rb",
+     "lib/juicer/datafy/datafy.rb",
      "lib/juicer/dependency_resolver/css_dependency_resolver.rb",
      "lib/juicer/dependency_resolver/dependency_resolver.rb",
      "lib/juicer/dependency_resolver/javascript_dependency_resolver.rb",
      "lib/juicer/ext/logger.rb",
      "lib/juicer/ext/string.rb",
      "lib/juicer/ext/symbol.rb",
+     "lib/juicer/image_embed.rb",
      "lib/juicer/install/base.rb",
      "lib/juicer/install/closure_compiler_installer.rb",
      "lib/juicer/install/jslint_installer.rb",
@@ -75,10 +77,15 @@ Gem::Specification.new do |s|
      "test/data/css/test2.css",
      "test/data/d1.css",
      "test/data/images/1.png",
+     "test/data/my_app.js",
      "test/data/not-ok.js",
      "test/data/ok.js",
      "test/data/path_test.css",
      "test/data/path_test2.css",
+     "test/data/pkg/module/moda.js",
+     "test/data/pkg/module/modb.js",
+     "test/data/pkg/pkg.js",
+     "test/fixtures/yui-download.html",
      "test/test_helper.rb",
      "test/unit/juicer/asset/path_resolver_test.rb",
      "test/unit/juicer/asset/path_test.rb",
@@ -90,11 +97,12 @@ Gem::Specification.new do |s|
      "test/unit/juicer/command/util_test.rb",
      "test/unit/juicer/command/verify_test.rb",
      "test/unit/juicer/css_cache_buster_test.rb",
-     "test/unit/juicer/css_file_test.rb",
+     "test/unit/juicer/datafy_test.rb",
      "test/unit/juicer/dependency_resolver/css_dependency_resolver_test.rb",
      "test/unit/juicer/dependency_resolver/javascript_dependency_resolver_test.rb",
      "test/unit/juicer/ext/string_test.rb",
      "test/unit/juicer/ext/symbol_test.rb",
+     "test/unit/juicer/image_embed_test.rb",
      "test/unit/juicer/install/installer_base_test.rb",
      "test/unit/juicer/install/jslint_installer_test.rb",
      "test/unit/juicer/install/rhino_installer_test.rb",
@@ -133,11 +141,12 @@ Happy juicing!
      "test/unit/juicer/command/util_test.rb",
      "test/unit/juicer/command/verify_test.rb",
      "test/unit/juicer/css_cache_buster_test.rb",
-     "test/unit/juicer/css_file_test.rb",
+     "test/unit/juicer/datafy_test.rb",
      "test/unit/juicer/dependency_resolver/css_dependency_resolver_test.rb",
      "test/unit/juicer/dependency_resolver/javascript_dependency_resolver_test.rb",
      "test/unit/juicer/ext/string_test.rb",
      "test/unit/juicer/ext/symbol_test.rb",
+     "test/unit/juicer/image_embed_test.rb",
      "test/unit/juicer/install/installer_base_test.rb",
      "test/unit/juicer/install/jslint_installer_test.rb",
      "test/unit/juicer/install/rhino_installer_test.rb",
@@ -156,27 +165,27 @@ Happy juicing!
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<thoughtbot-shoulda>, [">= 0"])
-      s.add_development_dependency(%q<mocha>, [">= 0"])
-      s.add_development_dependency(%q<fakefs>, [">= 0"])
-      s.add_development_dependency(%q<jeweler>, [">= 0"])
+      s.add_development_dependency(%q<shoulda>, [">= 2.10.2"])
+      s.add_development_dependency(%q<mocha>, [">= 0.9.8"])
+      s.add_development_dependency(%q<fakefs>, [">= 0.2.1"])
+      s.add_development_dependency(%q<jeweler>, [">= 0.2.1"])
       s.add_runtime_dependency(%q<cmdparse>, [">= 0"])
       s.add_runtime_dependency(%q<nokogiri>, [">= 0"])
       s.add_runtime_dependency(%q<rubyzip>, [">= 0"])
     else
-      s.add_dependency(%q<thoughtbot-shoulda>, [">= 0"])
-      s.add_dependency(%q<mocha>, [">= 0"])
-      s.add_dependency(%q<fakefs>, [">= 0"])
-      s.add_dependency(%q<jeweler>, [">= 0"])
+      s.add_dependency(%q<shoulda>, [">= 2.10.2"])
+      s.add_dependency(%q<mocha>, [">= 0.9.8"])
+      s.add_dependency(%q<fakefs>, [">= 0.2.1"])
+      s.add_dependency(%q<jeweler>, [">= 0.2.1"])
       s.add_dependency(%q<cmdparse>, [">= 0"])
       s.add_dependency(%q<nokogiri>, [">= 0"])
       s.add_dependency(%q<rubyzip>, [">= 0"])
     end
   else
-    s.add_dependency(%q<thoughtbot-shoulda>, [">= 0"])
-    s.add_dependency(%q<mocha>, [">= 0"])
-    s.add_dependency(%q<fakefs>, [">= 0"])
-    s.add_dependency(%q<jeweler>, [">= 0"])
+    s.add_dependency(%q<shoulda>, [">= 2.10.2"])
+    s.add_dependency(%q<mocha>, [">= 0.9.8"])
+    s.add_dependency(%q<fakefs>, [">= 0.2.1"])
+    s.add_dependency(%q<jeweler>, [">= 0.2.1"])
     s.add_dependency(%q<cmdparse>, [">= 0"])
     s.add_dependency(%q<nokogiri>, [">= 0"])
     s.add_dependency(%q<rubyzip>, [">= 0"])
