@@ -25,13 +25,11 @@ module Juicer
     include Juicer::Chainable
 
     def initialize(options = {})
-      @web_root = options[:web_root]
-      @web_root.sub!(%r{/?$}, "") if @web_root
+      @document_root = options[:web_root]
+      @document_root.sub!(%r{/?$}, "") if @document_root
       @type = options[:type] || :soft
       @hosts = (options[:hosts] || []).collect { |h| h.sub!(%r{/?$}, "") }
-      @contents = nil
-      @path_resolver = Juicer::Asset::PathResolver.new(:document_root => options[:web_root],
-                                                       :hosts => options[:hosts])
+      @contents = @base = nil
     end
 
     #
@@ -39,9 +37,7 @@ module Juicer
     #
     def save(file, output = nil)
       @contents = File.read(file)
-      @path_resolver = Juicer::Asset::PathResolver.new(:document_root => @web_root,
-                                                       :hosts => @hosts,
-                                                       :base => File.dirname(file))
+      self.base = File.dirname(file)
       used = []
 
       urls(file).each do |asset|
@@ -73,8 +69,22 @@ module Juicer
       @contents = File.read(file) unless @contents
 
       @contents.scan(/url\([\s"']*([^\)"'\s]*)[\s"']*\)/m).collect do |match|
-        @path_resolver.resolve(match.first)
+        path_resolver.resolve(match.first)
       end
+    end
+
+    protected
+    def base=(base)
+      @prev_base = @base
+      @base = base
+    end
+
+    def path_resolver
+      return @path_resolver if @path_resolver && @base == @prev_base
+
+      @path_resolver = Juicer::Asset::PathResolver.new(:document_root => @document_root,
+                                                       :hosts => @hosts,
+                                                       :base => @base)
     end
   end
 end
