@@ -127,10 +127,3 @@ module Juicer
     end
   end
 end
-
-# http://snippets.dzone.com/posts/show/3838
-#module Enumerable
-#  def duplicates
-#    inject({}) {|h,v| h[v]=h[v].to_i+1; h}.reject{|k,v| v==1}.keys
-#  end
-#end
