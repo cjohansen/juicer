@@ -17,7 +17,7 @@ begin
     gem.add_development_dependency "mocha", ">= 0.9.8"
     gem.add_development_dependency "fakefs", ">= 0.2.1"
     gem.add_development_dependency "jeweler", ">= 0.2.1"
-    gem.add_development_dependency "redgreen", ">= 1.2.2"
+    gem.add_development_dependency "redgreen", ">= 1.2.2" if RUBY_VERSION < "1.9"
     gem.add_dependency "cmdparse"
     gem.add_dependency "nokogiri"
     gem.add_dependency "rubyzip"
