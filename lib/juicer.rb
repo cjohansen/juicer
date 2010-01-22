@@ -51,20 +51,19 @@ module Juicer
   end
 
   # Utility method used to require all files ending in .rb that lie in the
-  # directory below this file that has the same name as the filename passed
-  # in. Optionally, a specific _directory_ name can be passed in such that
-  # the _filename_ does not have to be equivalent to the directory.
-  #
-  def self.require_all_libs_relative_to( fname, dir = nil )
-    dir ||= ::File.basename(fname, '.*')
-    search_me = ::File.expand_path(::File.join(::File.dirname(fname), dir, '**', '*.rb'))
+  # directory below this file.
+  def self.require_all_libs
+    dir  = File.dirname(File.expand_path(__FILE__))
+    glob = File.join(dir, "juicer", '**', '*.rb')
 
-    Dir.glob(search_me).sort.each { |rb| require rb }
+    # Unexpand paths (avoids requiring the same file twice)
+    paths = Dir.glob(glob).map { |path| path.sub("#{dir}/", '') }
+    paths.each { |rb| require rb }
   end
 
 end
 
-Juicer.require_all_libs_relative_to(__FILE__)
+Juicer.require_all_libs
 
 class FileNotFoundError < Exception
 end
