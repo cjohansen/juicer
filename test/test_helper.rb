@@ -5,6 +5,12 @@ require 'mocha'
 require 'open-uri'
 require 'juicer'
 
+begin
+  require 'turn'
+rescue LoadError => err
+  puts "Protip: Install turn gem for better test reports. #{err.message}"
+end
+
 if RUBY_VERSION < "1.9"
   require 'redgreen' if ENV['TM_DIRECTORY'].nil?
 end
