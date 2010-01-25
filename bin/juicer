@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 require "rubygems"
-dir = File.dirname(File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__)
-base = File.expand_path(File.join(dir, %w[.. lib juicer]))
-require base
-require File.join(base, "cli")
+require "juicer"
+require "juicer/cli"
 
 Juicer::Cli.run(ARGV)
