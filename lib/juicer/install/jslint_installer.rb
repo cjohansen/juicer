@@ -1,6 +1,7 @@
 require File.expand_path(File.join(File.dirname(__FILE__), %w[.. .. juicer])) unless defined?(Juicer)
 require File.expand_path(File.join(File.dirname(__FILE__), "base"))
 require "zip/zip"
+require "ftools"
 
 module Juicer
   module Install
