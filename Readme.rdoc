@@ -38,14 +38,14 @@ switch @depend, as this example shows:
   /**
    * My script file
    *
-   * @depend jquery-1.2.0.js
+   * @depend jquery-1.4.1.js
    */
   var myNS = {
       myObject = {}
   };
 
 Running <tt>juicer merge</tt> on this file will result in a minified file
-<tt>filename.min.js</tt> containing the file jquery-1.2.0.js (located in the
+<tt>filename.min.js</tt> containing the file jquery-1.4.1.js (located in the
 same directory) and the code above.
 
 You can use @import (CSS files) and @depend (JavaScript) recursively, effectively

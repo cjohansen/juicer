@@ -1,3 +1,31 @@
+== 1.0.0 / 2010-02-24
+* Make sure @import rules with url is removed when files are merged
+* Dependency resolver supports depending on directories
+* Constant refefined warnings fixed in installer module (Aaron Suggs)
+* Ruby 1.9 compatibility
+* Google Closure Compiler support for `juicer merge` (Pavel Valodzka)
+* Fix bug in `juicer list` for files with no dependencies (Daniel Stockman) 
+* Image embedder to embed images using data uris (Morgan Roderick)
+* YUI Compressor --arguments now works (Daniel Stockman)
+* Download Rhino over HTTP rather than FTP to avoid certain corporate
+  firewall restraints
+* Development improvements:
+  Use Jeweler to package gem
+  Less obtrusive Ruby core extensions (Pavel Valodzka)
+  Switched from Hpricot to Nokogiri
+  New AssetPath interface for resolving URLs in CSS files
+  Refactor web_root -> document_root
+  Tests are considerably sped up
+  Reorganized tests in unit/ directory
+  Use shoulda for tests
+  Use mocha in tests
+  Use FakeFS for certain file operations in tests
+  Bundling binaries needed to run tests
+* Refactored/moved dependency resolver classes. They now live in
+  Juicer::CssDependencyResolver and
+  Juicer::JavaScriptDependencyResolver
+  Dependency resolvers include Enumerable
+
 == 0.2.6 / 2009-07-20
 * New installation paths for YUI Compressor
   Patch by http://github.com/craveytrain
