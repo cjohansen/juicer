@@ -79,6 +79,7 @@ module Juicer
     # argument.
     #
     def self.path(file, type = :soft, parameter = DEFAULT_PARAMETER)
+      return file if file =~ /data:.*;base64/
       file = self.clean(file, parameter)
       filename = file.split("?").first
       raise ArgumentError.new("#{file} could not be found") unless File.exists?(filename)
