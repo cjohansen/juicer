@@ -1,7 +1,8 @@
 == 1.0.1 / 2010-03-03
 * Don't crash when trying to cache bust non-existent files, simply
   skip them
-* Don't attempt to cache bust data urls
+* Don't attempt to cache bust data urls (contributed by
+  http://github.com/psyho/juicer)
 
 == 1.0.0 / 2010-02-24
 * Make sure @import rules with url is removed when files are merged

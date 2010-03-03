@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{juicer}
-  s.version = "0.9.9"
+  s.version = "1.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christian Johansen"]
-  s.date = %q{2010-01-22}
+  s.date = %q{2010-03-03}
   s.default_executable = %q{juicer}
   s.description = %q{Resolve dependencies, merge and minify CSS and JavaScript files with Juicer - the command line tool for frontend engineers}
   s.email = %q{christian@cjohansen.no}
@@ -54,7 +54,6 @@ Gem::Specification.new do |s|
      "lib/juicer/minifyer/closure_compiler.rb",
      "lib/juicer/minifyer/java_base.rb",
      "lib/juicer/minifyer/yui_compressor.rb",
-     "test/bin/compiler.jar",
      "test/bin/jslint-1.0.js",
      "test/bin/jslint.js",
      "test/bin/rhino1_7R1.zip",
@@ -131,32 +130,32 @@ Happy juicing!
   s.summary = %q{Command line tool for CSS and JavaScript developers}
   s.test_files = [
     "test/test_helper.rb",
-     "test/unit/juicer/asset/path_resolver_test.rb",
-     "test/unit/juicer/asset/path_test.rb",
-     "test/unit/juicer/cache_buster_test.rb",
-     "test/unit/juicer/chainable_test.rb",
-     "test/unit/juicer/command/install_test.rb",
-     "test/unit/juicer/command/list_test.rb",
-     "test/unit/juicer/command/merge_test.rb",
-     "test/unit/juicer/command/util_test.rb",
-     "test/unit/juicer/command/verify_test.rb",
-     "test/unit/juicer/css_cache_buster_test.rb",
-     "test/unit/juicer/datafy_test.rb",
      "test/unit/juicer/dependency_resolver/css_dependency_resolver_test.rb",
      "test/unit/juicer/dependency_resolver/javascript_dependency_resolver_test.rb",
-     "test/unit/juicer/ext/string_test.rb",
-     "test/unit/juicer/ext/symbol_test.rb",
-     "test/unit/juicer/image_embed_test.rb",
-     "test/unit/juicer/install/installer_base_test.rb",
-     "test/unit/juicer/install/jslint_installer_test.rb",
-     "test/unit/juicer/install/rhino_installer_test.rb",
-     "test/unit/juicer/install/yui_compressor_test.rb",
-     "test/unit/juicer/jslint_test.rb",
-     "test/unit/juicer/merger/base_test.rb",
-     "test/unit/juicer/merger/javascript_merger_test.rb",
-     "test/unit/juicer/merger/stylesheet_merger_test.rb",
      "test/unit/juicer/minifyer/closure_compressor_test.rb",
      "test/unit/juicer/minifyer/yui_compressor_test.rb",
+     "test/unit/juicer/cache_buster_test.rb",
+     "test/unit/juicer/install/jslint_installer_test.rb",
+     "test/unit/juicer/install/yui_compressor_test.rb",
+     "test/unit/juicer/install/installer_base_test.rb",
+     "test/unit/juicer/install/rhino_installer_test.rb",
+     "test/unit/juicer/ext/string_test.rb",
+     "test/unit/juicer/ext/symbol_test.rb",
+     "test/unit/juicer/merger/stylesheet_merger_test.rb",
+     "test/unit/juicer/merger/base_test.rb",
+     "test/unit/juicer/merger/javascript_merger_test.rb",
+     "test/unit/juicer/jslint_test.rb",
+     "test/unit/juicer/image_embed_test.rb",
+     "test/unit/juicer/asset/path_test.rb",
+     "test/unit/juicer/asset/path_resolver_test.rb",
+     "test/unit/juicer/chainable_test.rb",
+     "test/unit/juicer/css_cache_buster_test.rb",
+     "test/unit/juicer/datafy_test.rb",
+     "test/unit/juicer/command/util_test.rb",
+     "test/unit/juicer/command/install_test.rb",
+     "test/unit/juicer/command/merge_test.rb",
+     "test/unit/juicer/command/list_test.rb",
+     "test/unit/juicer/command/verify_test.rb",
      "test/unit/juicer_test.rb"
   ]
 
