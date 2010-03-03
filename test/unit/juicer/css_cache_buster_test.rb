@@ -11,61 +11,83 @@ class TestCssCacheBuster < Test::Unit::TestCase
     Juicer::Test::FileSetup.new.create
   end
 
-  def test_find_urls
-    urls = @buster.urls(path("css/test.css"))
-    assert_equal 3, urls.length
-    assert_equal "../a1.css../images/1.png2.gif", urls.collect { |a| a.path }.sort.join.gsub(path("/"), "")
-  end
-
-  def test_image_references_should_be_updated
-    file = path("css/test.css")
-    buster = Juicer::CssCacheBuster.new
-    buster.save file
-
-    File.read(file).scan(/url\(([^\)]*)\)/m).each do |path|
-      assert_match(/[^\?]*\?jcb=\d+/, path.first)
+  context "finding urls" do
+    should "find all urls" do
+      urls = @buster.urls(path("css/test.css"))
+      assert_equal 3, urls.length
+      assert_equal "../a1.css../images/1.png2.gif", urls.collect { |a| a.path }.sort.join.gsub(path("/"), "")
     end
   end
 
-  def test_absolute_path_without_document_root_should_fail
-    file = path("css/test2.css")
-    buster = Juicer::CssCacheBuster.new
-
-    assert_raise FileNotFoundError do
+  context "image references" do
+    should "update image urls" do
+      file = path("css/test.css")
+      buster = Juicer::CssCacheBuster.new
       buster.save file
+
+      File.read(file).scan(/url\(([^\)]*)\)/m).each do |path|
+        assert_match(/[^\?]*\?jcb=\d+/, path.first)
+      end
     end
   end
 
-  def test_absolute_path_should_be_resolved_when_document_root_known
-    file = path("css/test.css")
-    buster = Juicer::CssCacheBuster.new :document_root => path("")
+  context "absolute paths" do
+    # should "fail without document root" do
+    #   file = path("css/test2.css")
+    #   buster = Juicer::CssCacheBuster.new
 
-    assert_nothing_raised do
-      buster.save file
-    end
+    #   assert_raise FileNotFoundError do
+    #     buster.save file
+    #   end
+    # end
 
-    File.read(file).scan(/url\(([^\)]*)\)/m).each do |path|
-      assert_match(/[^\?]*\?jcb=\d+/, path.first)
+    should "resolve with document root" do
+      file = path("css/test.css")
+      buster = Juicer::CssCacheBuster.new :document_root => path("")
+
+      assert_nothing_raised do
+        buster.save file
+      end
+
+      File.read(file).scan(/url\(([^\)]*)\)/m).each do |path|
+        assert_match(/[^\?]*\?jcb=\d+/, path.first)
+      end
     end
   end
 
-  def test_urls_should_only_have_mtime_appended_once
-    File.open(path("a2.css"), "w") { |f| f.puts "" }
-    file = path("path_test2.css")
-    output = path("path_test3.css")
-    buster = Juicer::CssCacheBuster.new :document_root => path("")
-    buster.save file, output
+  context "cache busters" do
+    should "add mtime to urls" do
+      File.open(path("a2.css"), "w") { |f| f.puts "" }
+      file = path("path_test2.css")
+      output = path("path_test3.css")
+      buster = Juicer::CssCacheBuster.new :document_root => path("")
+      buster.save file, output
 
-    buster.urls(output).each { |url| assert url !~ /(jcb=\d+).*(jcb=\d+)/, url }
+      buster.urls(output).each { |url| assert url !~ /(jcb=\d+).*(jcb=\d+)/, url }
+    end
   end
 
-  def test_type_hard_should_produce_hard_buster_urls
-    File.open(path("a2.css"), "w") { |f| f.puts "" }
-    file = path("path_test2.css")
-    output = path("path_test3.css")
-    buster = Juicer::CssCacheBuster.new :document_root => path(""), :type => :hard
-    buster.save file, output
+  context "hard cache busters" do
+    should "should alter file name" do
+      File.open(path("a2.css"), "w") { |f| f.puts "" }
+      file = path("path_test2.css")
+      output = path("path_test3.css")
+      buster = Juicer::CssCacheBuster.new :document_root => path(""), :type => :hard
+      buster.save file, output
 
-    buster.urls(output).each { |asset| assert_match /-jcb\d+\.[a-z]{3}$/, asset.path }
+      buster.urls(output).each { |asset| assert_match /-jcb\d+\.[a-z]{3}$/, asset.path }
+    end
+  end
+
+  context "non-existent urls" do
+    should "not raise" do
+      File.open(path("a2.css"), "w") { |f| f.puts "a { background: url(i/dont/exist.fck); }" }
+      file = path("a2.css")
+      buster = Juicer::CssCacheBuster.new :document_root => path("")
+
+      assert_nothing_raised do
+        buster.save file        
+      end
+    end
   end
 end

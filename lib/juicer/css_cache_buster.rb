@@ -42,15 +42,15 @@ module Juicer
 
       urls(file).each do |asset|
         begin
-          next if used.include?(asset.path)          
+          next if used.include?(asset.path)
           @contents.gsub!(asset.path, asset.path(:cache_buster_type => @type))
         rescue Errno::ENOENT
           puts "Unable to locate file #{asset.path}, skipping cache buster"
         rescue ArgumentError => e
           if e.message =~ /No document root/
-            raise FileNotFoundError.new("Unable to resolve path #{asset.path} without :document_root option")
+            puts "Unable to resolve path #{asset.path} without :document_root option"
           else
-            raise e
+            puts "Unable to locate #{asset.path}, skipping cache buster"
           end
         end
       end
