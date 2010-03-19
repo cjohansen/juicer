@@ -44,6 +44,7 @@ module Juicer
         begin
           next if used.include?(asset.path)
           @contents.gsub!(asset.path, asset.path(:cache_buster_type => @type))
+          used.push(asset.path)
         rescue Errno::ENOENT
           puts "Unable to locate file #{asset.path}, skipping cache buster"
         rescue ArgumentError => e

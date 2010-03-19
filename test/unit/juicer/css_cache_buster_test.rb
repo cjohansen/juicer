@@ -14,8 +14,8 @@ class TestCssCacheBuster < Test::Unit::TestCase
   context "finding urls" do
     should "find all urls" do
       urls = @buster.urls(path("css/test.css"))
-      assert_equal 3, urls.length
-      assert_equal "../a1.css../images/1.png2.gif", urls.collect { |a| a.path }.sort.join.gsub(path("/"), "")
+      assert_equal 4, urls.length
+      assert_equal "../a1.css../images/1.png2.gif2.gif", urls.collect { |a| a.path }.sort.join.gsub(path("/"), "")
     end
   end
 
@@ -28,6 +28,14 @@ class TestCssCacheBuster < Test::Unit::TestCase
       File.read(file).scan(/url\(([^\)]*)\)/m).each do |path|
         assert_match(/[^\?]*\?jcb=\d+/, path.first)
       end
+    end
+
+    should "not add multiple cache busters" do
+      file = path("css/test.css")
+      buster = Juicer::CssCacheBuster.new
+      buster.save file
+
+      assert_no_match /2\.gif\?jcb=\d+\?jcb=/, File.read(file)
     end
   end
 

@@ -117,6 +117,10 @@ h1 {
 h2 {
    background: url(2.gif) no-repeat;
 }
+
+p {
+   background: url(2.gif) no-repeat;
+}
         CSS
 
         mkfile(css_dir, 'test.css', css)

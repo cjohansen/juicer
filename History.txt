@@ -1,3 +1,6 @@
+== 1.0.2 / 2010-03-19
+* Don't add multiple cache busters
+
 == 1.0.1 / 2010-03-03
 * Don't crash when trying to cache bust non-existent files, simply
   skip them
