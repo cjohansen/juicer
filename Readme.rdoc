@@ -7,6 +7,7 @@ Christian Johansen (http://www.cjohansen.no) and contributors:
 * Pavel Valodzka (http://github.com/valodzka)
 * Daniel Stockman (http://evocateur.org/)
 * Aaron Suggs (http://ktheory.com)
+* Olle Jonsson (http://ollehost.dk/blog/)
 
 == DESCRIPTION:
 

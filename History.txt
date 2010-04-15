@@ -1,3 +1,8 @@
+== 1.0.3 / 2010-04-15
+* Update YUI Compressor installer to find the download link in YUI's updated markup
+  Pacthed by Olle Jonsson (http://ollehost.dk/blog/)
+* Make stylesheet merger properly handle quoted URLs, fixes GH issue 20
+
 == 1.0.2 / 2010-03-19
 * Don't add multiple cache busters
 
