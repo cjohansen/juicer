@@ -58,8 +58,9 @@ module Juicer
 
         content.scan(/url\([\s"']*([^\)"'\s]*)[\s"']*\)/m).uniq.collect do |url|
           url = url.first
+          puts "URL: #{url}"
           path = resolve_path(url, dir)
-          content.gsub!(/\(#{url}\)/m, "(#{path})") unless path == url
+          content.gsub!(/\([\s"']*#{url}[\s"']*\)/m, "(#{path})") unless path == url
         end
 
         content

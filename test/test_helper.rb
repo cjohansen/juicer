@@ -94,6 +94,7 @@ module Juicer
         mkfile(@dir, 'b.js', "/**\n * @depends a.js\n */\n\n/* Dette er b.css */")
         mkfile(@dir, 'a1.css', "@import\t'b1.css';\n@import 'c1.css';\nbody {\n    width: 800px;\n}\n")
         mkfile(@dir, 'b1.css', "@import url('d1.css');\n\nhtml {\n    background: red;\n}\n")
+        mkfile(@dir, 'b2.css', "@import url(\"d1.css\");\n\nhtml {\n    background: red;\n}\n")
         mkfile(@dir, 'c1.css', "h1 {\n    font-size: 12px;\n}\n")
         mkfile(@dir, 'd1.css', "h2 {\n    font-size: 10px;\n}\n")
         mkfile(@dir, 'ok.js', "function hey() {\n    return \"Hey\";\n}\n")
@@ -111,11 +112,11 @@ body {
 }
 
 h1 {
-    background: url(../a1.css) 0 0 no-repeat;
+    background: url('../a1.css') 0 0 no-repeat;
 }
 
 h2 {
-   background: url(2.gif) no-repeat;
+   background: url("2.gif") no-repeat;
 }
 
 p {

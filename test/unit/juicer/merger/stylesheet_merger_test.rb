@@ -15,11 +15,11 @@ class TestStylesheetMerger < Test::Unit::TestCase
     Dir.chdir(@cwd)
   end
 
- def test_init
-   Juicer::Merger::StylesheetMerger.publicize_methods do
-     assert_equal Juicer::CssDependencyResolver, @file_merger.dependency_resolver.class
-   end
- end
+  def test_init
+    Juicer::Merger::StylesheetMerger.publicize_methods do
+      assert_equal Juicer::CssDependencyResolver, @file_merger.dependency_resolver.class
+    end
+  end
 
   def test_merge
     Juicer::Merger::StylesheetMerger.publicize_methods do
@@ -39,10 +39,11 @@ class TestStylesheetMerger < Test::Unit::TestCase
     assert_equal 2, @file_merger.files.length
   end
 
-  def test_save
-    a_css = path('a.css')
-    b_css = path('b.css')
-    merged = <<EOF
+  context "saving files" do
+    should "merge files and strip @includes" do
+      a_css = path('a.css')
+      b_css = path('b.css')
+      merged = <<EOF
 /* Dette er b.css */
 
 
@@ -51,24 +52,49 @@ class TestStylesheetMerger < Test::Unit::TestCase
 
 EOF
 
-    @file_merger << a_css
-    ios = StringIO.new
-    @file_merger.save(ios)
-    assert_equal merged, ios.string
+      @file_merger << a_css
+      ios = StringIO.new
+      @file_merger.save(ios)
+      assert_equal merged, ios.string
 
-    output_file = path('test_out.css')
-    @file_merger.save(output_file)
+      output_file = path('test_out.css')
+      @file_merger.save(output_file)
 
-    assert_equal merged, IO.read(output_file)
+      assert_equal merged, IO.read(output_file)
+    end
+
+    should "strip @includes for quoted urls" do
+      css = path('b2.css')
+
+      merged = <<EOF
+h2 {
+    font-size: 10px;
+}
+
+
+
+html {
+    background: red;
+}
+
+EOF
+
+      @file_merger << css
+      ios = StringIO.new
+      @file_merger.save(ios)
+      assert_equal merged, ios.string
+    end
   end
 
-  def test_included_files_should_have_referenced_relative_urls_rereferenced
-    @file_merger << path("path_test.css")
-    ios = StringIO.new
-    @file_merger.save(ios)
-    files = ios.string.scan(/url\(([^\)]*)\)/).collect { |f| f.first }.uniq.sort
+  context "resolving paths" do
+    should "re-reference relative paths" do
+      @file_merger << path("path_test.css")
+      ios = StringIO.new
+      @file_merger.save(ios)
+      files = ios.string.scan(/url\(([^\)]*)\)/).collect { |f| f.first }.uniq.sort
 
-    assert_equal "a1.css::css/2.gif::images/1.png", files.join("::")
+      assert_equal "a1.css::css/2.gif::images/1.png", files.join("::")
+    end
   end
 
   def test_resolve_path_should_leave_absolute_urls
