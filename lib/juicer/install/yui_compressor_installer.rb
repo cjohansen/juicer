@@ -60,8 +60,9 @@ module Juicer
       def latest
         return @latest if @latest
         webpage = Nokogiri::HTML(open(@website))
-        @latest = (webpage / "//h2[@id='yuicompressor']/../../../..//a")[0].get_attribute("href").match(/(\d\.\d\.\d)/)[1]
+        @latest = (webpage / "h3#yuicompressor + ul li a:last").text.match(/(\d\.\d\.\d)/)[1]
       end
+
     end
   end
 end

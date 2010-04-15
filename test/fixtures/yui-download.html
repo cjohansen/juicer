@@ -8,22 +8,17 @@
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.0/build/reset-fonts-grids/reset-fonts-grids.css">
-<link rel="stylesheet" type="text/css" href="/assets/skin/yuilib-11.30.2009.css">
-<script type="text/javascript" src="http://yui.yahooapis.com/combo?2.8.0r4/build/yuiloader-dom-event/yuiloader-dom-event.js&3.0.0/build/yui/yui-min.js&3.0.0/build/loader/loader-min.js&3.0.0/build/oop/oop-min.js&3.0.0/build/dom/dom-min.js&3.0.0/build/event-custom/event-custom-base-min.js&3.0.0/build/event/event-base-min.js&3.0.0/build/pluginhost/pluginhost-min.js&3.0.0/build/node/node-min.js&3.0.0/build/event/event-delegate-min.js"></script>
+<link rel="stylesheet" type="text/css" href="/assets/skin/yuilib-04.02.2010.css">
+<script type="text/javascript" src="http://yui.yahooapis.com/combo?2.8.0r4/build/yuiloader-dom-event/yuiloader-dom-event.js&3.1.0/build/yui/yui-min.js&3.1.0/build/loader/loader-min.js&3.1.0/build/oop/oop-min.js&3.1.0/build/dom/dom-min.js&3.1.0/build/event-custom/event-custom-base-min.js&3.1.0/build/event/event-base-min.js&3.1.0/build/pluginhost/pluginhost-min.js&3.1.0/build/node/node-min.js&3.1.0/build/event/event-delegate-min.js"></script>
 <script>
 var YUIConfig = {
     baseyui2: 'http://yui.yahooapis.com/2.8.0r4/build/',
-    base: 'http://yui.yahooapis.com/3.0.0/build/',
-    debug: false,
+    base: 'http://yui.yahooapis.com/3.1.0/build/',
+    debug: false//,
     //filter: 'DEBUG',
-    combine: true
+    //combine: false
 };
 </script>
-<style>
-#downloads tr.hide {
-    display: none;
-}
-</style>
 </head>
 <body>
 <div id="wrap">
@@ -48,23 +43,18 @@ var YUIConfig = {
                 <li><a href="/" title="Home">Home</a></li>
                 <li><a href="/gallery" title="Gallery">Gallery</a></li>
                 <li><a href="/forum" title="Forums">Forums</a></li>            
-				<li><a href="/projects/yui2/wiki">YUI 2.x</a></li>
-				<li><a href="/projects/yui3/wiki">YUI 3.x</a></li>
-				<li><a href="/projects/yuicompressor/wiki">YUICompressor</a></li>
-				<li><a href="/projects/yuidoc/wiki">YUIDoc</a></li>
+				<li><a href="/projects/yui2/">YUI 2</a></li>
+				<li><a href="/projects/yui3/">YUI 3</a></li>
+				<li><a href="/projects/yuicompressor/">YUI Compressor</a></li>
+				<li><a href="/projects/yuidoc/">YUI Doc</a></li>
                 <li><a href="/projects" class="more">More</a></li>
 			</ul>
 
 			<div id="sections" class="clearfix">
 				<ul class="clearfix">
-		    		    
-    <!-- <div id="subnav" class="navtabs clearfix">
-        <ul> -->
-            		    <li><a href="/forum/ucp.php?mode=register">Register</a></li>
+		    		                		    <li><a href="/forum/ucp.php?mode=register">Register</a></li>
 		    <li><a href="/forum/ucp.php?mode=login&redirect=/downloads/">Login</a></li>
-                    <!-- </ul>
-    </div> -->
-			    </ul>
+            			    </ul>
 			</div>
 		</div>
     <div id="bd">
@@ -74,218 +64,71 @@ var YUIConfig = {
 
 
 
-
-<h1><a href="http://feeds.feedburner.com/YuiDownloads"><img src="/assets/rss.png"></a> YUI Downloads</h1>
+<h1>All YUI Downloads</h1>
 
 <div id="downloads">
-    <table id="yui2_downloads">
-		<thead>
-	        <tr class="odd">
-	            <th class="release"><h2 id="yui2">YUI 2.x</h2></th>
-	            <th class="date">Date</th>
-	            <th class="md5">MD5</th>
-	        </tr>
-		</thead>
-		<tbody>
-        <tr class="even">
-  <td><a href="yui2/yui_2.8.0r4.zip" title="Version 2.8.0r4">Version 2.8.0r4</a></td>
-  <td>09/14/2009</td>
-  <td><em class="md5">9528eeab1bc4291eea329bccc9caa5de</em></td>
-</tr>
-<tr class="odd">
-  <td><a href="yui2/yui_2.7.0b.zip" title="Version 2.7.0b">Version 2.7.0b</a></td>
-  <td>02/19/2009</td>
-  <td><em class="md5">90778a161ce9108a23a590e5198b8116</em></td>
-</tr>
-<tr class="even">
-  <td><a href="yui2/yui_2.6.0.zip" title="Version 2.6.0">Version 2.6.0</a></td>
-  <td>10/01/2008</td>
-  <td><em class="md5">41bed4b882c9148cebff5dd1a0dd8727</em></td>
-</tr>
-<tr class="odd hide">
-  <td><a href="yui2/yui_2.5.2.zip" title="Version 2.5.2">Version 2.5.2</a></td>
-  <td>05/28/2008</td>
-  <td><em class="md5">eaadfcbcb651c50092bb679266aa3c20</em></td>
-</tr>
-<tr class="even hide">
-  <td><a href="yui2/yui_2.5.1.zip" title="Version 2.5.1">Version 2.5.1</a></td>
-  <td>03/19/2008</td>
-  <td><em class="md5">7416914904daa7d953583483db67609c</em></td>
-</tr>
-<tr class="odd hide">
-  <td><a href="yui2/yui_2.5.0.zip" title="Version 2.5.0">Version 2.5.0</a></td>
-  <td>02/20/2008</td>
-  <td><em class="md5">85d26357f8413de437318a9e2333dfce</em></td>
-</tr>
-<tr class="even hide">
-  <td><a href="yui2/yui_2.4.1.zip" title="Version 2.4.1">Version 2.4.1</a></td>
-  <td>12/19/2007</td>
-  <td><em class="md5">2a4b302cd94a6612b2799717eecdbfdb</em></td>
-</tr>
-<tr class="odd hide">
-  <td><a href="yui2/yui_2.4.0.zip" title="Version 2.4.0">Version 2.4.0</a></td>
-  <td>12/04/2007</td>
-  <td><em class="md5">749ff89f77b4cf9e5ec330e60b507776</em></td>
-</tr>
-<tr class="even hide">
-  <td><a href="yui2/yui_2.3.1.zip" title="Version 2.3.1">Version 2.3.1</a></td>
-  <td>09/19/2007</td>
-  <td><em class="md5">172ad5e3fa4c3e9424b29fb2fd854fb6</em></td>
-</tr>
-<tr class="odd hide">
-  <td><a href="yui2/yui_2.3.0.zip" title="Version 2.3.0">Version 2.3.0</a></td>
-  <td>07/30/2007</td>
-  <td><em class="md5">d085f77a00c4b4e30c0c748dd4680f60</em></td>
-</tr>
-<tr class="even hide">
-  <td><a href="yui2/yui_2.2.2.zip" title="Version 2.2.2">Version 2.2.2</a></td>
-  <td>04/18/2007</td>
-  <td><em class="md5">79483d2f16f597d46f92257744b46406</em></td>
-</tr>
-<tr class="odd hide">
-  <td><a href="yui2/yui_2.2.0a.zip" title="Version 2.2.0a">Version 2.2.0a</a></td>
-  <td>02/22/2007</td>
-  <td><em class="md5">a4ebf4e3c8413079edd0abaca99d8cb3</em></td>
-</tr>
-<tr class="even hide">
-  <td><a href="yui2/yui_0.12.2.zip" title="Version 0.12.2">Version 0.12.2</a></td>
-  <td>01/08/2007</td>
-  <td><em class="md5">312c580eb5368b5cae11cba6c1d325bb</em></td>
-</tr>
-<tr class="odd hide">
-  <td><a href="yui2/yui_0.11.4.zip" title="Version 0.11.4">Version 0.11.4</a></td>
-  <td>09/26/2006</td>
-  <td><em class="md5">8c8e7a3d9c770b82d57546d5fb60ef34</em></td>
-</tr>
-<tr class="even hide">
-  <td><a href="yui2/yui_0.10.0.zip" title="Version 0.10.0">Version 0.10.0</a></td>
-  <td>06/27/2006</td>
-  <td><em class="md5">4a631c55506e0814b174af3e81f8c94b</em></td>
-</tr>
-<tr class="show_more_yui2"><td colspan="3"><a href="?show=yui2" class="show_hidden" id="yui2_show_hidden">[Show older files]</a></td></tr>		</tbody>
-	</table>
-	<table>
-		<thead>
-	        <tr class="odd">
-	            <th class="release"><h2 id="yui3">YUI 3.x</h2></th>
-	            <th class="date">Date</th>
-	            <th class="md5">MD5</th>
-	        </tr>
-		</thead>
-		<tbody>
-			<tr class="even">
-	            <td><a href="yui3/yui_3.0.0.zip">3.0.0</a></td><td>09/29/2009</td><td><em class="md5">da4b9cd0e92204a2b7c27a3a3686cec5</em></td>
-	        </tr>
-			<tr class="odd">
-	            <td><a href="yui3/yui_3.0.0b1.zip">3.0.0 Beta 1</a></td><td>06/24/2009</td><td><em class="md5">36921bfc07adce63dd3c9cb62dceb4fd</em></td>
-	        </tr>
-			<tr class="even">
-	            <td><a href="yui3/yui_3.0.0pr2.zip">Preview Release 2</a></td><td>12/09/2008</td><td><em class="md5">9e5d0fe289454ca11586d904142530d1</em></td>
-	        </tr>
-	        <tr class="odd">
-	            <td><a href="yui3/yui_3.0.0pr1.zip">Preview Release 1</a></td><td>08/13/2008</td><td><em class="md5">a7f6c1237d89ca7d85afaf0978e55bfb</em></td>
-	        </tr>
-		</tbody>
-	</table>
-	<table>
-		<thead>
-	        <tr class="odd">
-	            <th class="release"><h2 id="yuidoc">YUI Doc</h2></th>
-	            <th class="date">Date</th>
-	            <th class="md5">MD5</th>
-	        </tr>
-		</thead>
-		<tbody>
-			<tr class="even">
-	            <td><a href="yuidoc/yuidoc_1.0.0b1.zip">1.0.0b1</a></td><td>12/08/2008</td><td><em class="md5">cd5545d2dec8f7afe3d18e793538162c</em></td>
-	        </tr>
-		</tbody>
-	</table>
-    <table>
-	<thead>
-            <tr class="odd">
-	        <th class="release"><h2 id="builder">YUI Builder</h2></th>
-	        <th class="date">Date</th>
-	        <th class="md5">MD5</th>
-	    </tr>
-        </thead>
-        <tbody>
-	    <tr class="even">
-                <td><a href="builder/builder_1.0.0b1.zip">1.0.0b1</a></td><td>03/10/2009</td><td><em class="md5">aa21f55cffd83ea2f02f2c0fb87265ae</em></td>
-            </tr>
-        </tbody>
-    </table>
-    <table>
-	<thead>
-            <tr class="odd">
-	        <th class="release"><h2 id="yuicompressor">YUI Compressor</h2></th>
-	        <th class="date">Date</th>
-	        <th class="md5">MD5</th>
-	    </tr>
-        </thead>
-        <tbody>
-	    <tr class="even">
-                <td><a href="yuicompressor/yuicompressor-2.4.2.zip">2.4.2</a></td><td>06/10/2009</td><td><em class="md5">2a526a9aedfe2affceed1e1c3f9c0579</em></td>
-            </tr>
-        </tbody>
-    </table>
-    <table>
-	<thead>
-            <tr class="odd">
-	        <th class="release"><h2 id="phploader">YUI PHP Loader</h2></th>
-	        <th class="date">Date</th>
-	        <th class="md5">MD5</th>
-	    </tr>
-        </thead>
-        <tbody>
-	    <tr class="even">
-            <td><a href="phploader/yuiphploader-1.0.0b2.zip">1.0.0b2</a></td><td>12/02/2009</td><td><em class="md5">963292134958e2a60aa5473cb148db3b</em></td>
-        </tr>
-	    <tr class="odd">
-            <td><a href="phploader/yuiphploader-1.0.0b1.zip">1.0.0b1</a></td><td>09/09/2009</td><td><em class="md5">f141af403d076abaf98be362658a61e1</em></td>
-        </tr>
-        </tbody>
-    </table>
+<ul>
+<li><h3 id="yui3">YUI 3</h3>
+<ul>
+<li><a href="/downloads/download.php?file=9c36ac648283d656c4a4bab4991e14a6" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=9c36ac648283d656c4a4bab4991e14a6" title="3.1.0 - 03/31/2010 - 9c36ac648283d656c4a4bab4991e14a6">3.1.0</a><em>03/31/2010</em><strong title="9c36ac648283d656c4a4bab4991e14a6">MD5: 9c36ac648</strong></li><li><a href="/downloads/download.php?file=da4b9cd0e92204a2b7c27a3a3686cec5" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=da4b9cd0e92204a2b7c27a3a3686cec5" title="3.0.0 - 09/29/2009 - da4b9cd0e92204a2b7c27a3a3686cec5">3.0.0</a><em>09/29/2009</em><strong title="da4b9cd0e92204a2b7c27a3a3686cec5">MD5: da4b9cd0e</strong></li><li class="hidden"><a href="/downloads/download.php?file=36921bfc07adce63dd3c9cb62dceb4fd" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=36921bfc07adce63dd3c9cb62dceb4fd" title="3.0.0 Beta1 - 06/24/2009 - 36921bfc07adce63dd3c9cb62dceb4fd">3.0.0 Beta1</a><em>06/24/2009</em><strong title="36921bfc07adce63dd3c9cb62dceb4fd">MD5: 36921bfc0</strong></li><li class="hidden"><a href="/downloads/download.php?file=9e5d0fe289454ca11586d904142530d1" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=9e5d0fe289454ca11586d904142530d1" title="3.0.0 PR2 - 12/09/2008 - 9e5d0fe289454ca11586d904142530d1">3.0.0 PR2</a><em>12/09/2008</em><strong title="9e5d0fe289454ca11586d904142530d1">MD5: 9e5d0fe28</strong></li><li class="hidden"><a href="/downloads/download.php?file=a7f6c1237d89ca7d85afaf0978e55bfb" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=a7f6c1237d89ca7d85afaf0978e55bfb" title="3.0.0 PR1 - 08/13/2008 - a7f6c1237d89ca7d85afaf0978e55bfb">3.0.0 PR1</a><em>08/13/2008</em><strong title="a7f6c1237d89ca7d85afaf0978e55bfb">MD5: a7f6c1237</strong></li><li><a href="?show=yui3" class="show-more" title="Show more download files.">Show more files.</a></li></ul></li>
+<li><h3 id="yui2">YUI 2</h3>
+<ul>
+<li><a href="/downloads/download.php?file=9528eeab1bc4291eea329bccc9caa5de" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=9528eeab1bc4291eea329bccc9caa5de" title="2.8.0 - 09/14/2009 - 9528eeab1bc4291eea329bccc9caa5de">2.8.0</a><em>09/14/2009</em><strong title="9528eeab1bc4291eea329bccc9caa5de">MD5: 9528eeab1</strong></li><li><a href="/downloads/download.php?file=90778a161ce9108a23a590e5198b8116" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=90778a161ce9108a23a590e5198b8116" title="2.7.0 - 02/18/2009 - 90778a161ce9108a23a590e5198b8116">2.7.0</a><em>02/18/2009</em><strong title="90778a161ce9108a23a590e5198b8116">MD5: 90778a161</strong></li><li class="hidden"><a href="/downloads/download.php?file=41bed4b882c9148cebff5dd1a0dd8727" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=41bed4b882c9148cebff5dd1a0dd8727" title="2.6.0 - 10/01/2008 - 41bed4b882c9148cebff5dd1a0dd8727">2.6.0</a><em>10/01/2008</em><strong title="41bed4b882c9148cebff5dd1a0dd8727">MD5: 41bed4b88</strong></li><li class="hidden"><a href="/downloads/download.php?file=eaadfcbcb651c50092bb679266aa3c20" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=eaadfcbcb651c50092bb679266aa3c20" title="2.5.2 - 05/28/2008 - eaadfcbcb651c50092bb679266aa3c20">2.5.2</a><em>05/28/2008</em><strong title="eaadfcbcb651c50092bb679266aa3c20">MD5: eaadfcbcb</strong></li><li class="hidden"><a href="/downloads/download.php?file=7416914904daa7d953583483db67609c" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=7416914904daa7d953583483db67609c" title="2.5.1 - 03/19/2008 - 7416914904daa7d953583483db67609c">2.5.1</a><em>03/19/2008</em><strong title="7416914904daa7d953583483db67609c">MD5: 741691490</strong></li><li class="hidden"><a href="/downloads/download.php?file=85d26357f8413de437318a9e2333dfce" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=85d26357f8413de437318a9e2333dfce" title="2.5.0 - 02/20/2008 - 85d26357f8413de437318a9e2333dfce">2.5.0</a><em>02/20/2008</em><strong title="85d26357f8413de437318a9e2333dfce">MD5: 85d26357f</strong></li><li class="hidden"><a href="/downloads/download.php?file=2a4b302cd94a6612b2799717eecdbfdb" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=2a4b302cd94a6612b2799717eecdbfdb" title="2.4.1 - 12/19/2007 - 2a4b302cd94a6612b2799717eecdbfdb">2.4.1</a><em>12/19/2007</em><strong title="2a4b302cd94a6612b2799717eecdbfdb">MD5: 2a4b302cd</strong></li><li class="hidden"><a href="/downloads/download.php?file=749ff89f77b4cf9e5ec330e60b507776" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=749ff89f77b4cf9e5ec330e60b507776" title="2.4.0 - 12/04/2007 - 749ff89f77b4cf9e5ec330e60b507776">2.4.0</a><em>12/04/2007</em><strong title="749ff89f77b4cf9e5ec330e60b507776">MD5: 749ff89f7</strong></li><li class="hidden"><a href="/downloads/download.php?file=172ad5e3fa4c3e9424b29fb2fd854fb6" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=172ad5e3fa4c3e9424b29fb2fd854fb6" title="2.3.1 - 09/19/2007 - 172ad5e3fa4c3e9424b29fb2fd854fb6">2.3.1</a><em>09/19/2007</em><strong title="172ad5e3fa4c3e9424b29fb2fd854fb6">MD5: 172ad5e3f</strong></li><li class="hidden"><a href="/downloads/download.php?file=d085f77a00c4b4e30c0c748dd4680f60" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=d085f77a00c4b4e30c0c748dd4680f60" title="2.3.0 - 07/30/2007 - d085f77a00c4b4e30c0c748dd4680f60">2.3.0</a><em>07/30/2007</em><strong title="d085f77a00c4b4e30c0c748dd4680f60">MD5: d085f77a0</strong></li><li class="hidden"><a href="/downloads/download.php?file=79483d2f16f597d46f92257744b46406" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=79483d2f16f597d46f92257744b46406" title="2.2.2 - 04/18/2007 - 79483d2f16f597d46f92257744b46406">2.2.2</a><em>04/18/2007</em><strong title="79483d2f16f597d46f92257744b46406">MD5: 79483d2f1</strong></li><li class="hidden"><a href="/downloads/download.php?file=a4ebf4e3c8413079edd0abaca99d8cb3" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=a4ebf4e3c8413079edd0abaca99d8cb3" title="2.2.0 - 02/22/2007 - a4ebf4e3c8413079edd0abaca99d8cb3">2.2.0</a><em>02/22/2007</em><strong title="a4ebf4e3c8413079edd0abaca99d8cb3">MD5: a4ebf4e3c</strong></li><li><a href="?show=yui2" class="show-more" title="Show more download files.">Show more files.</a></li></ul></li>
+<li><h3 id="builder">YUI Build Tool</h3>
+<ul>
+<li><a href="/downloads/download.php?file=aa21f55cffd83ea2f02f2c0fb87265ae" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=aa21f55cffd83ea2f02f2c0fb87265ae" title="1.0.0b1 - 03/10/2009 - aa21f55cffd83ea2f02f2c0fb87265ae">1.0.0b1</a><em>03/10/2009</em><strong title="aa21f55cffd83ea2f02f2c0fb87265ae">MD5: aa21f55cf</strong></li></ul></li>
+<li><h3 id="phploader">YUI PHP Loader</h3>
+<ul>
+<li><a href="/downloads/download.php?file=963292134958e2a60aa5473cb148db3b" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=963292134958e2a60aa5473cb148db3b" title="1.0.0b2 - 12/02/2009 - 963292134958e2a60aa5473cb148db3b">1.0.0b2</a><em>12/02/2009</em><strong title="963292134958e2a60aa5473cb148db3b">MD5: 963292134</strong></li><li><a href="/downloads/download.php?file=f141af403d076abaf98be362658a61e1" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=f141af403d076abaf98be362658a61e1" title="1.0.0b1 - 09/09/2009 - f141af403d076abaf98be362658a61e1">1.0.0b1</a><em>09/09/2009</em><strong title="f141af403d076abaf98be362658a61e1">MD5: f141af403</strong></li></ul></li>
+<li><h3 id="yuicompressor">YUI Compressor</h3>
+<ul>
+<li><a href="/downloads/download.php?file=2a526a9aedfe2affceed1e1c3f9c0579" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=2a526a9aedfe2affceed1e1c3f9c0579" title="2.4.2 - 06/10/2009 - 2a526a9aedfe2affceed1e1c3f9c0579">2.4.2</a><em>06/10/2009</em><strong title="2a526a9aedfe2affceed1e1c3f9c0579">MD5: 2a526a9ae</strong></li></ul></li>
+<li><h3 id="yuidoc">YUI Doc</h3>
+<ul>
+<li><a href="/downloads/download.php?file=cd5545d2dec8f7afe3d18e793538162c" class="icon"><img src="/assets/archive_zip.png"></a> <a href="/downloads/download.php?file=cd5545d2dec8f7afe3d18e793538162c" title="1.0.0b1 - 12/05/2008 - cd5545d2dec8f7afe3d18e793538162c">1.0.0b1</a><em>12/05/2008</em><strong title="cd5545d2dec8f7afe3d18e793538162c">MD5: cd5545d2d</strong></li></ul></li>
+</ul>
 </div>
-
+<script src="/assets/download-min.js"></script>
             </div>
           </div>
         <div class="yui-b secondary sidebar">
-            <div class="mod">
+            <div id="site-notice" class="bubble-note">
+    YUI 3.1.0 is now available, <a href="http://www.yuiblog.com/blog/2010/03/31/announcing-yui-3-1-0/">visit YUI Blog</a> for more information.
+</div><div class="mod">
   <div class="hd"><h4><a href="/forum/recent.php">Recent Forums Posts</a></h4></div>
   <div class="bd">
       <ul>
 <li>
-<h5><a href="/forum/viewtopic.php?p=8069#p8069">Tooltips on Hover over TabView Tabs</a></h5>
-<cite class="author">Craig Cassata</cite> <cite class="date">Jan 20th</cite>
+<h5><a href="/forum/viewtopic.php?p=11417#p11417">Direct link to tabs</a></h5>
+<cite class="author"><img src="http://www.gravatar.com/avatar/b82c5d778260c134db7f6a5fc7c2c21b?s=14&d=http://yuilibrary.com/assets/gravatar-14.png"> Dream Team</cite> <cite class="date">Apr 15th</cite>
 </li>
 <li>
-<h5><a href="/forum/viewtopic.php?p=8068#p8068">TreeView - configure setDynamicLoad()</a></h5>
-<cite class="author">koalabruder</cite> <cite class="date">Jan 20th</cite>
+<h5><a href="/forum/viewtopic.php?p=11416#p11416">Re: Easy YUI Compressor for Windows.</a></h5>
+<cite class="author"><img src="http://www.gravatar.com/avatar/4771a4a77a5c90d84a4168d27d08024b?s=14&d=http://yuilibrary.com/assets/gravatar-14.png"> hani</cite> <cite class="date">Apr 15th</cite>
 </li>
 <li>
-<h5><a href="/forum/viewtopic.php?p=8067#p8067">Re: Prevent onclick from inside mousedown event?</a></h5>
-<cite class="author">Adam Moore</cite> <cite class="date">Jan 20th</cite>
+<h5><a href="/forum/viewtopic.php?p=11415#p11415">Re: Easy YUI Compressor for Windows.</a></h5>
+<cite class="author"><img src="http://www.gravatar.com/avatar/3cb68a0b4204139bd4747f7803f440c4?s=14&d=http://yuilibrary.com/assets/gravatar-14.png"> royce</cite> <cite class="date">Apr 14th</cite>
 </li>
 <li>
-<h5><a href="/forum/viewtopic.php?p=8066#p8066">Re: Datatable &quot;grays out&quot; after updating a column's data.</a></h5>
-<cite class="author">Satyam</cite> <cite class="date">Jan 20th</cite>
+<h5><a href="/forum/viewtopic.php?p=11414#p11414">Re: Integration of RTE into XForms</a></h5>
+<cite class="author"><img src="http://www.gravatar.com/avatar/c2d8dcb414ae7efa4aaae037625bebbf?s=14&d=http://yuilibrary.com/assets/gravatar-14.png"> Claudius Teodorescu</cite> <cite class="date">Apr 14th</cite>
 </li>
 <li>
-<h5><a href="/forum/viewtopic.php?p=8065#p8065">Re: Datatable &quot;grays out&quot; after updating a column's data.</a></h5>
-<cite class="author">Lonnie Broadnax</cite> <cite class="date">Jan 20th</cite>
+<h5><a href="/forum/viewtopic.php?p=11413#p11413">Re: YuiLoader and css flicker</a></h5>
+<cite class="author"><img src="http://www.gravatar.com/avatar/4479397d42c17503323ae88bf8932e42?s=14&d=http://yuilibrary.com/assets/gravatar-14.png"> Adam Moore</cite> <cite class="date">Apr 14th</cite>
 </li>
 <li>
-<h5><a href="/forum/viewtopic.php?p=8064#p8064">Re: Datatable &quot;grays out&quot; after updating a column's data.</a></h5>
-<cite class="author">Lonnie Broadnax</cite> <cite class="date">Jan 20th</cite>
+<h5><a href="/forum/viewtopic.php?p=11412#p11412">YuiLoader and css flicker</a></h5>
+<cite class="author"><img src="http://www.gravatar.com/avatar/6c65bf90850933eb9a5222e5740f49ef?s=14&d=http://yuilibrary.com/assets/gravatar-14.png"> David McArdle</cite> <cite class="date">Apr 14th</cite>
 </li>
 <li>
-<h5><a href="/forum/viewtopic.php?p=8063#p8063">Re: AutoComplete doesn't ignore keydown events for shift keys</a></h5>
-<cite class="author">Luke Smith</cite> <cite class="date">Jan 20th</cite>
+<h5><a href="/forum/viewtopic.php?p=11411#p11411">Re: Client Side Filtering on JSON data</a></h5>
+<cite class="author"><img src="http://www.gravatar.com/avatar/e5f7bcbb12686b89c17e2d80d5573ccf?s=14&d=http://yuilibrary.com/assets/gravatar-14.png"> Jean Charles</cite> <cite class="date">Apr 14th</cite>
 </li>
 <li>
-<h5><a href="/forum/viewtopic.php?p=8062#p8062">Re: Cross domain file upload issue</a></h5>
-<cite class="author">Alex Led</cite> <cite class="date">Jan 20th</cite>
+<h5><a href="/forum/viewtopic.php?p=11410#p11410">removing nodes by setting innerHTML=&quot;&quot; - removing listeners?</a></h5>
+<cite class="author"><img src="http://www.gravatar.com/avatar/6eb0d06190c46a6d8ec340b342f74c26?s=14&d=http://yuilibrary.com/assets/gravatar-14.png"> kevin furze</cite> <cite class="date">Apr 14th</cite>
 </li>
 </ul>
 
@@ -295,31 +138,67 @@ var YUIConfig = {
   <div class="hd"><h4>Recent <a href="http://yuiblog.com">YUI Blog</a> Posts</h4></div>
   <div class="bd">
       
-<!-- Auto-generated Sidebar (Wed, 20 Jan 2010 23:03:01 +0000) -->
+<!-- Auto-generated Sidebar (Thu, 15 Apr 2010 07:30:01 +0000) -->
 <ul>
 <li>
-<h5><a href="http://www.yuiblog.com/blog/2010/01/19/in-the-wild-for-january-19-2010/">In the Wild for January 19, 2010</a></h5>
-<cite class="author">Eric Miraglia</cite> <cite class="date">Jan 19th</cite>
+<h5><a href="http://www.yuiblog.com/blog/2010/04/14/treeble-using-nested-yui-2-datasources-for-row-expansion/">Treeble:  Using Nested YUI 2 DataSources for Row Expansion</a></h5>
+<cite class="author">John Lindal</cite> <cite class="date">Apr 14th</cite>
 </li>
 <li>
-<h5><a href="http://www.yuiblog.com/blog/2010/01/08/in-the-wild-for-january-10-2010/">In the Wild for January 10, 2010</a></h5>
-<cite class="author">Eric Miraglia</cite> <cite class="date">Jan 8th</cite>
+<h5><a href="http://www.yuiblog.com/blog/2010/04/13/yui4java-a-new-java-to-javascript-translator-using-yui-2/">yui4java: A New Java-to-JavaScript Translator Using YUI 2</a></h5>
+<cite class="author">Eric Miraglia</cite> <cite class="date">Apr 13th</cite>
 </li>
 <li>
-<h5><a href="http://www.yuiblog.com/blog/2010/01/07/more-code-reuse-patterns-in-yui3/">More code reuse patterns in YUI3</a></h5>
-<cite class="author">Stoyan Stefanov</cite> <cite class="date">Jan 7th</cite>
+<h5><a href="http://www.yuiblog.com/blog/2010/04/12/vitalist/">Implementation Focus: Vitalist, a Getting Things Done (GTD) Web App Built with YUI 2</a></h5>
+<cite class="author">Matt Berg</cite> <cite class="date">Apr 12th</cite>
 </li>
 <li>
-<h5><a href="http://www.yuiblog.com/blog/2010/01/06/inheritance-patterns-in-yui-3/">Inheritance Patterns in YUI 3</a></h5>
-<cite class="author">Stoyan Stefanov</cite> <cite class="date">Jan 6th</cite>
+<h5><a href="http://www.yuiblog.com/blog/2010/04/09/in-the-wild-for-april-9-2010/">In the Wild for April 9, 2010</a></h5>
+<cite class="author">Eric Miraglia</cite> <cite class="date">Apr 9th</cite>
 </li>
 <li>
-<h5><a href="http://www.yuiblog.com/blog/2010/01/05/crockford-at-accu/">Crockford delivering “State and Future of JavaScript” talk at ACCU in Mountain View on January 13</a></h5>
-<cite class="author">Eric Miraglia</cite> <cite class="date">Jan 5th</cite>
+<h5><a href="http://www.yuiblog.com/blog/2010/04/09/node-js-yui-3-dom-manipulation-oh-my/">Node.js, YUI 3 & Dom Manipulation… Oh My!</a></h5>
+<cite class="author">Dav Glass</cite> <cite class="date">Apr 9th</cite>
 </li>
 <li>
-<h5><a href="http://www.yuiblog.com/blog/2010/01/05/enterprise-web-developer/">Implementation Focus: Enterprise Web Developer, a Python/YUI Framework</a></h5>
-<cite class="author">Rob Tweed</cite> <cite class="date">Jan 5th</cite>
+<h5><a href="http://www.yuiblog.com/blog/2010/04/08/introducing-yui-open-hours/">Introducing YUI Open Hours</a></h5>
+<cite class="author">Luke Smith</cite> <cite class="date">Apr 8th</cite>
+</li>
+</ul>
+
+<!-- End Auto-generated Sidebar -->
+
+  </div>
+</div>
+<div class="mod">
+  <div class="hd"><h4>Latest <a href="http://developer.yahoo.com/yui/theater">YUI Theater</a> Videos</h4></div>
+  <div class="bd">
+      
+<!-- Auto-generated Sidebar (Thu, 15 Apr 2010 07:30:01 +0000) -->
+<ul>
+<li>
+<h5><a href="http://www.yuiblog.com/blog/2010/04/08/video-crockonjs-5/">YUI Theater —  Douglas Crockford: “Crockford on JavaScript — Part 5: The End of All Things” (94 min.)</a></h5>
+<cite class="author">Eric Miraglia</cite> <cite class="date">Apr 8th</cite>
+</li>
+<li>
+<h5><a href="http://www.yuiblog.com/blog/2010/03/09/video-crockonjs-4/">YUI Theater —  Douglas Crockford: “Crockford on JavaScript — Episode IV: The Metamorphosis of Ajax” (93 min.)</a></h5>
+<cite class="author">Eric Miraglia</cite> <cite class="date">Mar 9th</cite>
+</li>
+<li>
+<h5><a href="http://www.yuiblog.com/blog/2010/02/26/video-plh-nextweb/">YUI Theater —  Philippe Le Hégaret: “The Next Open Web Platform” (52 min.)</a></h5>
+<cite class="author">Eric Miraglia</cite> <cite class="date">Feb 26th</cite>
+</li>
+<li>
+<h5><a href="http://www.yuiblog.com/blog/2010/02/24/video-crockonjs-3/">YUI Theater —  Douglas Crockford: “Crockford on JavaScript — Act III: Function the Ultimate (73 min.)”</a></h5>
+<cite class="author">Eric Miraglia</cite> <cite class="date">Feb 24th</cite>
+</li>
+<li>
+<h5><a href="http://www.yuiblog.com/blog/2010/02/11/video-heilmann-yql/">YUI Theater —  Christian Heilmann: “YQL and YUI: Building Blocks for Quick Applications” (48 min.) [English and German versions available]</a></h5>
+<cite class="author">Eric Miraglia</cite> <cite class="date">Feb 11th</cite>
+</li>
+<li>
+<h5><a href="http://www.yuiblog.com/blog/2010/02/09/video-crockonjs-2/">YUI Theater —  Douglas Crockford: “Crockford on JavaScript — Chapter 2: And Then There Was JavaScript” (90 min.)</a></h5>
+<cite class="author">Eric Miraglia</cite> <cite class="date">Feb 9th</cite>
 </li>
 </ul>
 
@@ -331,18 +210,7 @@ var YUIConfig = {
   <div class="hd"><h4>Online Users</h4></div>
   <div class="bd">
       <ul>
-<li>
-<h5><a href="/forum/memberlist.php?mode=viewprofile&amp;u=906">paolo nesti poggi</a></h5>
-</li>
-<li>
-<h5><a href="/forum/memberlist.php?mode=viewprofile&amp;u=5327">FiZ</a></h5>
-</li>
-<li>
-<h5><a href="/forum/memberlist.php?mode=viewprofile&amp;u=54">Dav Glass</a></h5>
-</li>
-<li>
-<h5><a href="/forum/memberlist.php?mode=viewprofile&amp;u=58">Adam Moore</a></h5>
-</li>
+<li><img src="http://www.gravatar.com/avatar/f9c6936e3a1c4e3d7995817d1f9baf9e?s=16&d=http://yuilibrary.com/assets/gravatar-16.png"> <a href="/forum/memberlist.php?mode=viewprofile&amp;u=57">Eric Miraglia</a></li>
 </ul>
 
   </div>
@@ -358,10 +226,10 @@ var YUIConfig = {
 				<h5>YUI Projects</h5>
 				<ul>
 					<li><a href="/downloads">All YUI Downloads</a></li>
-					<li><a href="/projects/yui2">YUI 2.x</a></li>
-					<li><a href="/projects/yui3">YUI 3.x</a></li>
-					<li><a href="/projects/yuidoc">YUIDoc</a></li>
-					<li><a href="/projects/yuicompressor">YUICompressor</a></li>
+					<li><a href="/projects/yui2">YUI 2</a></li>
+					<li><a href="/projects/yui3">YUI 3</a></li>
+					<li><a href="/projects/yuidoc">YUI Doc</a></li>
+					<li><a href="/projects/yuicompressor">YUI Compressor</a></li>
 					<li class="more"><a href="/projects/yuilibrary">YUILibrary.com</a></li>
                     <li class="more"><a href="/projects/builder">YUI Build Tool</a></li>
                     <li class="more"><a href="/projects/phploader">YUI PHP Loader</a></li>
@@ -376,6 +244,7 @@ var YUIConfig = {
 					<li><a href="/contrib">Contribute to YUI</a></li>
 					<li><a href="/forum/stats">Forum Stats</a></li>
 					<li><a href="/gallery/stats">Gallery Stats</a></li>
+					<li><a href="/calendar">YUI Calendar</a></li>
 				</ul>
 			</div>
 		</div>
@@ -383,8 +252,8 @@ var YUIConfig = {
 			<div class="yui-u first">
 				<h5>Contribute</h5>
 				<ul>
-                    <li><a href="http://developer.yahoo.com/yui/articles/reportingbugs/" class="ext-link" title="Submit a Bug"><span class="icon">Submit a Bug</span></a></li>
-                    <li><a href="http://developer.yahoo.com/yui/articles/reportingbugs/" class="ext-link" title="Request a Feature"><span class="icon">Request a Feature</span></a></li>
+                    <li><a href="/projects/yuilibrary/wiki/Process/FilingATicket">Submit a Bug</a></li>
+                    <li><a href="/projects/yuilibrary/wiki/Process/FilingATicket">Request a Feature</a></li>
                     <li><a href="http://developer.yahoo.com/yui/community/contribute.html" class="ext-link" title="Write Code"><span class="icon">Write Code</span></a></li>
                     <li><a href="/team">Meet the Team</a></li>
 				</ul>
@@ -412,14 +281,5 @@ var YUIConfig = {
 </div>
 <script type="text/javascript" src="http://track2.mybloglog.com/js/jsserv.php?mblID=2008112513433661"></script>
 <script type="text/javascript" src="/assets/more-09.17.2009.js"></script>
-<script>
-YUI(YUIConfig).use('node', function(Y) {
-    Y.on('click', function(e) {
-        e.halt();
-        Y.all('#yui2_downloads tr').removeClass('hide');
-        e.target.get('parentNode.parentNode').setStyle('display', 'none');
-    }, '#yui2_show_hidden');
-});
-</script>
 </body>
 </html>
