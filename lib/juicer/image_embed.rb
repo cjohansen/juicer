@@ -62,13 +62,13 @@ module Juicer
         begin
           next if used.include?(asset) || duplicates.include?(asset.path)
           used << asset
-
+          
           # make sure we do not exceed SIZE_LIMIT
           new_path = embed_data_uri(asset.filename)
 
           if new_path.length < SIZE_LIMIT
             # replace the url in the css file with the data uri
-            @contents.gsub!(asset.path, embed_data_uri(asset.path))
+            @contents.gsub!(asset.path, embed_data_uri(asset.filename)) if asset.filename.match( /\?embed=true$/ )
           else
             Juicer::LOGGER.warn("The final data uri for the image located at #{asset.path.gsub('?embed=true', '')} exceeds #{SIZE_LIMIT} and will not be embedded to maintain compatability.") 
           end
@@ -86,25 +86,23 @@ module Juicer
     def embed_data_uri( path )
       new_path = path
       
-      if path.match( /\?embed=true$/ )
-        supported_file_matches = path.match( /(?:\.)(png|gif|jpg|jpeg)(?:\?embed=true)$/i )
-        filetype = supported_file_matches[1] if supported_file_matches
+      supported_file_matches = path.match( /(?:\.)(png|gif|jpg|jpeg)(?:\?embed=true)$/i )
+      filetype = supported_file_matches[1] if supported_file_matches
+      
+      if ( filetype )        
+        filename = path.gsub('?embed=true','')      
         
-        if ( filetype )        
-          filename = path.gsub('?embed=true','')      
-
-          # check if file exists, throw an error if it doesn't exist
-          if File.exist?( filename )
-            
-            # read contents of file into memory              
-            content = File.read( filename )
-            content_type = "image/#{filetype}"
-            
-            # encode the url
-            new_path = Datafy::make_data_uri( content, content_type )
-          else
-            puts "Unable to locate file #{filename} on local file system, skipping image embedding"
-          end
+        # check if file exists, throw an error if it doesn't exist
+        if File.exist?( filename )
+          
+          # read contents of file into memory              
+          content = File.read( filename )
+          content_type = "image/#{filetype}"
+          
+          # encode the url
+          new_path = Datafy::make_data_uri( content, content_type )
+        else
+          puts "Unable to locate file #{filename} on local file system, skipping image embedding"
         end
       end
       return new_path
