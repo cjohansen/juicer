@@ -68,7 +68,7 @@ the compressor the path should be the path to where the jar file is found.
           opt.on("-l", "--local-hosts hosts", "Host names that are served from --document-root (can be given cache busters). Comma separated") do |hosts|
             @local_hosts = hosts.split(",")
           end
-          opt.on("", "--all-hosts-local", "Treat all hosts as local (ie served from --document-root") { |t| @local_hosts = @hosts }
+          opt.on("", "--all-hosts-local", "Treat all hosts as local (ie served from --document-root)") { @all_hosts_local = true }
           opt.on("-r", "--relative-urls", "Convert all referenced URLs to relative URLs. Requires --document-root if\n" +
                            (" " * 37) + "absolute URLs are used. Only valid for CSS files") { |t| @relative_urls = true }
           opt.on("-b", "--absolute-urls", "Convert all referenced URLs to absolute URLs. Requires --document-root.\n" +
@@ -92,6 +92,9 @@ the compressor the path should be the path to where the jar file is found.
           @log.fatal "Please provide atleast one input file"
           raise SystemExit.new("Please provide atleast one input file")
         end
+        
+        # Copy hosts to local_hosts if --all-hosts-local was specified
+        @local_hosts = @hosts if @all_hosts_local
 
         # Figure out which file to output to
         output = output(files.first)
