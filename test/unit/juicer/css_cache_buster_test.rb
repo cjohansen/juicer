@@ -37,6 +37,15 @@ class TestCssCacheBuster < Test::Unit::TestCase
 
       assert_no_match /2\.gif\?jcb=\d+\?jcb=/, File.read(file)
     end
+
+    should "not add multiple cache busters when asset host cycling is used" do
+      file = path("css/test3.css")
+      buster = Juicer::CssCacheBuster.new( { :hosts => [ 'http://assets1', 'http://assets2', 'http://assets3' ], :document_root => './test/data' } )
+      buster.save file
+
+      assert_no_match /2\.gif\?jcb=\d+\?jcb=/, File.read(file)
+    end
+
   end
 
   context "absolute paths" do
