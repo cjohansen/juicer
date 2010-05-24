@@ -26,10 +26,17 @@ class CacheBusterTest < Test::Unit::TestCase
       assert_equal @filename, Juicer::CacheBuster.clean("#@filename?1234567890", nil)
     end
 
+    should "not destroy numeric file names with no cache buster name" do
+      @numeric_filename = "815.gif"
+      File.open(@numeric_filename, "w") { |f| f.puts "Testing" }
+      assert_equal @numeric_filename, Juicer::CacheBuster.clean("#@numeric_filename?1234567890", nil)
+      File.delete(@numeric_filename)
+    end
+
     should "remove cache buster query parameters with custom name" do
       assert_equal @filename, Juicer::CacheBuster.clean("#@filename?cb=1234567890", :cb)
     end
-
+    
     should "remove hard cache buster" do
       assert_equal @filename, Juicer::CacheBuster.clean(@filename.sub(/(\.txt)/, '-jcb1234567890\1'))
     end
@@ -69,6 +76,23 @@ class CacheBusterTest < Test::Unit::TestCase
     should "include custom parameter name" do
       mtime = File.mtime(@filename).to_i
       assert_equal "#@filename?juicer=#{mtime}", Juicer::CacheBuster.soft(@filename, :juicer)
+    end
+  end
+
+  context "creating rails-style cache busters" do
+    should "clean file before adding new cache buster" do
+      cache_buster = "1234567890"
+      assert_no_match /#{cache_buster}/, Juicer::CacheBuster.rails("#@filename?#{cache_buster}")
+    end
+
+    should "append no cache buster when parameters exist" do
+      parameters = "id=1"
+      assert_match /#{parameters}/, Juicer::CacheBuster.rails("#@filename?#{parameters}")
+    end
+
+    should "include only mtime as query parameter" do
+      mtime = File.mtime(@filename).to_i
+      assert_equal "#@filename?#{mtime}", Juicer::CacheBuster.rails(@filename)
     end
   end
 

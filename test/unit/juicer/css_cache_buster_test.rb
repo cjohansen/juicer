@@ -84,6 +84,18 @@ class TestCssCacheBuster < Test::Unit::TestCase
     end
   end
 
+  context "rails cache busters" do
+    should "should append mtime to urls" do
+      File.open(path("a2.css"), "w") { |f| f.puts "" }
+      file = path("path_test2.css")
+      output = path("path_test3.css")
+      buster = Juicer::CssCacheBuster.new :document_root => path(""), :type => :rails
+      buster.save file, output
+
+      buster.urls(output).each { |asset| assert_match /\?\d+$/, asset.path }
+    end
+  end
+  
   context "hard cache busters" do
     should "should alter file name" do
       File.open(path("a2.css"), "w") { |f| f.puts "" }

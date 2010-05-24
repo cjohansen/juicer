@@ -80,15 +80,18 @@ module Juicer
     #
     def self.path(file, type = :soft, parameter = DEFAULT_PARAMETER)
       return file if file =~ /data:.*;base64/
+      type = [:soft, :hard, :rails].include?(type) ? type : :soft
+      parameter = nil if type == :rails
       file = self.clean(file, parameter)
       filename = file.split("?").first
       raise ArgumentError.new("#{file} could not be found") unless File.exists?(filename)
       mtime = File.mtime(filename).to_i
-      type = [:soft, :hard].include?(type) ? type : :soft
 
       if type == :soft
         parameter = "#{parameter}=".sub(/^=$/, '')
         return "#{file}#{file.index('?') ? '&' : '?'}#{parameter}#{mtime}"
+      elsif type == :rails
+        return "#{file}#{file.index('?') ? '' : "?#{mtime}"}"
       end
 
       file.sub(/(\.[^\.]+$)/, "-#{parameter}#{mtime}" + '\1')
@@ -117,15 +120,28 @@ module Juicer
     end
 
     #
+    # Add a Rails-style cache buster to a filename. Results in filenames of the
+    # form: <tt>file.suffix?[timestamp]</tt>, ie <tt>images/logo.png?1234567890</tt>
+    # which is the format used by Rails' image_tag helper.
+    #
+    def self.rails(file)
+      self.path(file, :rails)
+    end
+    
+    #
     # Remove cache buster from a URL for a given parameter name. Parameter name is
     # "cb" by default.
     #
     def self.clean(file, parameter = DEFAULT_PARAMETER)
-      query_param = "#{parameter}".length == 0 ? "" : "#{parameter}="
-      new_file = file.sub(/#{query_param}\d+&?/, "").sub(/(\?|&)$/, "")
-      return new_file unless new_file == file
+      if "#{parameter}".length == 0
+        return file.sub(/\?\d+$/, '')
+      else
+        query_param = "#{parameter}="
+        new_file = file.sub(/#{query_param}\d+&?/, "").sub(/(\?|&)$/, "")
+        return new_file unless new_file == file
 
-      file.sub(/-#{parameter}\d+(\.\w+)($|\?)/, '\1\2')
+        file.sub(/-#{parameter}\d+(\.\w+)($|\?)/, '\1\2')
+      end
     end
   end
 end

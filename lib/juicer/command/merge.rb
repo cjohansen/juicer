@@ -74,9 +74,11 @@ the compressor the path should be the path to where the jar file is found.
           opt.on("-b", "--absolute-urls", "Convert all referenced URLs to absolute URLs. Requires --document-root.\n" +
                            (" " * 37) + "Works with cycled asset hosts. Only valid for CSS files") { |t| @absolute_urls = true }
           opt.on("-d", "--document-root dir", "Path to resolve absolute URLs relative to") { |path| @document_root = path }
-          opt.on("-c", "--cache-buster type", "none, soft or hard. Default is soft, which adds timestamps to referenced\n" +
-                           (" " * 37) + "URLs as query parameters. None leaves URLs untouched and hard alters file names") do |type|
-            @cache_buster = [:soft, :hard].include?(type.to_sym) ? type.to_sym : nil
+          opt.on("-c", "--cache-buster type", "none, soft, rails, or hard. Default is soft, which adds timestamps to\n" +
+                           (" " * 37) + "reference URLs as query parameters. None leaves URLs untouched, rails adds\n" + 
+                           (" " * 37) + "timestamps in the same format as Rails' image_tag helper, and hard alters\n" +
+                           (" " * 37) + "file names") do |type|
+            @cache_buster = [:soft, :hard, :rails].include?(type.to_sym) ? type.to_sym : nil
           end
           opt.on("-e", "--embed-images type", "none or data_uri. Default is none. Data_uri embeds images using Base64 encoding\n" +
                            (" " * 37) + "None leaves URLs untouched. Candiate images must be flagged with '?embed=true to be considered") do |embed|
