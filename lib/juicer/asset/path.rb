@@ -265,7 +265,7 @@ module Juicer
         hosts.each do |host|
           return path if path !~ @@scheme_pattern
 
-          path.sub!(%r{^#{host}}, '')
+          path = path.sub(%r{^#{host}}, '')
         end
 
         return path

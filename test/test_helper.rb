@@ -147,6 +147,23 @@ p { background: url(/a2.css); }
 
         mkfile(@dir, 'path_test2.css', css)
 
+        css = <<-CSS
+body {
+    background: url(http://assets1/images/1.png);
+}
+
+h1 {
+    background: url(http://assets2/css/2.gif);
+    background: url(http://assets3/a1.css) 0 0 no-repeat;
+}
+
+h2 {
+   background: url(http://assets2/css/2.gif) no-repeat;
+}
+        CSS
+        
+        mkfile(css_dir, 'test3.css', css)
+
         mkfile(@dir, 'Changelog.txt', "2008.02.09 | stb-base 1.29\n\nFEATURE: Core  | Bla bla bla bla bla\nFEATURE: UI: | Bla bla bla bla bla\n\n\n2008.02.09 | stb-base 1.29\n\nFEATURE: Core  | Bla bla bla bla bla\nFEATURE: UI: | Bla bla bla bla bla\n")
 
         # my_app.js depends on the pkg directory
