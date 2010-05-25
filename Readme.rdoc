@@ -4,6 +4,7 @@ Official URL: http://github.com/cjohansen/juicer/tree/master
 Christian Johansen (http://www.cjohansen.no) and contributors:
 
 * Morgan Roderick (http://roderick.dk)
+* Elliott Wood  (http://two-fish.com)
 * Pavel Valodzka (http://github.com/valodzka)
 * Daniel Stockman (http://evocateur.org/)
 * Aaron Suggs (http://ktheory.com)
@@ -291,6 +292,9 @@ Will tell you about other dependencies that might be missing on your system.
 * Aaron Suggs (http://ktheory.com)
   Added support for depending on directories
   Fixed installers on 1.0 branch
+* Elliott Wood (http://two-fish.com)
+  Added "rails" cache buster type
+  Fixed issues with asset host cycling
 
 == LICENSE:
 
