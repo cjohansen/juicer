@@ -62,7 +62,7 @@ module Juicer
 
         out_dir = File.dirname(output)
         FileUtils.mkdir_p(out_dir) unless File.exists?(out_dir)
-        result = execute(%Q{-jar "#{locate_jar}"#{jar_args} -js_output_file "#{output}" -js "#{file}"})
+        execute(%Q{-jar "#{locate_jar}"#{jar_args} --js_output_file "#{output}" --js "#{file}"})
 
         File.delete(file) if use_tmp
       end

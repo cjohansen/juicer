@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{juicer}
-  s.version = "1.0.3"
+  s.version = "1.0.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christian Johansen"]
-  s.date = %q{2010-04-15}
+  s.date = %q{2010-05-31}
   s.default_executable = %q{juicer}
   s.description = %q{Resolve dependencies, merge and minify CSS and JavaScript files with Juicer - the command line tool for frontend engineers}
   s.email = %q{christian@cjohansen.no}
@@ -75,6 +75,7 @@ Gem::Specification.new do |s|
      "test/data/css/2.gif",
      "test/data/css/test.css",
      "test/data/css/test2.css",
+     "test/data/css/test3.css",
      "test/data/d1.css",
      "test/data/images/1.png",
      "test/data/my_app.js",
