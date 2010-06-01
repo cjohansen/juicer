@@ -79,7 +79,7 @@ module Juicer
 
         # All URLs that don't start with a protocol
         if url !~ %r{^/} && url !~ %r{^[a-z]+://}
-          if @use_absolute
+          if @use_absolute || @hosts.length > 0
             raise ArgumentError.new("Unable to handle absolute URLs without :document_root option") if !@document_root
             path = File.expand_path(File.join(dir, url)).sub(@document_root, "")         # Make absolute
           else
@@ -88,8 +88,8 @@ module Juicer
         end
 
         # Cycle hosts, if any
-        if url =~ %r{^/} && @hosts.length > 0
-          path = File.join(@hosts[@host_num % @hosts.length], url)
+        if path =~ %r{^/} && @hosts.length > 0
+          path = File.join(@hosts[@host_num % @hosts.length], path)
           @host_num += 1
         end
 
