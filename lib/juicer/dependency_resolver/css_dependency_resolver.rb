@@ -8,7 +8,7 @@ module Juicer
   class CssDependencyResolver < DependencyResolver
     # Regexp borrowed from similar project:
     # http://github.com/cgriego/front-end-blender/tree/master/lib/front_end_architect/blender.rb
-    @@import_pattern = /^\s*@import(?:\surl\(|\s)(['"]?)([^\?'"\)\s]+)(\?(?:[^'"\)]+)?)?\1\)?(?:[^?;]+)?;?/im
+    @@import_pattern = /^\s*@import(?:\surl\(|\s)(['"]?)([^\?'"\)\s]+)(\?(?:[^'"\)]*))?\1\)?(?:[^?;]*);?/im
 
     private
     def parse(line, imported_file = nil)
