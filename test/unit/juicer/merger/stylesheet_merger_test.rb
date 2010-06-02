@@ -217,21 +217,6 @@ EOF
       end
     end
 
-    should "handle relative document roots" do
-      merger = Juicer::Merger::StylesheetMerger.new([],
-                                                    :document_root => "test/data",
-                                                    :relative_urls => true)
-      merger << File.expand_path("css/test2.css")
-
-      Juicer::Merger::StylesheetMerger.publicize_methods do
-        merger.instance_eval do
-          @root = Pathname.new File.expand_path("test/data/css")
-        end
-
-        assert_equal "../images/1.png", merger.resolve_path("/images/1.png", nil)
-      end
-    end
-
     should "cycle hosts for relative urls" do
       merger = Juicer::Merger::StylesheetMerger.new([],
                                                     :document_root => "test/data",
