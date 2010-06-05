@@ -55,6 +55,12 @@ class AssetPathTest < Test::Unit::TestCase
 
       assert_equal ["http://localhost", "http://dev.server", "http://some.server"], asset.hosts
     end
+
+    should "accept protocol-less hosts" do
+      asset = Juicer::Asset::Path.new "../images/logo.png", :hosts => ["localhost/", "//dev.server", "some.server/"]
+
+      assert_equal ["http://localhost", "//dev.server", "http://some.server"], asset.hosts
+    end
   end
 
   context "asset absolute path" do

@@ -94,7 +94,7 @@ the compressor the path should be the path to where the jar file is found.
           @log.fatal "Please provide atleast one input file"
           raise SystemExit.new("Please provide atleast one input file")
         end
-        
+
         # Copy hosts to local_hosts if --all-hosts-local was specified
         @local_hosts = @hosts if @all_hosts_local
 

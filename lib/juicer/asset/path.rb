@@ -63,7 +63,7 @@ module Juicer
       # Directory served as root through a web server, see Juicer::Asset::Path#initialize
       attr_reader :document_root
 
-      @@scheme_pattern = %r{^[a-zA-Z]{3,5}://}
+      @@scheme_pattern = %r{^([a-zA-Z]{3,5}:)?//}
 
       #
       # Initialize asset at <tt>path</tt>. Accepts an optional hash of options:
