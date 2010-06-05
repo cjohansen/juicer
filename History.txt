@@ -1,3 +1,8 @@
+== 1.0.5 / 2010-06-06
+* No more Regexp warnings on Ruby 1.9.1
+* Cycle hosts for relative paths
+* Allow hostnames with no protocol (i.e. //myassets)
+
 == 1.0.4 / 2010-05-26
 * Fix issue (GH-22) where Closure Compiler would not work due to wrong
   command line arguments passed by Juicer
