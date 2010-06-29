@@ -193,7 +193,7 @@ the compressor the path should be the path to where the jar file is found.
 			# 
 			def image_embed(file)
         return nil if !file || file !~ /\.css$/ || @image_embed_type.nil?
-        Juicer::ImageEmbed.new( :type => @image_embed_type )
+        Juicer::ImageEmbed.new(:document_root => @document_root, :type => @image_embed_type )
 			end
 
       #
