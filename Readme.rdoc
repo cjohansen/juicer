@@ -9,6 +9,7 @@ Christian Johansen (http://www.cjohansen.no) and contributors:
 * Daniel Stockman (http://evocateur.org/)
 * Aaron Suggs (http://ktheory.com)
 * Olle Jonsson (http://ollehost.dk/blog/)
+* Jakub Pawlowicz (http://blog.jakubpawlowicz.com)
 
 == DESCRIPTION:
 
@@ -295,6 +296,8 @@ Will tell you about other dependencies that might be missing on your system.
 * Elliott Wood (http://two-fish.com)
   Added "rails" cache buster type
   Fixed issues with asset host cycling
+* Jakub Pawlowicz (http://blog.jakubpawlowicz.com)
+  Fixed issue with embedding images that weren't found
 
 == LICENSE:
 

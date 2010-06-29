@@ -1,3 +1,7 @@
+== 1.0.6 / 2010-06-29
+* Fix bug where image embedding could not see the document root,
+  resulting in missing images (Jakub Pawlowicz)
+
 == 1.0.5 / 2010-06-06
 * No more Regexp warnings on Ruby 1.9.1
 * Cycle hosts for relative paths
