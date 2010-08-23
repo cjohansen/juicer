@@ -69,6 +69,7 @@ module Juicer
       # Resolves a path relative to a directory
       #
       def resolve_path(url, dir)
+        return url if url =~ /^data:/
         path = url
 
         # Absolute URLs

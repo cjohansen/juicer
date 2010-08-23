@@ -216,6 +216,22 @@ EOF
         assert_equal "../images/1.png", merger.resolve_path("/images/1.png", nil)
       end
     end
+    
+    should "leave data URLs untouched" do
+      merger = Juicer::Merger::StylesheetMerger.new([],
+                                                    :document_root => "test/data",
+                                                    :hosts => ["http://assets1/"])
+      merger << File.expand_path("path_test2.css")
+
+      Juicer::Merger::StylesheetMerger.publicize_methods do
+        merger.instance_eval do
+          @root = Pathname.new(File.expand_path("test/data/css"))
+        end
+
+        expected = "data:image/png;base64,ERJW"
+        assert_equal expected, merger.resolve_path("data:image/png;base64,ERJW", "test/data/css")
+      end
+    end
 
     should "cycle hosts for relative urls" do
       merger = Juicer::Merger::StylesheetMerger.new([],
