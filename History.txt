@@ -1,3 +1,7 @@
+== 1.0.7 / 2010-08-23
+* Fix bug where embedded images where re-mapped as though they where
+  URLs (Elliot Wood)
+
 == 1.0.6 / 2010-06-29
 * Fix bug where image embedding could not see the document root,
   resulting in missing images (Jakub Pawlowicz)
