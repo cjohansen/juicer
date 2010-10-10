@@ -9,7 +9,7 @@ module Juicer
 
       # Constructor
       def initialize(files = [], options = {})
-        @dependency_resolver = JavaScriptDependencyResolver.new
+        @dependency_resolver = JavaScriptDependencyResolver.new(options)
         super(files, options)
       end
     end

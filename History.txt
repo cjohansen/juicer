@@ -1,3 +1,7 @@
+== 1.0.8 / 2010-10-10
+* Fix bug where document root and other options where not passed from
+  CLI to dependency resolvers
+
 == 1.0.7 / 2010-08-23
 * Fix bug where embedded images where re-mapped as though they where
   URLs (Elliot Wood)

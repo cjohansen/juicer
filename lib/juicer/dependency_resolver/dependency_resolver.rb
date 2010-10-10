@@ -38,7 +38,7 @@ module Juicer
       # Absolute URL
       if path =~ %r{^(/|[a-z]+:)}
         if @options[:document_root].nil?
-          msg = "Cannot resolve absolute path '#{path}' without web root option"
+          msg = "Cannot resolve absolute path '#{path}' without document root option"
           raise ArgumentError.new(msg)
         end
 
