@@ -1,3 +1,7 @@
+== 1.0.9 / 2010-12-07
+* Emergency fix: Crockford took down the Rhino version of JsLint,
+  bundle it for now.
+
 == 1.0.8 / 2010-10-10
 * Fix bug where document root and other options where not passed from
   CLI to dependency resolvers

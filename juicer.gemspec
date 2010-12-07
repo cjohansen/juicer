@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{juicer}
-  s.version = "1.0.8"
+  s.version = "1.0.9"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christian Johansen"]
-  s.date = %q{2010-10-10}
+  s.date = %q{2010-12-07}
   s.default_executable = %q{juicer}
   s.description = %q{Resolve dependencies, merge and minify CSS and JavaScript files with Juicer - the command line tool for frontend engineers}
   s.email = %q{christian@cjohansen.no}
@@ -21,6 +21,8 @@ Gem::Specification.new do |s|
      "Readme.rdoc",
      "VERSION",
      "bin/juicer",
+     "lib/jslint/jslint-rhino.js",
+     "lib/jslint/readme",
      "lib/juicer.rb",
      "lib/juicer/asset/path.rb",
      "lib/juicer/asset/path_resolver.rb",
@@ -128,44 +130,44 @@ Happy juicing!
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{juicer}
-  s.rubygems_version = %q{1.3.6}
+  s.rubygems_version = %q{1.3.7}
   s.summary = %q{Command line tool for CSS and JavaScript developers}
   s.test_files = [
-    "test/test_helper.rb",
-     "test/unit/juicer/dependency_resolver/css_dependency_resolver_test.rb",
-     "test/unit/juicer/dependency_resolver/javascript_dependency_resolver_test.rb",
-     "test/unit/juicer/minifyer/closure_compressor_test.rb",
-     "test/unit/juicer/minifyer/yui_compressor_test.rb",
+    "test/unit/juicer/css_cache_buster_test.rb",
+     "test/unit/juicer/asset/path_test.rb",
+     "test/unit/juicer/asset/path_resolver_test.rb",
      "test/unit/juicer/cache_buster_test.rb",
-     "test/unit/juicer/install/jslint_installer_test.rb",
+     "test/unit/juicer/image_embed_test.rb",
      "test/unit/juicer/install/yui_compressor_test.rb",
      "test/unit/juicer/install/installer_base_test.rb",
      "test/unit/juicer/install/rhino_installer_test.rb",
-     "test/unit/juicer/ext/string_test.rb",
-     "test/unit/juicer/ext/symbol_test.rb",
-     "test/unit/juicer/merger/stylesheet_merger_test.rb",
-     "test/unit/juicer/merger/base_test.rb",
-     "test/unit/juicer/merger/javascript_merger_test.rb",
-     "test/unit/juicer/jslint_test.rb",
-     "test/unit/juicer/image_embed_test.rb",
-     "test/unit/juicer/asset/path_test.rb",
-     "test/unit/juicer/asset/path_resolver_test.rb",
-     "test/unit/juicer/chainable_test.rb",
-     "test/unit/juicer/css_cache_buster_test.rb",
+     "test/unit/juicer/install/jslint_installer_test.rb",
      "test/unit/juicer/datafy_test.rb",
-     "test/unit/juicer/command/util_test.rb",
-     "test/unit/juicer/command/install_test.rb",
+     "test/unit/juicer/ext/symbol_test.rb",
+     "test/unit/juicer/ext/string_test.rb",
+     "test/unit/juicer/dependency_resolver/javascript_dependency_resolver_test.rb",
+     "test/unit/juicer/dependency_resolver/css_dependency_resolver_test.rb",
      "test/unit/juicer/command/merge_test.rb",
-     "test/unit/juicer/command/list_test.rb",
+     "test/unit/juicer/command/install_test.rb",
      "test/unit/juicer/command/verify_test.rb",
-     "test/unit/juicer_test.rb"
+     "test/unit/juicer/command/util_test.rb",
+     "test/unit/juicer/command/list_test.rb",
+     "test/unit/juicer/jslint_test.rb",
+     "test/unit/juicer/minifyer/closure_compressor_test.rb",
+     "test/unit/juicer/minifyer/yui_compressor_test.rb",
+     "test/unit/juicer/chainable_test.rb",
+     "test/unit/juicer/merger/stylesheet_merger_test.rb",
+     "test/unit/juicer/merger/javascript_merger_test.rb",
+     "test/unit/juicer/merger/base_test.rb",
+     "test/unit/juicer_test.rb",
+     "test/test_helper.rb"
   ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<shoulda>, [">= 2.10.2"])
       s.add_development_dependency(%q<mocha>, [">= 0.9.8"])
       s.add_development_dependency(%q<fakefs>, [">= 0.2.1"])
