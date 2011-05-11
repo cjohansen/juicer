@@ -1,3 +1,7 @@
+== 1.0.10 / 2011-05-11
+* Fix downloading of Rhino jar. Add mechanism for scraping out the
+  latest version.
+
 == 1.0.9 / 2010-12-07
 * Emergency fix: Crockford took down the Rhino version of JsLint,
   bundle it for now.

@@ -62,7 +62,6 @@ module Juicer
         webpage = Nokogiri::HTML(open(@website))
         @latest = (webpage / "h3#yuicompressor + ul li a:last").text.match(/(\d\.\d\.\d)/)[1]
       end
-
     end
   end
 end

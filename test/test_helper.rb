@@ -1,3 +1,5 @@
+
+require "rubygems"
 require 'fileutils'
 require 'test/unit'
 require 'shoulda'
@@ -56,6 +58,8 @@ module Kernel
       name = File.join($data_dir, "..", "bin", "jslint.js")
     elsif name =~ /ftp.+rhino(.+)\.zip/
       name = File.join($data_dir, "..", "bin", "rhino#{$1}.zip")
+    elsif name =~ /ftp\.mozilla.+/
+      name = File.join($data_dir, "../fixtures/rhino-download.html")
     end
 
     juicer_original_open(File.expand_path(name), *rest, &block)

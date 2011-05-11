@@ -50,7 +50,7 @@ class TestRhinoInstaller < Test::Unit::TestCase
     assert File.exists?(path(".juicer/lib/rhino/bin"))
     assert_equal 3, Dir.glob(path(".juicer/lib/rhino/**/*")).find_all { |f| File.file?(f) }.length
 
-    @installer.uninstall("1.7R2-RC1")
+    @installer.uninstall("1.7R3")
     assert File.exists?(path(".juicer/lib/rhino"))
     assert_equal 1, Dir.glob(path(".juicer/lib/rhino/**/*")).find_all { |f| File.file?(f) }.length
  end

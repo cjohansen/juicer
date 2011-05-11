@@ -8,11 +8,9 @@ module Juicer
     # Install and uninstall routines for the Mozilla Rhino jar.
     #
     class RhinoInstaller < Base
-      attr_reader :latest
-
       def initialize(install_dir = Juicer.home)
         super(install_dir)
-        @latest = "1_7R2-RC1"
+        @latest = nil
         @website = "http://ftp.mozilla.org/pub/mozilla.org/js/"
       end
 
@@ -47,6 +45,13 @@ module Juicer
           base = "rhino#{version}"
           File.delete(File.join(dir, "bin/", "#{base}.jar"))
         end
+      end
+
+      def latest
+        return @latest if @latest
+        webpage = Nokogiri::HTML(open(@website))
+        versions = (webpage / "td a").to_a.find_all { |a| a.attr("href") =~ /rhino\d_/ }
+        @latest = versions.collect { |n| n.attr("href") }.sort.last.match(/rhino(\d_.*)\.zip/)[1]
       end
     end
   end
