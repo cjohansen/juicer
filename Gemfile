@@ -1,4 +1,4 @@
 source "http://rubygems.org"
 
-# Specify your gem's dependencies in rb-notifu.gemspec
+# Specify gem dependencies in juicer.gemspec
 gemspec
