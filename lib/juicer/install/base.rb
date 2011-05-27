@@ -124,7 +124,7 @@ module Juicer
       # force argument is true (default false)
       #
       def download(url, force = false)
-        filename = File.join(@install_dir, "download", path.sub("lib/", ""), File.basename(url))
+        filename = File.join(@install_dir, "download", path.sub("lib/", ""), File.basename(url).split("?").first)
         return filename if File.exists?(filename) && !force
         FileUtils.mkdir_p(File.dirname(filename))
         File.delete(filename) if File.exists?(filename) && force

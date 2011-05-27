@@ -48,8 +48,8 @@ module Kernel
   alias juicer_original_open open # :nodoc:
 
   def open(name, *rest, &block)
-    if name =~ /http.+yuicompressor-(\d\.\d\.\d)\.zip$/
-      name = File.join($data_dir, "..", "bin", "yuicompressor-#{$1}.zip")
+    if name =~ /download\.php\?/
+      name = File.join($data_dir, "..", "bin", "yuicompressor-2.4.2.zip")
     elsif name =~ /http:\/\/yuilibrary\.com\/download/
       name = File.join($data_dir, "../fixtures/yui-download.html")
     elsif name =~ /http.+yuicompressor/
