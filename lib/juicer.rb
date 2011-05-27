@@ -3,7 +3,7 @@ require "logger"
 module Juicer
 
   # :stopdoc:
-  VERSION = '1.0.10'
+  VERSION = '1.0.11'
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR
   PATH = ::File.dirname(LIBPATH) + ::File::SEPARATOR
   LOGGER = Logger.new(STDOUT)

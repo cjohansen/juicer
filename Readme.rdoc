@@ -10,6 +10,7 @@ Christian Johansen (http://www.cjohansen.no) and contributors:
 * Aaron Suggs (http://ktheory.com)
 * Olle Jonsson (http://ollehost.dk/blog/)
 * Jakub Pawlowicz (http://blog.jakubpawlowicz.com)
+* stereobooster (https://github.com/stereobooster)
 
 == DESCRIPTION:
 
