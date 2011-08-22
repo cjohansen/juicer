@@ -1,3 +1,6 @@
+== 1.0.12 / 2011-06-03
+* Fix gemspec - 1.0.11 depends on Juicer itself
+
 == 1.0.11 / 2011-05-27
 * Fix downloading of YUI jar, which moved again. Thanks to sterebooster.
 
