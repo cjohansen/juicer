@@ -19,7 +19,7 @@ begin
     gem.add_development_dependency "jeweler", ">= 0.2.1"
     gem.add_development_dependency "redgreen", ">= 1.2.2" if RUBY_VERSION < "1.9"
     gem.add_dependency "cmdparse"
-    gem.add_dependency "nokogiri"
+    gem.add_dependency "nokogiri", ">= 1.5.0"
     gem.add_dependency "rubyzip"
     gem.executables = ["juicer"]
     gem.post_install_message = <<-MSG
@@ -64,7 +64,7 @@ desc 'Continuous build target'
 task :cruise do
   out = ENV['CC_BUILD_ARTIFACTS']
   mkdir_p out unless File.directory? out if out
- 
+
   Rake::Task["rcov"].invoke
   mv 'coverage/', "#{out}/" if out
 end
