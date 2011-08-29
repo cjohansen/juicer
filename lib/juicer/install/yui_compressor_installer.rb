@@ -14,7 +14,7 @@ module Juicer
         super(install_dir)
         @latest = nil
         @href = nil
-        @website = "http://yuilibrary.com/downloads/"
+        @website = 'http://yuilibrary.com/download/yuicompressor/'
       end
 
       #
@@ -61,9 +61,9 @@ module Juicer
       def latest
         return @latest if @latest
         webpage = Nokogiri::HTML(open(@website))
-        a = (webpage / "h3#yuicompressor + ul li a:last")[0]
-        @href = a["href"]
-        @latest = a.text.match(/(\d\.\d\.\d)/)[1]
+        a = webpage.css('#downloads #dl_list ul li:first a').first
+        @href = a['href']
+        @latest = a.text.match(/\d\.\d\.\d/)[0]
       end
     end
   end
