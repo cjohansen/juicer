@@ -1,3 +1,6 @@
+== 1.0.13 / 2011-08-30
+* Update YUI Compressor installer (new download page)
+
 == 1.0.12 / 2011-06-03
 * Fix gemspec - 1.0.11 depends on Juicer itself
 
@@ -59,7 +62,7 @@
 * Constant refefined warnings fixed in installer module (Aaron Suggs)
 * Ruby 1.9 compatibility
 * Google Closure Compiler support for `juicer merge` (Pavel Valodzka)
-* Fix bug in `juicer list` for files with no dependencies (Daniel Stockman) 
+* Fix bug in `juicer list` for files with no dependencies (Daniel Stockman)
 * Image embedder to embed images using data uris (Morgan Roderick)
 * YUI Compressor --arguments now works (Daniel Stockman)
 * Download Rhino over HTTP rather than FTP to avoid certain corporate

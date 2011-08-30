@@ -48,7 +48,7 @@ module Kernel
   alias juicer_original_open open # :nodoc:
 
   def open(name, *rest, &block)
-    if name =~ /download\.php\?/
+    if name =~ /yui\.zenfs\.com/
       name = File.join($data_dir, "..", "bin", "yuicompressor-2.4.2.zip")
     elsif name =~ /http:\/\/yuilibrary\.com\/download/
       name = File.join($data_dir, "../fixtures/yui-download.html")
@@ -103,7 +103,7 @@ module Juicer
         mkfile(@dir, 'd1.css', "h2 {\n    font-size: 10px;\n}\n")
         mkfile(@dir, 'ok.js', "function hey() {\n    return \"Hey\";\n}\n")
         mkfile(@dir, 'not-ok.js', "var a = 34\nb = 78;\n")
-        
+
         images = mkdir File.join(@dir, "images")
         mkfile(images, '1.png', "")
 
@@ -165,7 +165,7 @@ h2 {
    background: url(http://assets2/css/2.gif) no-repeat;
 }
         CSS
-        
+
         mkfile(css_dir, 'test3.css', css)
 
         mkfile(@dir, 'Changelog.txt', "2008.02.09 | stb-base 1.29\n\nFEATURE: Core  | Bla bla bla bla bla\nFEATURE: UI: | Bla bla bla bla bla\n\n\n2008.02.09 | stb-base 1.29\n\nFEATURE: Core  | Bla bla bla bla bla\nFEATURE: UI: | Bla bla bla bla bla\n")

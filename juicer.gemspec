@@ -5,21 +5,18 @@
 
 Gem::Specification.new do |s|
   s.name = %q{juicer}
-  s.version = "1.0.12"
+  s.version = "1.0.13"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christian Johansen"]
-  s.date = %q{2011-06-03}
+  s.date = %q{2011-08-30}
   s.default_executable = %q{juicer}
   s.description = %q{Resolve dependencies, merge and minify CSS and JavaScript files with Juicer - the command line tool for frontend engineers}
   s.email = %q{christian@cjohansen.no}
   s.executables = ["juicer"]
   s.files = [
-    "Gemfile",
-    "Gemfile.lock",
     "History.txt",
     "Manifest.txt",
-    "Rakefile",
     "Readme.rdoc",
     "VERSION",
     "bin/juicer",
@@ -57,71 +54,7 @@ Gem::Specification.new do |s|
     "lib/juicer/merger/stylesheet_merger.rb",
     "lib/juicer/minifyer/closure_compiler.rb",
     "lib/juicer/minifyer/java_base.rb",
-    "lib/juicer/minifyer/yui_compressor.rb",
-    "test/bin/jslint-1.0.js",
-    "test/bin/jslint.js",
-    "test/bin/rhino1_7R1.zip",
-    "test/bin/rhino1_7R2-RC1.jar",
-    "test/bin/rhino1_7R2-RC1.zip",
-    "test/bin/rhino1_7R3.jar",
-    "test/bin/rhino1_7R3.zip",
-    "test/bin/yuicompressor",
-    "test/bin/yuicompressor-2.3.5.zip",
-    "test/bin/yuicompressor-2.4.2.jar",
-    "test/bin/yuicompressor-2.4.2.zip",
-    "test/data/Changelog.txt",
-    "test/data/a.css",
-    "test/data/a.js",
-    "test/data/a1.css",
-    "test/data/b.css",
-    "test/data/b.js",
-    "test/data/b1.css",
-    "test/data/b2.css",
-    "test/data/c1.css",
-    "test/data/css/2.gif",
-    "test/data/css/test.css",
-    "test/data/css/test2.css",
-    "test/data/css/test3.css",
-    "test/data/d1.css",
-    "test/data/images/1.png",
-    "test/data/my_app.js",
-    "test/data/not-ok.js",
-    "test/data/ok.js",
-    "test/data/path_test.css",
-    "test/data/path_test2.css",
-    "test/data/pkg/module/moda.js",
-    "test/data/pkg/module/modb.js",
-    "test/data/pkg/pkg.js",
-    "test/fixtures/rhino-download.html",
-    "test/fixtures/yui-download.html",
-    "test/test_helper.rb",
-    "test/unit/juicer/asset/path_resolver_test.rb",
-    "test/unit/juicer/asset/path_test.rb",
-    "test/unit/juicer/cache_buster_test.rb",
-    "test/unit/juicer/chainable_test.rb",
-    "test/unit/juicer/command/install_test.rb",
-    "test/unit/juicer/command/list_test.rb",
-    "test/unit/juicer/command/merge_test.rb",
-    "test/unit/juicer/command/util_test.rb",
-    "test/unit/juicer/command/verify_test.rb",
-    "test/unit/juicer/css_cache_buster_test.rb",
-    "test/unit/juicer/datafy_test.rb",
-    "test/unit/juicer/dependency_resolver/css_dependency_resolver_test.rb",
-    "test/unit/juicer/dependency_resolver/javascript_dependency_resolver_test.rb",
-    "test/unit/juicer/ext/string_test.rb",
-    "test/unit/juicer/ext/symbol_test.rb",
-    "test/unit/juicer/image_embed_test.rb",
-    "test/unit/juicer/install/installer_base_test.rb",
-    "test/unit/juicer/install/jslint_installer_test.rb",
-    "test/unit/juicer/install/rhino_installer_test.rb",
-    "test/unit/juicer/install/yui_compressor_test.rb",
-    "test/unit/juicer/jslint_test.rb",
-    "test/unit/juicer/merger/base_test.rb",
-    "test/unit/juicer/merger/javascript_merger_test.rb",
-    "test/unit/juicer/merger/stylesheet_merger_test.rb",
-    "test/unit/juicer/minifyer/closure_compressor_test.rb",
-    "test/unit/juicer/minifyer/yui_compressor_test.rb",
-    "test/unit/juicer_test.rb"
+    "lib/juicer/minifyer/yui_compressor.rb"
   ]
   s.homepage = %q{http://github.com/cjohansen/juicer}
   s.post_install_message = %q{Juicer does not ship with third party libraries. You probably want to install
@@ -176,41 +109,17 @@ Happy juicing!
       s.add_development_dependency(%q<mocha>, [">= 0.9.8"])
       s.add_development_dependency(%q<fakefs>, [">= 0.2.1"])
       s.add_development_dependency(%q<jeweler>, [">= 0.2.1"])
-      s.add_development_dependency(%q<shoulda>, [">= 2.10.2"])
-      s.add_development_dependency(%q<mocha>, [">= 0.9.8"])
-      s.add_development_dependency(%q<fakefs>, [">= 0.2.1"])
-      s.add_development_dependency(%q<jeweler>, [">= 0.2.1"])
-      s.add_development_dependency(%q<redgreen>, [">= 1.2.2"])
       s.add_runtime_dependency(%q<cmdparse>, [">= 0"])
-      s.add_runtime_dependency(%q<nokogiri>, [">= 0"])
+      s.add_runtime_dependency(%q<nokogiri>, [">= 1.5.0"])
       s.add_runtime_dependency(%q<rubyzip>, [">= 0"])
     else
-      s.add_dependency(%q<shoulda>, [">= 2.10.2"])
-      s.add_dependency(%q<mocha>, [">= 0.9.8"])
-      s.add_dependency(%q<fakefs>, [">= 0.2.1"])
-      s.add_dependency(%q<jeweler>, [">= 0.2.1"])
-      s.add_dependency(%q<shoulda>, [">= 2.10.2"])
-      s.add_dependency(%q<mocha>, [">= 0.9.8"])
-      s.add_dependency(%q<fakefs>, [">= 0.2.1"])
-      s.add_dependency(%q<jeweler>, [">= 0.2.1"])
-      s.add_dependency(%q<redgreen>, [">= 1.2.2"])
       s.add_dependency(%q<cmdparse>, [">= 0"])
-      s.add_dependency(%q<nokogiri>, [">= 0"])
+      s.add_dependency(%q<nokogiri>, [">= 1.5.0"])
       s.add_dependency(%q<rubyzip>, [">= 0"])
     end
   else
-    s.add_dependency(%q<shoulda>, [">= 2.10.2"])
-    s.add_dependency(%q<mocha>, [">= 0.9.8"])
-    s.add_dependency(%q<fakefs>, [">= 0.2.1"])
-    s.add_dependency(%q<jeweler>, [">= 0.2.1"])
-    s.add_dependency(%q<shoulda>, [">= 2.10.2"])
-    s.add_dependency(%q<mocha>, [">= 0.9.8"])
-    s.add_dependency(%q<fakefs>, [">= 0.2.1"])
-    s.add_dependency(%q<jeweler>, [">= 0.2.1"])
-    s.add_dependency(%q<redgreen>, [">= 1.2.2"])
     s.add_dependency(%q<cmdparse>, [">= 0"])
-    s.add_dependency(%q<nokogiri>, [">= 0"])
+    s.add_dependency(%q<nokogiri>, [">= 1.5.0"])
     s.add_dependency(%q<rubyzip>, [">= 0"])
   end
 end
-
