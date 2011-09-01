@@ -60,7 +60,7 @@ module Juicer
       #
       def latest
         return @latest if @latest
-        webpage = Nokogiri::HTML(open(@website))
+        webpage = Nokogiri::HTML(open(@website).read)
         a = webpage.css('#downloads #dl_list ul li:first a').first
         @href = a['href']
         @latest = a.text.match(/\d\.\d\.\d/)[0]
