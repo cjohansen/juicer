@@ -49,7 +49,7 @@ module Juicer
 
       def latest
         return @latest if @latest
-        webpage = Nokogiri::HTML(open(@website))
+        webpage = Nokogiri::HTML(open(@website).read)
         versions = (webpage / "td a").to_a.find_all { |a| a.attr("href") =~ /rhino\d_/ }
         @latest = versions.collect { |n| n.attr("href") }.sort.last.match(/rhino(\d_.*)\.zip/)[1]
       end
