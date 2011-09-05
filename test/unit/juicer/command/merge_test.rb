@@ -131,7 +131,7 @@ class TestMergeCommand < Test::Unit::TestCase
       begin
         @merge.instance_eval { @output = path("a.min.css") }
         assert @merge.execute(path("a1.css"))
-        assert_match "h2{font-size:10px;}html{background:red;}h1{font-size:12px;}body{width:800px;}", IO.read(path("a.min.css"))
+        assert_match "h2{font-size:10px}html{background:red}h1{font-size:12px}body{width:800px}", IO.read(path("a.min.css"))
       rescue Test::Unit::AssertionFailedError => err
         raise err
       rescue Exception => err
@@ -149,14 +149,14 @@ class TestMergeCommand < Test::Unit::TestCase
 
     should "ignore jslint problems" do
       @merge.instance_eval { @ignore = true }
-      
+
       assert_nothing_raised do
         @merge.execute(path("not-ok.js"))
         assert_match(/Problems were detected during verification/, @io.string)
         assert_match(/Ignoring detected problems/, @io.string)
       end
     end
-  
+
     should_eventually "warn about duplicated image urls for embedding"
   end
 end
