@@ -275,7 +275,7 @@ class TestImageEmbed < Test::Unit::TestCase
         end
       end
 
-      should "not encod unsupported asset types" do
+      should "not encode unsupported asset types" do
         @unsupported_assets.each do |asset|
           path = "#{asset[:path]}?embed=true"
           assert_equal( path, @embedder.embed_data_uri( path ) )
