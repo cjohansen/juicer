@@ -33,6 +33,7 @@ module Juicer
       @hosts = options[:hosts]
       @path_resolver = Juicer::Asset::PathResolver.new(:document_root => options[:document_root],
                                                        :hosts => options[:hosts])
+      @force = options[:force]
     end
 
     #
@@ -68,7 +69,7 @@ module Juicer
 
           if new_path.length < SIZE_LIMIT
             # replace the url in the css file with the data uri
-            @contents.gsub!(asset.path, embed_data_uri(asset.filename)) if asset.filename.match( /\?embed=true$/ )
+            @contents.gsub!(asset.path, embed_data_uri(asset.filename)) if @force || asset.filename.match( /\?embed=true$/ )
           else
             Juicer::LOGGER.warn("The final data uri for the image located at #{asset.path.gsub('?embed=true', '')} exceeds #{SIZE_LIMIT} and will not be embedded to maintain compatability.") 
           end
@@ -86,7 +87,12 @@ module Juicer
     def embed_data_uri( path )
       new_path = path
       
-      supported_file_matches = path.match( /(?:\.)(png|gif|jpg|jpeg)(?:\?embed=true)$/i )
+      if @force
+        supported_file_matches = path.match( /(?:\.)(png|gif|jpg|jpeg)$/i )
+      else
+        supported_file_matches = path.match( /(?:\.)(png|gif|jpg|jpeg)(?:\?embed=true)$/i )
+      end
+
       filetype = supported_file_matches[1] if supported_file_matches
       
       if ( filetype )        

@@ -31,6 +31,7 @@ module Juicer
         @local_hosts = []               # Host names that are served from :document_root
         @verify = true                  # Verify js files with JsLint
 				@image_embed_type = :none       # Embed images in css files, options are :none, :data_uri
+        @force_image_embed = false
 
         @log = log || Logger.new(STDOUT)
 
@@ -84,6 +85,7 @@ the compressor the path should be the path to where the jar file is found.
                            (" " * 37) + "None leaves URLs untouched. Candiate images must be flagged with '?embed=true to be considered") do |embed|
             @image_embed_type = [:none, :data_uri].include?(embed.to_sym) ? embed.to_sym : nil
           end
+          opt.on("", "--force-image-embed", "Will force all images to embed without having to tag with embed parameter") { @force_image_embed = true }
         end
       end
 
@@ -193,7 +195,7 @@ the compressor the path should be the path to where the jar file is found.
 			# 
 			def image_embed(file)
         return nil if !file || file !~ /\.css$/ || @image_embed_type.nil?
-        Juicer::ImageEmbed.new(:document_root => @document_root, :type => @image_embed_type )
+        Juicer::ImageEmbed.new(:document_root => @document_root, :type => @image_embed_type, :force => @force_image_embed )
 			end
 
       #
