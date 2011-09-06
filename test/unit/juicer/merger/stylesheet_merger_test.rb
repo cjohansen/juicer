@@ -216,7 +216,7 @@ EOF
         assert_equal "../images/1.png", merger.resolve_path("/images/1.png", nil)
       end
     end
-    
+
     should "leave data URLs untouched" do
       merger = Juicer::Merger::StylesheetMerger.new([],
                                                     :document_root => "test/data",

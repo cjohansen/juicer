@@ -38,9 +38,9 @@ class TestVerifyCommand < Test::Unit::TestCase
       Juicer::JsLint.any_instance.expects(:check).with(files[0]).returns(Juicer::JsLint::Report.new)
       Juicer::JsLint.any_instance.expects(:check).with(files[1]).returns(Juicer::JsLint::Report.new(["Oops"]))
       Juicer::JsLint.any_instance.expects(:check).with(files[2]).returns(Juicer::JsLint::Report.new)
-      
+
       @command.execute(files)
-     
+
       assert_match(/OK!/, @io.string)
       assert_match(/Problems detected/, @io.string)
     end

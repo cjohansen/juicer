@@ -31,7 +31,7 @@ class TestInstallCommand < Test::Unit::TestCase
 
       @command.instance_eval { @path = path(".juicer") }
       @command.execute("jslint")
-      
+
       assert installer.installed?
     end
 
@@ -51,7 +51,7 @@ class TestInstallCommand < Test::Unit::TestCase
       @command.instance_eval { @path = path(".juicer") }
       @command.instance_eval { @version = "0.9" }
       @command.execute("jslint")
-      
+
       assert installer.installed?("0.9")
     end
   end
