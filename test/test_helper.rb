@@ -1,17 +1,20 @@
-
-require "rubygems"
-require 'fileutils'
-require 'test/unit'
-require 'shoulda'
-require 'mocha'
-require 'open-uri'
-require 'juicer'
+require 'rubygems'
+require 'bundler'
 
 begin
   require 'turn'
 rescue LoadError => err
   puts "Protip: Install turn gem for better test reports. #{err.message}"
 end
+
+Bundler.setup
+
+require 'fileutils'
+require 'test/unit'
+require 'shoulda'
+require 'mocha'
+require 'open-uri'
+require 'juicer'
 
 if RUBY_VERSION < "1.9"
   require 'redgreen' if ENV['TM_DIRECTORY'].nil?
