@@ -192,6 +192,40 @@ class TestImageEmbed < Test::Unit::TestCase
         end
       end
 
+      should "force embedding images into css file" do
+        @embedder = Juicer::ImageEmbed.new(:type => :data_uri, :document_root => '', :force => true)
+        @stylesheets = [
+                        {
+                          :path => '/stylesheets/test_embed_true.css',
+                          :content => "body: { background: url(#{@supported_assets.first[:path]}); }"
+                        }
+                       ]
+        create_files( @stylesheets )
+
+        @stylesheets.each do |stylesheet|
+          old_contents = File.read( stylesheet[:path] )
+
+          # make sure there are no errors
+          assert_nothing_raised do
+            @embedder.save stylesheet[:path]
+          end
+
+          css_contents = File.read( stylesheet[:path] )
+
+          # make sure the original url does not exist anymore
+          assert_no_match( Regexp.new( @supported_assets.first[:path] ), css_contents )
+
+          # make sure the url has been converted into a data uri
+          image_contents = File.read( @supported_assets.first[:path] )
+
+          # # create the data uri from the image contents
+          data_uri = Datafy::make_data_uri( image_contents, 'image/png' )
+
+          # let's see if the data uri exists in the file
+          assert css_contents.include?( data_uri )
+        end
+      end
+
       should "not embed unflagged images" do
         @stylesheets = [
                         {
@@ -248,7 +282,6 @@ class TestImageEmbed < Test::Unit::TestCase
           assert_match( Regexp.new( @unsupported_assets.last[:path] ), css_contents )
         end
       end
-
 
     end # context
 
