@@ -36,7 +36,7 @@ class CacheBusterTest < Test::Unit::TestCase
     should "remove cache buster query parameters with custom name" do
       assert_equal @filename, Juicer::CacheBuster.clean("#@filename?cb=1234567890", :cb)
     end
-    
+
     should "remove hard cache buster" do
       assert_equal @filename, Juicer::CacheBuster.clean(@filename.sub(/(\.txt)/, '-jcb1234567890\1'))
     end

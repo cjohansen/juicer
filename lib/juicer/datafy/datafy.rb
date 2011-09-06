@@ -16,5 +16,5 @@ module Datafy
     end
     outuri += ",#{content}"
   end
-  
+
 end
