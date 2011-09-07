@@ -6,18 +6,18 @@ module Juicer
   #
   # The ImageEmbed is a tool that can parse a CSS file and substitute all
   # referenced URLs by a data uri
-  # 
+  #
   # - data uri (http://en.wikipedia.org/wiki/Data_URI_scheme)
-  # 
+  #
   # Only local resources will be processed this way, external resources referenced
   # by absolute urls will be left alone
-  # 
+  #
   class ImageEmbed
     include Juicer::Chainable
 
     # The maximum supported limit for modern browsers, See the Readme.rdoc for details
     SIZE_LIMIT = 32768
-    
+
     #
     # Returns the size limit
     #
@@ -56,14 +56,14 @@ module Juicer
       duplicates = duplicate_urls(assets)
 
       if duplicates.length > 0
-        Juicer::LOGGER.warn("Duplicate image urls detected, these images will not be embedded: #{duplicates.collect { |v| v.gsub('?embed=true', '') }.inspect}") 
+        Juicer::LOGGER.warn("Duplicate image urls detected, these images will not be embedded: #{duplicates.collect { |v| v.gsub('?embed=true', '') }.inspect}")
       end
 
       assets.each do |asset|
         begin
           next if used.include?(asset) || duplicates.include?(asset.path)
           used << asset
-          
+
           # make sure we do not exceed SIZE_LIMIT
           new_path = embed_data_uri(asset.filename)
 
@@ -71,7 +71,7 @@ module Juicer
             # replace the url in the css file with the data uri
             @contents.gsub!(asset.path, embed_data_uri(asset.filename)) if @force || asset.filename.match( /\?embed=true$/ )
           else
-            Juicer::LOGGER.warn("The final data uri for the image located at #{asset.path.gsub('?embed=true', '')} exceeds #{SIZE_LIMIT} and will not be embedded to maintain compatability.") 
+            Juicer::LOGGER.warn("The final data uri for the image located at #{asset.path.gsub('?embed=true', '')} exceeds #{SIZE_LIMIT} and will not be embedded to maintain compatability.")
           end
         rescue Errno::ENOENT
           puts "Unable to locate file #{asset.path}, skipping image embedding"
@@ -83,10 +83,10 @@ module Juicer
     end
 
     chain_method :save
-            
+
     def embed_data_uri( path )
       new_path = path
-      
+
       if @force
         supported_file_matches = path.match( /(?:\.)(png|gif|jpg|jpeg)$/i )
       else
@@ -94,17 +94,17 @@ module Juicer
       end
 
       filetype = supported_file_matches[1] if supported_file_matches
-      
-      if ( filetype )        
-        filename = path.gsub('?embed=true','')      
-        
+
+      if ( filetype )
+        filename = path.gsub('?embed=true','')
+
         # check if file exists, throw an error if it doesn't exist
         if File.exist?( filename )
-          
-          # read contents of file into memory              
+
+          # read contents of file into memory
           content = File.read( filename )
           content_type = "image/#{filetype}"
-          
+
           # encode the url
           new_path = Datafy::make_data_uri( content, content_type )
         else

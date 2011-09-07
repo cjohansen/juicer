@@ -80,11 +80,11 @@ class TestImageEmbed < Test::Unit::TestCase
           @files = [{ :path => "#{@document_root}/images/custom-file.png", :filename => '/images/custom-file.png', :content => "hello png!" }]
           create_files(@files)
         end
-        
+
         should "embed urls with embedder" do
           stylesheets = [{ :path => "#{@document_root}/stylesheets/test_absolute_path.css", :content => "body: { background: url(#{@files.first[:filename]}?embed=true); }" }]
           create_files(stylesheets)
-          
+
           @another_embedder.save stylesheets.first[:path]
           css_contents = File.read(stylesheets.first[:path])
 
@@ -95,11 +95,11 @@ class TestImageEmbed < Test::Unit::TestCase
           # make sure the encoded data_uri is present in the stylesheet
           assert css_contents.include?(data_uri)
         end
-        
+
         should "not embed urls with embedder" do
           stylesheets = [{ :path => "#{@document_root}/stylesheets/test_absolute_path.css", :content => "body: { background: url(#{@files.first[:filename]}?embed=false); }" }]
           create_files(stylesheets)
-          
+
           @another_embedder.save stylesheets.first[:path]
           css_contents = File.read(stylesheets.first[:path])
 

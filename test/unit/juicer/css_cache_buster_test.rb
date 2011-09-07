@@ -95,7 +95,7 @@ class TestCssCacheBuster < Test::Unit::TestCase
       buster.urls(output).each { |asset| assert_match /\?\d+$/, asset.path }
     end
   end
-  
+
   context "hard cache busters" do
     should "should alter file name" do
       File.open(path("a2.css"), "w") { |f| f.puts "" }
@@ -115,7 +115,7 @@ class TestCssCacheBuster < Test::Unit::TestCase
       buster = Juicer::CssCacheBuster.new :document_root => path("")
 
       assert_nothing_raised do
-        buster.save file        
+        buster.save file
       end
     end
   end

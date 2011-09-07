@@ -44,7 +44,7 @@ class ClosureCompilerTest < Test::Unit::TestCase
       File.delete('compiler.jar') if File.exists?('compiler.jar')
       FileUtils.rm_rf("another") if File.exists?("another")
     end
-    
+
     should "not find jar when no jars on path" do
       Juicer::Minifyer::ClosureCompiler.publicize_methods do
         closure = Juicer::Minifyer::ClosureCompiler.new
@@ -69,7 +69,7 @@ class ClosureCompilerTest < Test::Unit::TestCase
         File.open('compiler-2.3.5.jar', 'w') { |f| f.puts '' }
 
         closure = Juicer::Minifyer::ClosureCompiler.new
-        
+
         # Test
         assert_equal File.expand_path('compiler-2.3.5.jar'), closure.locate_jar
       end
@@ -83,7 +83,7 @@ class ClosureCompilerTest < Test::Unit::TestCase
         File.open('compiler.jar', 'w') { |f| f.puts '' }
 
         closure = Juicer::Minifyer::ClosureCompiler.new
-        
+
         # Test
         assert_equal File.expand_path('compiler.jar'), closure.locate_jar
       end
@@ -96,7 +96,7 @@ class ClosureCompilerTest < Test::Unit::TestCase
         File.open('another/compiler-2.3.4.jar', 'w') { |f| f.puts "" }
 
         closure = Juicer::Minifyer::ClosureCompiler.new
-        
+
         # Test
         assert_nil closure.locate_jar
         closure = Juicer::Minifyer::ClosureCompiler.new({ :bin_path => 'another' })

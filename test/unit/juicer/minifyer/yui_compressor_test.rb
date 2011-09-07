@@ -53,7 +53,7 @@ class TestYuiCompressor < Test::Unit::TestCase
       File.delete('yuicompressor.jar') if File.exists?('yuicompressor.jar')
       FileUtils.rm_rf("another") if File.exists?("another")
     end
-    
+
     should "not find jar when no jars on path" do
       Juicer::Minifyer::YuiCompressor.publicize_methods do
         yui_compressor = Juicer::Minifyer::YuiCompressor.new
@@ -78,7 +78,7 @@ class TestYuiCompressor < Test::Unit::TestCase
         File.open('yuicompressor-2.3.5.jar', 'w') { |f| f.puts '' }
 
         yui_compressor = Juicer::Minifyer::YuiCompressor.new
-        
+
         # Test
         assert_equal File.expand_path('yuicompressor-2.3.5.jar'), yui_compressor.locate_jar
       end
@@ -92,7 +92,7 @@ class TestYuiCompressor < Test::Unit::TestCase
         File.open('yuicompressor.jar', 'w') { |f| f.puts '' }
 
         yui_compressor = Juicer::Minifyer::YuiCompressor.new
-        
+
         # Test
         assert_equal File.expand_path('yuicompressor.jar'), yui_compressor.locate_jar
       end
@@ -105,7 +105,7 @@ class TestYuiCompressor < Test::Unit::TestCase
         File.open('another/yuicompressor-2.3.4.jar', 'w') { |f| f.puts "" }
 
         yui_compressor = Juicer::Minifyer::YuiCompressor.new
-        
+
         # Test
         assert_nil yui_compressor.locate_jar
         yui_compressor = Juicer::Minifyer::YuiCompressor.new({ :bin_path => 'another' })

@@ -16,35 +16,35 @@ module Juicer
     #
     #   Dir.pwd
     #   #=> "/home/christian/projects/mysite/design/css"
-    #   
+    #
     #   asset = Juicer::Asset::Path.new "../images/logo.png"
     #   asset.path
     #   #=> "../images/logo.png"
-    #   
+    #
     #   asset.rebase("~/projects/mysite/design").path
     #   #=> "images/logo.png"
-    #   
+    #
     #   asset.filename
     #   #=> "/home/christian/projects/mysite/design/images/logo.png"
-    #   
+    #
     #   asset.path(:cache_buster_type => :soft)
     #   #=> "../images/logo.png?jcb=1234567890"
-    #   
+    #
     #   asset.path(:cache_buster_type => :soft, :cache_buster => nil)
     #   #=> "../images/logo.png?1234567890"
-    #   
+    #
     #   asset.path(:cache_buster => "bustIT")
     #   #=> "../images/logo.png?bustIT=1234567890"
-    #   
+    #
     #   asset = Juicer::Asset::Path.new "../images/logo.png", :document_root
     #   #=> "/home/christian/projects/mysite"
-    #   
+    #
     #   asset.absolute_path(:cache_buster_type => :hard)
     #   #=> "/images/logo-jcb1234567890.png"
-    #   
+    #
     #   asset.absolute_path(:host => "http://localhost")
     #   #=> "http://localhost/images/logo.png"
-    #   
+    #
     #   asset.absolute_path(:host => "http://localhost", :cache_buster_type => :hard)
     #   #=> "http://localhost/images/logo-jcb1234567890.png"
     #
