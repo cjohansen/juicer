@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    juicer (1.0.9)
+    juicer (1.0.13)
       cmdparse
-      nokogiri
+      nokogiri (>= 1.5.0)
       rubyzip
 
 GEM
@@ -17,12 +17,14 @@ GEM
       git (>= 1.2.5)
       rake
     mocha (0.9.12)
-    nokogiri (1.4.4.1-x86-mingw32)
+    nokogiri (1.5.0)
+    nokogiri (1.5.0-x86-mingw32)
     rake (0.9.0)
-    rubyzip (0.9.4)
+    rubyzip (0.9.5)
     shoulda (2.11.3)
 
 PLATFORMS
+  ruby
   x86-mingw32
 
 DEPENDENCIES
