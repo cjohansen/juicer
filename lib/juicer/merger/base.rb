@@ -67,7 +67,7 @@ module Juicer
       # Fetch contents of a single file. May be overridden in subclasses to provide
       # custom content filtering
       def merge(file)
-        IO.read(file) + "\n"
+        IO.read(file, {"mode" => "r:bom|utf-8"}) + "\n"
       end
     end
   end
