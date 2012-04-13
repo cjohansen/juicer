@@ -59,7 +59,7 @@ module Juicer
       #
       def latest
         return @latest if @latest
-        webpage = Nokogiri::HTML(open(@website))
+        webpage = Nokogiri::HTML(open(@website).read)
         @latest = (webpage / "//table[@id='resultstable']//td/a[contains(@href, 'compiler')]").map{|link|
           link.get_attribute('href')[/\d{8}/].to_i
         }.sort.last.to_s

@@ -1,3 +1,6 @@
+== 1.0.14 / 2012-04-13
+* Minor fix for closure compiler installation
+
 == 1.0.13 / 2011-08-30
 * Update YUI Compressor installer (new download page)
 

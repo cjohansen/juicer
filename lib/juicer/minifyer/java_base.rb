@@ -38,7 +38,14 @@ module Juicer
         @jar_args = nil
 
         super(bin, options)
-        path << bin_path if bin_path
+
+        if !bin_path.nil?
+          if Array === bin_path
+            bin_path.each { |p| path << p }
+          else
+            path << bin_path
+          end
+        end
       end
 
       # Overrides set_opts called from binary class
