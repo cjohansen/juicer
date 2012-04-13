@@ -80,11 +80,11 @@ class TestImageEmbed < Test::Unit::TestCase
           @files = [{ :path => "#{@document_root}/images/custom-file.png", :filename => '/images/custom-file.png', :content => "hello png!" }]
           create_files(@files)
         end
-        
+
         should "embed urls with embedder" do
           stylesheets = [{ :path => "#{@document_root}/stylesheets/test_absolute_path.css", :content => "body: { background: url(#{@files.first[:filename]}?embed=true); }" }]
           create_files(stylesheets)
-          
+
           @another_embedder.save stylesheets.first[:path]
           css_contents = File.read(stylesheets.first[:path])
 
@@ -95,11 +95,11 @@ class TestImageEmbed < Test::Unit::TestCase
           # make sure the encoded data_uri is present in the stylesheet
           assert css_contents.include?(data_uri)
         end
-        
+
         should "not embed urls with embedder" do
           stylesheets = [{ :path => "#{@document_root}/stylesheets/test_absolute_path.css", :content => "body: { background: url(#{@files.first[:filename]}?embed=false); }" }]
           create_files(stylesheets)
-          
+
           @another_embedder.save stylesheets.first[:path]
           css_contents = File.read(stylesheets.first[:path])
 
@@ -192,6 +192,40 @@ class TestImageEmbed < Test::Unit::TestCase
         end
       end
 
+      should "force embedding images into css file" do
+        @embedder = Juicer::ImageEmbed.new(:type => :data_uri, :document_root => '', :force => true)
+        @stylesheets = [
+                        {
+                          :path => '/stylesheets/test_embed_true.css',
+                          :content => "body: { background: url(#{@supported_assets.first[:path]}); }"
+                        }
+                       ]
+        create_files( @stylesheets )
+
+        @stylesheets.each do |stylesheet|
+          old_contents = File.read( stylesheet[:path] )
+
+          # make sure there are no errors
+          assert_nothing_raised do
+            @embedder.save stylesheet[:path]
+          end
+
+          css_contents = File.read( stylesheet[:path] )
+
+          # make sure the original url does not exist anymore
+          assert_no_match( Regexp.new( @supported_assets.first[:path] ), css_contents )
+
+          # make sure the url has been converted into a data uri
+          image_contents = File.read( @supported_assets.first[:path] )
+
+          # # create the data uri from the image contents
+          data_uri = Datafy::make_data_uri( image_contents, 'image/png' )
+
+          # let's see if the data uri exists in the file
+          assert css_contents.include?( data_uri )
+        end
+      end
+
       should "not embed unflagged images" do
         @stylesheets = [
                         {
@@ -249,7 +283,6 @@ class TestImageEmbed < Test::Unit::TestCase
         end
       end
 
-
     end # context
 
     context "embed method" do
@@ -275,7 +308,7 @@ class TestImageEmbed < Test::Unit::TestCase
         end
       end
 
-      should "not encod unsupported asset types" do
+      should "not encode unsupported asset types" do
         @unsupported_assets.each do |asset|
           path = "#{asset[:path]}?embed=true"
           assert_equal( path, @embedder.embed_data_uri( path ) )

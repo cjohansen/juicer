@@ -127,7 +127,7 @@ module Juicer
     def self.rails(file)
       self.path(file, :rails)
     end
-    
+
     #
     # Remove cache buster from a URL for a given parameter name. Parameter name is
     # "cb" by default.

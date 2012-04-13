@@ -6,7 +6,7 @@ class TestJsLint < Test::Unit::TestCase
     @file = path("jsltest.js")
     super
   end
-  
+
   def setup
     FileUtils.mkdir(path("")) unless File.exists?(path(""))
     File.open(@file, "w") { |f| f.puts "" }
@@ -20,7 +20,7 @@ class TestJsLint < Test::Unit::TestCase
     should "shell out to rhino/jslint" do
       jslint = Juicer::JsLint.new(:bin_path => @path)
       jslint.expects(:execute).with("-jar \"#{@path}/rhino1_7R3.jar\" \"#{@path}/jslint-1.0.js\" \"#{@file}\"").returns("jslint: No problems")
-      
+
       assert jslint.check(@file).ok?
     end
   end
@@ -36,7 +36,7 @@ class TestJsLint < Test::Unit::TestCase
     should "be a report object for invalid files" do
       jslint = Juicer::JsLint.new(:bin_path => @path)
       jslint.expects(:execute).returns("Wrong use of semicolon\nWrong blabla")
-      
+
       assert_equal Juicer::JsLint::Report, jslint.check(path("not-ok.js")).class
     end
   end
