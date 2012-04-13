@@ -13,7 +13,7 @@ GEM
     fakefs (0.3.2)
     git (1.2.5)
     jeweler (1.6.0)
-      bundler (~> 1.0.0)
+      bundler (~> 1.1.0)
       git (>= 1.2.5)
       rake
     mocha (0.9.12)
