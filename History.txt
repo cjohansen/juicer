@@ -1,3 +1,6 @@
+== 1.0.15 / 2012-04-17
+* Fix stupid depend-on-self-issue (again!)
+
 == 1.0.14 / 2012-04-13
 * Minor fix for closure compiler installation
 
