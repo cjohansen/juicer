@@ -102,7 +102,7 @@ module Juicer
         if File.exist?( filename )
 
           # read contents of file into memory
-          content = File.read( filename )
+          content = File.open(filename, "rb") { |f| f.read }
           content_type = "image/#{filetype}"
 
           # encode the url
