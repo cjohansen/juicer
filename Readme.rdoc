@@ -156,29 +156,23 @@ stylesheets like this:
 
     <head>
         ...
-        <!--[if !IE]>-->
+        <!--[if gte IE 8]><!-->
             <link rel="stylesheet" type="text/css" href="master.embedded.css" />
         <!--<![endif]-->
-        <!--[if gte IE 8]>
-            <link rel="stylesheet" type="text/css" href="master.embedded.css" />
-        <![endif]-->
         <!--[if lte IE 7]>
             <link rel="stylesheet" type="text/css" href="master.normal.css" />
         <![endif]-->
         ...
     </head>
 
-The first conditional comemnt allows only non-IE browsers to fetch the 
+The first conditional comemnt allows only non-IE and IE8+ browsers to fetch the 
 <code>master.embedded.css</code> stylesheet.
 
-The second conditional comment allows only IE8+ browsers to fetch the 
-<code>master.embedded.css</code> stylesheet.
-
-The last conditional comment allows only IE7 and lower to fetch the 
+The second conditional comment allows only IE7 and lower to fetch the 
 <code>master.normal.css</code> stylesheet.
-    
-Unfortunately, you will need to use three conditional comments, or you will end 
-up with an unsightly "-->" displayed at the top of your pages in IE.
+
+Be ware that if you embed images over 32kb IE8 will not show them.
+In this case bump the version numers up by one in both conditional comments.
 
 ==== Browser support
 Windows Vista, Windows 2003, Windows 7
