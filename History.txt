@@ -1,3 +1,6 @@
+== 1.0.17 / 2012-10-15
+* YUI Compressor moved to GitHub
+
 == 1.0.16 / 2012-05-02
 * Fix problem with image embeds on Windows (Wesley Crossman)
 

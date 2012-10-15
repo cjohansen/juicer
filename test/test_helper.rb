@@ -53,7 +53,7 @@ module Kernel
   def open(name, *rest, &block)
     if name =~ /yui\.zenfs\.com/
       name = File.join($data_dir, "..", "bin", "yuicompressor-2.4.2.zip")
-    elsif name =~ /http:\/\/yuilibrary\.com\/download/
+    elsif name == "https://github.com/yui/yuicompressor/downloads"
       name = File.join($data_dir, "../fixtures/yui-download.html")
     elsif name =~ /http.+yuicompressor/
       name = File.join($data_dir, "..", "bin", "yuicompressor")
