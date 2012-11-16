@@ -15,6 +15,7 @@ module Juicer
         @latest = nil
         @href = nil
         @website = 'https://github.com/yui/yuicompressor/downloads'
+        @cdn = 'http://cloud.github.com'
       end
 
       #
@@ -29,7 +30,7 @@ module Juicer
       def install(version = nil)
         version = super(version)
         base = "yuicompressor-#{version}"
-        filename = download(@href)
+        filename = download(@cdn+@href)
         target = File.join(@install_dir, path)
 
         Zip::ZipFile.open(filename) do |file|
