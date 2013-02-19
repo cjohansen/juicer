@@ -58,6 +58,14 @@ module Juicer
       raise NotImplementedError.new
     end
 
+    def encoded_line(line)
+      if String.method_defined?(:encode)
+        line.encode!('UTF-8', 'UTF-8', :invalid => :replace)
+      else
+        line
+      end
+    end
+
     #
     # Carries out the actual work of resolve. resolve resets the internal
     # file list and yields control to _resolve for rebuilding the file list.

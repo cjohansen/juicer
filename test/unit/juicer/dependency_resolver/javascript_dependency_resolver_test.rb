@@ -1,3 +1,4 @@
+# encoding: utf-8
 require "test_helper"
 
 class TestJavaScriptDependencyResolver < Test::Unit::TestCase
@@ -46,5 +47,13 @@ class TestJavaScriptDependencyResolver < Test::Unit::TestCase
 
     actual_files = @resolver.resolve(my_app)
     assert_equal expected_files, actual_files
+  end
+
+  def test_parse
+    text = "© Dynamic Drive"
+    text.force_encoding("us-ascii") if RUBY_VERSION > "1.9"
+    assert_nothing_raised ArgumentError do
+      @resolver.send(:parse, text)
+    end
   end
 end

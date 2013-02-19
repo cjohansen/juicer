@@ -1,3 +1,4 @@
+# encoding: utf-8
 require "test_helper"
 
 class TestCssDependencyResolver < Test::Unit::TestCase
@@ -32,5 +33,13 @@ class TestCssDependencyResolver < Test::Unit::TestCase
   def test_load_order
     files = @resolver.resolve(path("a1.css")).collect { |file| file.split("/").pop }
     assert_equal "d1.cssb1.cssc1.cssa1.css", files.join
+  end
+
+  def test_parse
+    text = "© Dynamic Drive"
+    text.force_encoding("us-ascii") if RUBY_VERSION > "1.9"
+    assert_nothing_raised ArgumentError do
+      @resolver.send(:parse, text)
+    end
   end
 end
