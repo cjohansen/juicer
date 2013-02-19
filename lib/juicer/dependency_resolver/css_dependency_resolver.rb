@@ -12,7 +12,7 @@ module Juicer
 
     private
     def parse(line, imported_file = nil)
-      return $2 if line =~ @@import_pattern
+      return $2 if encoded_line(line) =~ @@import_pattern
 
       # At first sight of actual CSS rules we abort (TODO: This does not take
       # into account the fact that rules may be commented out and that more
