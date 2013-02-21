@@ -1,3 +1,9 @@
+== 1.0.19 / 2013-02-21
+* Fix UTF-8 issues
+
+== 1.0.18 / 2012-11-16
+* Download YUI Compressor via GitHub's CDN
+
 == 1.0.17 / 2012-10-15
 * YUI Compressor moved to GitHub
 
