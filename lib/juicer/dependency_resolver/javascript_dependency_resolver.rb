@@ -9,7 +9,7 @@ module Juicer
 
     private
     def parse(line, imported_file = nil)
-      return $1 if line =~ @@depends_pattern
+      return $1 if encoded_line(line) =~ @@depends_pattern
 
       # If we have already skimmed through some @depend/@depends or a
       # closing comment we're done.
