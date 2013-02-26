@@ -1,6 +1,7 @@
 require "juicer"
 require "juicer/install/base"
 require "zip/zip"
+require "openssl"
 
 module Juicer
   module Install
@@ -61,7 +62,7 @@ module Juicer
       #
       def latest
         return @latest if @latest
-        webpage = Nokogiri::HTML(open(@website).read, :ssl_verify_mode => OpenSSL::SSL::VERIFY_NONE)
+        webpage = Nokogiri::HTML(open(@website, :ssl_verify_mode => OpenSSL::SSL::VERIFY_NONE).read)
         a = webpage.css('#manual_downloads h4 a').first
         @href = a['href']
         @latest = a.text.match(/\d\.\d\.\d/)[0]
