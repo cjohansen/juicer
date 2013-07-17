@@ -50,7 +50,7 @@ class TestJavaScriptDependencyResolver < Test::Unit::TestCase
   end
 
   def test_parse
-    text = "© Dynamic Drive"
+    text = "© \xff Dynamic Drive"
     text.force_encoding("us-ascii") if RUBY_VERSION > "1.9"
     assert_nothing_raised ArgumentError do
       @resolver.send(:parse, text)

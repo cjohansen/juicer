@@ -60,7 +60,8 @@ module Juicer
 
     def encoded_line(line)
       if String.method_defined?(:encode)
-        line.encode!('UTF-8', 'UTF-8', :invalid => :replace)
+        line.encode('UTF-16', 'UTF-8', :invalid => :replace, :replace => '').
+          encode('UTF-8', 'UTF-16')
       else
         line
       end
