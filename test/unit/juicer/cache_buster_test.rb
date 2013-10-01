@@ -44,6 +44,14 @@ class CacheBusterTest < Test::Unit::TestCase
     should "remove hard cache buster and preserve query params" do
       assert_equal "#@filename?hey=there", Juicer::CacheBuster.clean("#@filename?hey=there".sub(/(\.txt)/, '-jcb1234567890\1'))
     end
+
+    should "remove md5 cache buster" do
+      assert_equal @filename, Juicer::CacheBuster.clean(@filename.sub(/(\.txt)/, '-jcbec4d59b2732f2f153240a8ff746282a6\1'))
+    end
+
+    should "remove md5 cache buster and preserve query params" do
+      assert_equal "#@filename?hey=there", Juicer::CacheBuster.clean("#@filename?hey=there".sub(/(\.txt)/, '-jcbec4d59b2732f2f153240a8ff746282a6\1'))
+    end
   end
 
   context "creating soft cache busters" do
@@ -123,6 +131,37 @@ class CacheBusterTest < Test::Unit::TestCase
     should "include custom parameter name" do
       mtime = File.mtime("#@filename.txt").to_i
       assert_equal "#@filename-juicer#{mtime}.txt", Juicer::CacheBuster.hard("#@filename.txt", :juicer)
+    end
+  end
+
+  context "md5 cache busters" do
+    setup do
+      @filename.sub!(/\.txt/, '')
+      @md5 = 'ec4d59b2732f2f153240a8ff746282a6'
+    end
+    teardown { @filename = "#@filename.txt" }
+
+    # I dont understand what this is supposed to test
+    #should "clean file before adding new cache buster" do
+    #  cache_buster = "-jcb#{@md5}"
+    #  assert_no_match /#{cache_buster}/, Juicer::CacheBuster.md5("#@filename#{cache_buster}.txt")
+    #end
+
+    should "preserve query parameters" do
+      parameters = "id=1"
+      assert_match /#{parameters}/, Juicer::CacheBuster.md5("#@filename.txt?#{parameters}")
+    end
+
+    should "include md5 in filename" do
+      assert_equal "#@filename-jcb#{@md5}.txt", Juicer::CacheBuster.md5("#@filename.txt")
+    end
+
+    should "include only md5 when parameter name is nil" do
+      assert_equal "#@filename-#{@md5}.txt", Juicer::CacheBuster.md5("#@filename.txt", nil)
+    end
+
+    should "include custom parameter name" do
+      assert_equal "#@filename-juicer#{@md5}.txt", Juicer::CacheBuster.md5("#@filename.txt", :juicer)
     end
   end
 end

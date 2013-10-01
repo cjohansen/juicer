@@ -139,6 +139,11 @@ class AssetPathTest < Test::Unit::TestCase
         mtime = File.mtime(@filename).to_i
         assert_equal "/#{@filename.sub(/\.txt/, '')}-jcb#{mtime}.txt", @asset.absolute_path(:cache_buster => :jcb, :cache_buster_type => :hard)
       end
+
+      should "return URL with md5 embedded" do
+        md5 = Digest::MD5.hexdigest(File.read(@filename))
+        assert_equal "/#{@filename.sub(/\.txt/, '')}-jcb#{md5}.txt", @asset.absolute_path(:cache_buster => :jcb, :cache_buster_type => :md5)
+      end
     end
   end
 
