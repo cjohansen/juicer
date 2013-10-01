@@ -108,6 +108,18 @@ class TestCssCacheBuster < Test::Unit::TestCase
     end
   end
 
+  context "md5 cache busters" do
+    should "should alter file name" do
+      File.open(path("a2.css"), "w") { |f| f.puts "" }
+      file = path("path_test2.css")
+      output = path("path_test3.css")
+      buster = Juicer::CssCacheBuster.new :document_root => path(""), :type => :md5
+      buster.save file, output
+
+      buster.urls(output).each { |asset| assert_match /-jcb[0-9a-f]{32}\.[a-z]{3}$/, asset.path }
+    end
+  end
+
   context "non-existent urls" do
     should "not raise" do
       File.open(path("a2.css"), "w") { |f| f.puts "a { background: url(i/dont/exist.fck); }" }
