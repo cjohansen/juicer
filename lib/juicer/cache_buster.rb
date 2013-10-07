@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+require 'digest/md5'
 
 module Juicer
   #
@@ -80,7 +81,7 @@ module Juicer
     #
     def self.path(file, type = :soft, parameter = DEFAULT_PARAMETER)
       return file if file =~ /data:.*;base64/
-      type = [:soft, :hard, :rails].include?(type) ? type : :soft
+      type = [:soft, :hard, :rails, :md5].include?(type) ? type : :soft
       parameter = nil if type == :rails
       file = self.clean(file, parameter)
       filename = file.split("?").first
@@ -92,9 +93,23 @@ module Juicer
         return "#{file}#{file.index('?') ? '&' : '?'}#{parameter}#{mtime}"
       elsif type == :rails
         return "#{file}#{file.index('?') ? '' : "?#{mtime}"}"
+      elsif type == :md5
+        md5 = Digest::MD5.hexdigest(File.read(filename))
+        return file.sub(/(\.[^\.]+$)/, "-#{parameter}#{md5}" + '\1')
       end
 
       file.sub(/(\.[^\.]+$)/, "-#{parameter}#{mtime}" + '\1')
+    end
+
+    #
+    # Add a md5 cache buster to a filename. The parameter is an optional prefix
+    # that is added before the md5 digest. It results in filenames of the form:
+    # <tt>file-[parameter name][md5].suffix</tt>, ie
+    # <tt>images/logo-cb4fdbd4c637ad377adf0fc0c88f6854b3.png</tt> which is the case for the default
+    # parameter name "cb" (as in *c*ache *b*uster).
+    #
+    def self.md5(file, parameter = DEFAULT_PARAMETER)
+      self.path(file, :md5, parameter)
     end
 
     #
@@ -140,7 +155,7 @@ module Juicer
         new_file = file.sub(/#{query_param}\d+&?/, "").sub(/(\?|&)$/, "")
         return new_file unless new_file == file
 
-        file.sub(/-#{parameter}\d+(\.\w+)($|\?)/, '\1\2')
+        file.sub(/-#{parameter}[0-9a-f]+(\.\w+)($|\?)/, '\1\2')
       end
     end
   end
