@@ -144,6 +144,18 @@ class AssetPathTest < Test::Unit::TestCase
         md5 = Digest::MD5.hexdigest(File.read(@filename))
         assert_equal "/#{@filename.sub(/\.txt/, '')}-jcb#{md5}.txt", @asset.absolute_path(:cache_buster => :jcb, :cache_buster_type => :md5)
       end
+
+      should "works with #fontawesomeregular?v=3.2.1 in URL" do
+        filename = "tmp.asset.txt"
+        file = File.open(@filename, "w") { |f| f.puts "Testing" }
+        md5 = Digest::MD5.hexdigest(File.read(filename))
+
+        suffix = '#fontawesomeregular?v=3.2.1'
+        filename_with_suffix = "#{filename}#{suffix}"
+        asset = Juicer::Asset::Path.new filename_with_suffix, :document_root => Dir.pwd
+
+        assert_equal "/#{filename_with_suffix.sub(".txt#{suffix}", '')}-jcb#{md5}.txt#{suffix}", asset.absolute_path(:cache_buster => :jcb, :cache_buster_type => :md5)
+      end
     end
   end
 
