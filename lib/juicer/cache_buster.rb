@@ -84,7 +84,7 @@ module Juicer
       type = [:soft, :hard, :rails, :md5].include?(type) ? type : :soft
       parameter = nil if type == :rails
       file = self.clean(file, parameter)
-      filename = file.split("?").first
+      filename = file.split(/[\?\#]/).first
       raise ArgumentError.new("#{file} could not be found") unless File.exists?(filename)
       mtime = File.mtime(filename).to_i
 
@@ -95,10 +95,10 @@ module Juicer
         return "#{file}#{file.index('?') ? '' : "?#{mtime}"}"
       elsif type == :md5
         md5 = Digest::MD5.hexdigest(File.read(filename))
-        return file.sub(/(\.[^\.]+$)/, "-#{parameter}#{md5}" + '\1')
+        return file.sub(/(\.[^\.]+([\?\#].*)?$)/, "-#{parameter}#{md5}" + '\1')
       end
 
-      file.sub(/(\.[^\.]+$)/, "-#{parameter}#{mtime}" + '\1')
+      file.sub(/(\.[^\.]+([\?\#].*)?$)/, "-#{parameter}#{mtime}" + '\1')
     end
 
     #
