@@ -16,7 +16,7 @@ module Juicer
         @latest = nil
         @href = nil
         @website = 'https://github.com/yui/yuicompressor/downloads'
-        @cdn = 'http://cloud.github.com'
+        @cdn = 'https://github.com'
       end
 
       #
