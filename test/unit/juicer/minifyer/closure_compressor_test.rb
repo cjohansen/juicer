@@ -6,25 +6,25 @@ class ClosureCompilerTest < Test::Unit::TestCase
     @jar = "compiler.jar"
     @input = "in-file.css"
     @output = "out-file.css"
-    @cmd = %Q{-jar "#@jar"}
+    @cmd = "-jar", @jar
     @closure = Juicer::Minifyer::ClosureCompiler.new
     @closure.stubs(:locate_jar).returns(@jar)
   end
 
   context "#save" do
     should "overwrite existing file" do
-      @closure.expects(:execute).with(%Q{#@cmd --js_output_file "#@output" --js "#@output"})
+      @closure.expects(:execute).with(*@cmd, "--js_output_file", @output, "--js", @output)
       @closure.save(@output, @output)
     end
 
     should "write compressed input to output" do
-      @closure.expects(:execute).with(%Q{#@cmd --js_output_file "#@output" --js "#@input"})
+      @closure.expects(:execute).with(*@cmd , "--js_output_file", @output, "--js", @input)
       @closure.save(@input, @output)
     end
 
     should "create non-existant path" do
       output = "some/nested/directory"
-      @closure.expects(:execute).with(%Q{#@cmd --js_output_file "#{output}/file.css" --js "#@input"})
+      @closure.expects(:execute).with(*@cmd, "--js_output_file", "#{output}/file.css", "--js", @input)
       FileUtils.expects(:mkdir_p).with(output)
       @closure.save(@input, "#{output}/file.css")
     end

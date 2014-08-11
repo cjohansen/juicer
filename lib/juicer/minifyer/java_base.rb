@@ -55,6 +55,18 @@ module Juicer
         @jar_args = " #{args}"
       end
 
+    # Constructs the command to use
+    #
+    def command
+      java_opts = []
+      if ENV['JAVA_OPTS'].nil?
+        java_opts = []
+      else
+        java_opts = ENV['JAVA_OPTS'].split(" ")
+      end
+      @command = ([@binary] + java_opts).flatten
+    end
+
       def jar_args
         @jar_args
       end
