@@ -5,35 +5,35 @@ class TestYuiCompressor < Test::Unit::TestCase
     @jar = "yuicompressor-2.4.2.jar"
     @input = "in-file.css"
     @output = "out-file.css"
-    @cmd = %Q{-jar "#@jar"}
+    @cmd = "-jar", @jar
     @yui_compressor = Juicer::Minifyer::YuiCompressor.new
     @yui_compressor.stubs(:locate_jar).returns(@jar)
   end
 
   context "#save" do
     should "overwrite existing file" do
-      @yui_compressor.expects(:execute).with(%Q{#@cmd -o "#@output" "#@output"})
+      @yui_compressor.expects(:execute).with(*@cmd, "-o", @output, @output)
       @yui_compressor.save(@output)
     end
 
     should "use provided symbol type" do
-      @yui_compressor.expects(:execute).with(%Q{#@cmd -o "#@output" "#@input"})
+      @yui_compressor.expects(:execute).with(*@cmd, "-o", @output, @input)
       @yui_compressor.save(@input, @output, :css)
     end
 
     should "use provided string type" do
-      @yui_compressor.expects(:execute).with(%Q{#@cmd -o "#@output" "#@input"})
+      @yui_compressor.expects(:execute).with(*@cmd, "-o", @output, @input)
       @yui_compressor.save(@input, @output, "css")
     end
 
     should "write compressed input to output" do
-      @yui_compressor.expects(:execute).with(%Q{#@cmd -o "#@output" "#@input"})
+      @yui_compressor.expects(:execute).with(*@cmd, "-o", @output, @input)
       @yui_compressor.save(@input, @output)
     end
 
     should "create non-existant path" do
       output = "some/nested/directory"
-      @yui_compressor.expects(:execute).with(%Q{#@cmd -o "#{output}/file.css" "#@input"})
+      @yui_compressor.expects(:execute).with(*@cmd, "-o", "#{output}/file.css", @input)
       FileUtils.expects(:mkdir_p).with(output)
       @yui_compressor.save(@input, "#{output}/file.css")
     end

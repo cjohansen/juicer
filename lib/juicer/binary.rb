@@ -29,8 +29,8 @@ module Juicer
 
     # Run command
     #
-    def execute(params = nil)
-      cmd = IO.popen("#{self.command} #{params}", "r")
+    def execute(*params)
+      cmd = IO.popen(([self.command] + params).flatten, "r")
       results = cmd.gets(nil)
       cmd.close
       results
@@ -107,7 +107,7 @@ module Juicer
     def command
       return @command if !@opt_set && @command
       @opt_set = false
-      @command = "#{@binary} #{options}"
+      @command = [@binary, options]
     end
 
     # Locate the binary to execute. The binary is searched for in the

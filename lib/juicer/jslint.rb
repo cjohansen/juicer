@@ -18,6 +18,18 @@ module Juicer
       path << options[:bin_path] if options[:bin_path]
     end
 
+    # Constructs the command to use
+    #
+    def command
+      java_opts = []
+      if ENV['JAVA_OPTS'].nil?
+        java_opts = []
+      else
+        java_opts = ENV['JAVA_OPTS'].split(" ")
+      end
+      @command = ([@binary] + java_opts).flatten
+    end
+
     #
     # Checks if a files has problems. Also includes experimental support for CSS
     # files. CSS files should begin with the line @charset "UTF-8";
@@ -32,7 +44,7 @@ module Juicer
       raise FileNotFoundError.new("Unable to locate JsLint '#{js_file}'") if !js_file || !File.exists?(js_file)
       raise FileNotFoundError.new("Unable to locate input file '#{file}'") unless File.exists?(file)
 
-      lines = execute(%Q{-jar "#{rhino}" "#{locate_lib}" "#{file}"}).split("\n")
+      lines = execute("-jar", rhino, locate_lib, file).split("\n")
       return Report.new if lines.length == 1 && lines[0] =~ /jslint: No problems/
 
       report = Report.new

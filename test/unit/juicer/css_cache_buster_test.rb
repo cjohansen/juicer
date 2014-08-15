@@ -80,7 +80,7 @@ class TestCssCacheBuster < Test::Unit::TestCase
       buster = Juicer::CssCacheBuster.new :document_root => path("")
       buster.save file, output
 
-      buster.urls(output).each { |url| assert url !~ /(jcb=\d+).*(jcb=\d+)/, url }
+      buster.urls(output).each { |url| assert url !~ /(jcb=\d+).*(jcb=\d+)/, url.to_s }
     end
   end
 
