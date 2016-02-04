@@ -13,8 +13,8 @@ module Juicer
       def initialize(install_dir = Juicer.home)
         super(install_dir)
         @latest = nil
-        @website = "http://code.google.com/p/closure-compiler/downloads/list"
-        @download_link = "http://closure-compiler.googlecode.com/files/compiler-%s.zip"
+        @website = "https://github.com/google/closure-compiler/releases"
+        @download_link = "http://dl.google.com/closure-compiler/compiler-%s.zip"
       end
 
       #
@@ -33,7 +33,7 @@ module Juicer
         target = File.join(@install_dir, path)
 
         Zip::ZipFile.open(filename) do |file|
-          file.extract("README", File.join(target, version, "README"))
+          file.extract("README.md", File.join(target, version, "README"))
           file.extract("compiler.jar", File.join(target, "bin", "#{base}.jar"))
         end
       end
@@ -60,7 +60,7 @@ module Juicer
       def latest
         return @latest if @latest
         webpage = Nokogiri::HTML(open(@website).read)
-        @latest = (webpage / "//table[@id='resultstable']//td/a[contains(@href, 'compiler')]").map{|link|
+        @latest = (webpage / "//div[@class='release-timeline']//h3/a[contains(@href, 'compiler')]").map{|link|
           link.get_attribute('href')[/\d{8}/].to_i
         }.sort.last.to_s
       end
